@@ -59,6 +59,10 @@ const proxyCatalog = [
 
 const els = {
   liveClock: document.getElementById("liveClock"),
+  menuToggle: document.getElementById("menuToggle"),
+  menuDrawer: document.getElementById("menuDrawer"),
+  menuScrim: document.getElementById("menuScrim"),
+  navLinks: document.querySelectorAll("[data-nav-link]"),
   nhlTicker: document.getElementById("nhlTicker"),
   refreshTicker: document.getElementById("refreshTicker"),
   useGpsWeather: document.getElementById("useGpsWeather"),
@@ -163,6 +167,14 @@ function primeInputs() {
 }
 
 function bindEvents() {
+  els.menuToggle?.addEventListener("click", toggleMenu);
+  els.menuScrim?.addEventListener("click", closeMenu);
+  els.navLinks?.forEach((link) => link.addEventListener("click", closeMenu));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeMenu();
+    }
+  });
   els.refreshTicker.addEventListener("click", loadNhlTicker);
   els.useGpsWeather.addEventListener("click", handleGpsWeather);
   els.zipWeatherForm.addEventListener("submit", handleZipWeather);
@@ -179,6 +191,22 @@ function bindEvents() {
   els.fileForm.addEventListener("submit", handleFileCreate);
   els.saveFile.addEventListener("click", handleFileSave);
   els.deleteFile.addEventListener("click", handleFileDelete);
+}
+
+function toggleMenu() {
+  const isOpen = els.menuDrawer.classList.toggle("is-open");
+  els.menuScrim.classList.toggle("is-open", isOpen);
+  els.menuToggle.classList.toggle("is-open", isOpen);
+  els.menuToggle.setAttribute("aria-expanded", String(isOpen));
+  els.menuDrawer.setAttribute("aria-hidden", String(!isOpen));
+}
+
+function closeMenu() {
+  els.menuDrawer?.classList.remove("is-open");
+  els.menuScrim?.classList.remove("is-open");
+  els.menuToggle?.classList.remove("is-open");
+  els.menuToggle?.setAttribute("aria-expanded", "false");
+  els.menuDrawer?.setAttribute("aria-hidden", "true");
 }
 
 function renderAll() {

@@ -3,201 +3,289 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>imbuckleyy.xyz | Private Dashboard</title>
+  <title>imbuckleyy.xyz | Private Frontpage</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div class="page-glow"></div>
   <div class="app-shell">
-    <header class="hero">
-      <div>
-        <p class="eyebrow">Private Pair Dashboard</p>
-        <h1>imbuckleyy.xyz</h1>
-        <p class="hero-copy">One page for life admin, quick planning, games, weather, and private home links.</p>
-      </div>
-      <div class="hero-badge">
-        <span>Local only</span>
-        <strong id="liveClock">--:--</strong>
+    <header class="topbar">
+      <a class="brand-mark" href="#home">imbuckleyy.xyz</a>
+      <div class="topbar-meta">
+        <span class="clock-chip" id="liveClock">--:--</span>
+        <button id="menuToggle" class="menu-toggle" type="button" aria-expanded="false" aria-controls="menuDrawer" aria-label="Open navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
     </header>
 
-    <section class="ticker-card">
-      <div class="section-head compact">
-        <h2>NHL Live Ticker</h2>
-        <button id="refreshTicker" class="ghost-btn" type="button">Refresh</button>
+    <div id="menuScrim" class="menu-scrim"></div>
+    <aside id="menuDrawer" class="menu-drawer" aria-hidden="true">
+      <div class="menu-drawer-head">
+        <p class="eyebrow">Navigate</p>
+        <h2>Everything in one place</h2>
       </div>
-      <div class="ticker-wrap">
-        <div id="nhlTicker" class="ticker-text">Loading latest NHL scores...</div>
-      </div>
-    </section>
+      <nav class="menu-links">
+        <a href="#home" data-nav-link>Home</a>
+        <a href="#weather" data-nav-link>Weather</a>
+        <a href="#schedule" data-nav-link>Schedule</a>
+        <a href="#finance" data-nav-link>Finance</a>
+        <a href="#lol" data-nav-link>LoL Comparator</a>
+        <a href="#chat" data-nav-link>AI Chat</a>
+        <a href="#links" data-nav-link>FMHY Links</a>
+        <a href="#proxy" data-nav-link>Proxy Links</a>
+        <a href="#files" data-nav-link>File Manager</a>
+      </nav>
+      <p class="menu-note">Tap a section and the page drops you straight into it.</p>
+    </aside>
 
-    <main class="dashboard-grid">
-      <section class="card weather-card">
-        <div class="section-head">
-          <h2>Weather</h2>
-          <span class="meta">Auto GPS + manual fallback</span>
-        </div>
-        <div class="weather-actions">
-          <button id="useGpsWeather" class="primary-btn" type="button">Use My Location</button>
-          <form id="zipWeatherForm" class="inline-form">
-            <input id="zipInput" name="zip" type="text" maxlength="12" placeholder="Zip or postal code">
-            <button type="submit">Check</button>
-          </form>
-        </div>
-        <div id="weatherOutput" class="panel weather-panel">
-          <p class="status-text">Waiting for weather lookup.</p>
-        </div>
-      </section>
-
-      <section class="card lol-card">
-        <div class="section-head">
-          <h2>LoL Comparator</h2>
-          <span class="meta">Comma-separated player names</span>
-        </div>
-        <form id="lolForm" class="stack-form">
-          <input id="lolPlayers" type="text" placeholder="MattB,Gf123,Friend1">
-          <input id="lolApiKey" type="password" placeholder="Optional Riot API key">
-          <button class="primary-btn" type="submit">Compare Players</button>
-        </form>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Player</th>
-                <th>Status</th>
-                <th>Level</th>
-                <th>Queue</th>
-                <th>Rank</th>
-              </tr>
-            </thead>
-            <tbody id="lolTableBody">
-              <tr>
-                <td colspan="5" class="empty-row">Add player names to compare.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="card chat-card">
-        <div class="section-head">
-          <h2>AI Chat</h2>
-          <span class="meta">Private mock assistant</span>
-        </div>
-        <div id="chatLog" class="chat-log"></div>
-        <form id="chatForm" class="chat-form">
-          <textarea id="chatInput" rows="4" placeholder="Ask for dinner ideas, reminders, plans, whatever..."></textarea>
-          <button class="primary-btn" type="submit">Send</button>
-        </form>
-      </section>
-
-      <section class="card schedule-card span-2">
-        <div class="section-head">
-          <h2>Shared Schedule + Bills + Shifts</h2>
-          <span class="meta">Today and next 30 days</span>
-        </div>
-        <div class="triple-grid">
-          <form id="eventForm" class="panel stack-form">
-            <h3>Add Event</h3>
-            <input id="eventTitle" type="text" placeholder="Dinner, appointment, trip, date night">
-            <input id="eventDate" type="date">
-            <button class="primary-btn" type="submit">Add Event</button>
-          </form>
-
-          <form id="billForm" class="panel stack-form">
-            <h3>Recurring Bill</h3>
-            <input id="billName" type="text" placeholder="Rent, Phone, Netflix">
-            <input id="billAmount" type="number" step="0.01" min="0" placeholder="Amount">
-            <select id="billFrequency">
-              <option value="monthly">Monthly</option>
-              <option value="weekly">Weekly</option>
-            </select>
-            <input id="billDay" type="number" min="1" max="31" placeholder="Day (1-31)">
-            <button class="primary-btn" type="submit">Generate 12 Months</button>
-          </form>
-
-          <form id="shiftForm" class="panel stack-form">
-            <h3>Alamos Shifts</h3>
-            <select id="shiftPattern">
-              <option value="14/14">14/14</option>
-              <option value="20/10">20/10</option>
-            </select>
-            <input id="shiftStart" type="date">
-            <button class="primary-btn" type="submit">Auto-Fill Schedule</button>
-          </form>
-        </div>
-        <div id="scheduleList" class="schedule-list"></div>
-        <form id="scheduleEditForm" class="panel stack-form hidden">
-          <h3>Edit Schedule Item</h3>
-          <input id="scheduleEditTitle" type="text" placeholder="Title">
-          <input id="scheduleEditDate" type="date">
-          <div class="editor-actions">
-            <button id="scheduleEditSave" class="primary-btn" type="submit">Save Changes</button>
-            <button id="scheduleEditCancel" class="ghost-btn" type="button">Cancel</button>
+    <main>
+      <section id="home" class="hero-front">
+        <div class="hero-copy-block">
+          <p class="eyebrow">Private frontpage</p>
+          <h1>Home base for life, plans, money, games, and quick links.</h1>
+          <p class="hero-copy">A cleaner frontpage with a drop-down menu, fast shortcuts, and all your tools living below the fold instead of shouting at you all at once.</p>
+          <div class="hero-actions">
+            <a class="primary-btn hero-link" href="#schedule">Open schedule</a>
+            <a class="ghost-btn hero-link" href="#files">Open notes</a>
           </div>
-        </form>
-      </section>
-
-      <section class="card finance-card">
-        <div class="section-head">
-          <h2>AI Finance</h2>
-          <span class="meta">Instant budget snapshot</span>
         </div>
-        <form id="financeForm" class="triple-grid compact-grid">
-          <input id="incomeInput" type="number" min="0" step="0.01" placeholder="Monthly income">
-          <input id="expenseInput" type="number" min="0" step="0.01" placeholder="Monthly expenses">
-          <input id="goalInput" type="number" min="0" step="0.01" placeholder="Savings goal">
-        </form>
-        <div class="finance-visual">
-          <div class="chart-wrap">
-            <canvas id="budgetChart" width="260" height="260"></canvas>
+        <div class="hero-side">
+          <div class="spotlight-card">
+            <p class="eyebrow">Live now</p>
+            <h2>NHL Ticker</h2>
+            <div class="ticker-wrap home-ticker">
+              <div id="nhlTicker" class="ticker-text">Loading latest NHL scores...</div>
+            </div>
+            <button id="refreshTicker" class="ghost-btn" type="button">Refresh ticker</button>
           </div>
-          <div id="financeInsights" class="panel finance-notes"></div>
+          <div class="spotlight-stack">
+            <article class="mini-card">
+              <span class="mini-label">Weather</span>
+              <strong>GPS or zip lookup</strong>
+            </article>
+            <article class="mini-card">
+              <span class="mini-label">Shared life</span>
+              <strong>Bills, events, shifts</strong>
+            </article>
+            <article class="mini-card">
+              <span class="mini-label">Private</span>
+              <strong>Notes and home links</strong>
+            </article>
+          </div>
         </div>
       </section>
 
-      <section class="card links-card">
-        <div class="section-head">
-          <h2>FMHY Links</h2>
-          <span class="meta">Editable collapsible categories</span>
-        </div>
-        <form id="categoryForm" class="inline-form">
-          <input id="categoryInput" type="text" placeholder="Add category">
-          <button type="submit">Add Category</button>
-        </form>
-        <form id="linkForm" class="stack-form panel">
-          <input id="linkCategory" type="text" placeholder="Category name">
-          <input id="linkLabel" type="text" placeholder="Link label">
-          <input id="linkUrl" type="url" placeholder="https://example.com">
-          <button class="primary-btn" type="submit">Add Link</button>
-        </form>
-        <div id="linksContainer" class="accordion-list"></div>
+      <section class="front-grid">
+        <a class="front-card" href="#weather">
+          <span class="front-card-label">Weather</span>
+          <strong>Check local conditions fast</strong>
+          <p>GPS-first with a manual fallback.</p>
+        </a>
+        <a class="front-card" href="#schedule">
+          <span class="front-card-label">Schedule</span>
+          <strong>Keep the month organized</strong>
+          <p>Events, bills, shifts, and edits in one place.</p>
+        </a>
+        <a class="front-card" href="#finance">
+          <span class="front-card-label">Finance</span>
+          <strong>Quick budget snapshot</strong>
+          <p>Income, expenses, goals, and instant guidance.</p>
+        </a>
+        <a class="front-card" href="#chat">
+          <span class="front-card-label">AI</span>
+          <strong>Ask, plan, note, decide</strong>
+          <p>Lightweight private assistant for everyday stuff.</p>
+        </a>
       </section>
 
-      <section class="card proxy-card">
-        <div class="section-head">
-          <h2>Work-Safe Proxy Links</h2>
-          <span class="meta">Quick opens with privacy wrappers</span>
+      <section id="weather" class="content-section">
+        <div class="section-intro">
+          <p class="eyebrow">Weather</p>
+          <h2>Weather before you leave</h2>
         </div>
-        <div id="proxyLinks" class="proxy-links"></div>
+        <div class="content-card">
+          <div class="weather-actions">
+            <button id="useGpsWeather" class="primary-btn" type="button">Use My Location</button>
+            <form id="zipWeatherForm" class="inline-form">
+              <input id="zipInput" name="zip" type="text" maxlength="12" placeholder="Zip or postal code">
+              <button type="submit">Check</button>
+            </form>
+          </div>
+          <div id="weatherOutput" class="panel weather-panel">
+            <p class="status-text">Waiting for weather lookup.</p>
+          </div>
+        </div>
       </section>
 
-      <section class="card files-card">
-        <div class="section-head">
-          <h2>Local File Manager</h2>
-          <span class="meta">Simple notes and lists stored locally</span>
+      <section id="schedule" class="content-section">
+        <div class="section-intro">
+          <p class="eyebrow">Shared planner</p>
+          <h2>Schedule, bills, and shifts</h2>
         </div>
-        <form id="fileForm" class="inline-form">
-          <input id="fileName" type="text" placeholder="New file name">
-          <button type="submit">Create File</button>
-        </form>
-        <div class="file-manager">
-          <aside id="fileList" class="file-list"></aside>
-          <div class="editor-panel">
-            <input id="fileTitle" type="text" placeholder="File title">
-            <textarea id="fileContent" rows="12" placeholder="Private notes, lists, plans..."></textarea>
+        <div class="content-card">
+          <div class="triple-grid">
+            <form id="eventForm" class="panel stack-form">
+              <h3>Add Event</h3>
+              <input id="eventTitle" type="text" placeholder="Dinner, appointment, trip, date night">
+              <input id="eventDate" type="date">
+              <button class="primary-btn" type="submit">Add Event</button>
+            </form>
+
+            <form id="billForm" class="panel stack-form">
+              <h3>Recurring Bill</h3>
+              <input id="billName" type="text" placeholder="Rent, Phone, Netflix">
+              <input id="billAmount" type="number" step="0.01" min="0" placeholder="Amount">
+              <select id="billFrequency">
+                <option value="monthly">Monthly</option>
+                <option value="weekly">Weekly</option>
+              </select>
+              <input id="billDay" type="number" min="1" max="31" placeholder="Day (1-31)">
+              <button class="primary-btn" type="submit">Generate 12 Months</button>
+            </form>
+
+            <form id="shiftForm" class="panel stack-form">
+              <h3>Alamos Shifts</h3>
+              <select id="shiftPattern">
+                <option value="14/14">14/14</option>
+                <option value="20/10">20/10</option>
+              </select>
+              <input id="shiftStart" type="date">
+              <button class="primary-btn" type="submit">Auto-Fill Schedule</button>
+            </form>
+          </div>
+          <div id="scheduleList" class="schedule-list"></div>
+          <form id="scheduleEditForm" class="panel stack-form hidden">
+            <h3>Edit Schedule Item</h3>
+            <input id="scheduleEditTitle" type="text" placeholder="Title">
+            <input id="scheduleEditDate" type="date">
             <div class="editor-actions">
-              <button id="saveFile" class="primary-btn" type="button">Save File</button>
-              <button id="deleteFile" class="ghost-btn" type="button">Delete File</button>
+              <button id="scheduleEditSave" class="primary-btn" type="submit">Save Changes</button>
+              <button id="scheduleEditCancel" class="ghost-btn" type="button">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section id="finance" class="content-section">
+        <div class="section-intro">
+          <p class="eyebrow">Finance</p>
+          <h2>Quick money check-in</h2>
+        </div>
+        <div class="content-card">
+          <form id="financeForm" class="triple-grid compact-grid">
+            <input id="incomeInput" type="number" min="0" step="0.01" placeholder="Monthly income">
+            <input id="expenseInput" type="number" min="0" step="0.01" placeholder="Monthly expenses">
+            <input id="goalInput" type="number" min="0" step="0.01" placeholder="Savings goal">
+          </form>
+          <div class="finance-visual">
+            <div class="chart-wrap">
+              <canvas id="budgetChart" width="260" height="260"></canvas>
+            </div>
+            <div id="financeInsights" class="panel finance-notes"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="lol" class="content-section">
+        <div class="section-intro">
+          <p class="eyebrow">Games</p>
+          <h2>League comparison board</h2>
+        </div>
+        <div class="content-card">
+          <form id="lolForm" class="stack-form">
+            <input id="lolPlayers" type="text" placeholder="MattB,Gf123,Friend1">
+            <input id="lolApiKey" type="password" placeholder="Optional Riot API key">
+            <button class="primary-btn" type="submit">Compare Players</button>
+          </form>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Player</th>
+                  <th>Status</th>
+                  <th>Level</th>
+                  <th>Queue</th>
+                  <th>Rank</th>
+                </tr>
+              </thead>
+              <tbody id="lolTableBody">
+                <tr>
+                  <td colspan="5" class="empty-row">Add player names to compare.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="chat" class="content-section">
+        <div class="section-intro">
+          <p class="eyebrow">Assistant</p>
+          <h2>Light private AI chat</h2>
+        </div>
+        <div class="content-card">
+          <div id="chatLog" class="chat-log"></div>
+          <form id="chatForm" class="chat-form">
+            <textarea id="chatInput" rows="4" placeholder="Ask for dinner ideas, reminders, plans, whatever..."></textarea>
+            <button class="primary-btn" type="submit">Send</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="links" class="content-section">
+        <div class="section-intro">
+          <p class="eyebrow">Links</p>
+          <h2>FMHY and saved categories</h2>
+        </div>
+        <div class="content-card split-card">
+          <div class="stack-form">
+            <form id="categoryForm" class="inline-form">
+              <input id="categoryInput" type="text" placeholder="Add category">
+              <button type="submit">Add Category</button>
+            </form>
+            <form id="linkForm" class="stack-form panel">
+              <input id="linkCategory" type="text" placeholder="Category name">
+              <input id="linkLabel" type="text" placeholder="Link label">
+              <input id="linkUrl" type="url" placeholder="https://example.com">
+              <button class="primary-btn" type="submit">Add Link</button>
+            </form>
+          </div>
+          <div id="linksContainer" class="accordion-list"></div>
+        </div>
+      </section>
+
+      <section id="proxy" class="content-section">
+        <div class="section-intro">
+          <p class="eyebrow">Proxy</p>
+          <h2>Work-safe access tools</h2>
+        </div>
+        <div class="content-card">
+          <div id="proxyLinks" class="proxy-links"></div>
+        </div>
+      </section>
+
+      <section id="files" class="content-section">
+        <div class="section-intro">
+          <p class="eyebrow">Files</p>
+          <h2>Private notes and lists</h2>
+        </div>
+        <div class="content-card">
+          <form id="fileForm" class="inline-form">
+            <input id="fileName" type="text" placeholder="New file name">
+            <button type="submit">Create File</button>
+          </form>
+          <div class="file-manager">
+            <aside id="fileList" class="file-list"></aside>
+            <div class="editor-panel">
+              <input id="fileTitle" type="text" placeholder="File title">
+              <textarea id="fileContent" rows="12" placeholder="Private notes, lists, plans..."></textarea>
+              <div class="editor-actions">
+                <button id="saveFile" class="primary-btn" type="button">Save File</button>
+                <button id="deleteFile" class="ghost-btn" type="button">Delete File</button>
+              </div>
             </div>
           </div>
         </div>
