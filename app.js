@@ -246,12 +246,22 @@ async function loadNhlTicker() {
 }
 
 function formatGameTicker(game) {
-  const away = game.away || game.awayTeam || game.teams?.away?.team?.name || "Away";
-  const home = game.home || game.homeTeam || game.teams?.home?.team?.name || "Home";
-  const awayScore = game.awayScore ?? game.teams?.away?.score ?? "-";
-  const homeScore = game.homeScore ?? game.teams?.home?.score ?? "-";
+  const away = extractTeamName(game.away || game.awayTeam || game.teams?.away?.team) || "Away";
+  const home = extractTeamName(game.home || game.homeTeam || game.teams?.home?.team) || "Home";
+  const awayScore = game.awayScore ?? game.teams?.away?.score ?? game.away?.score ?? "-";
+  const homeScore = game.homeScore ?? game.teams?.home?.score ?? game.home?.score ?? "-";
   const status = game.status || game.period || game.gameState || "Final/Live";
   return `${away} ${awayScore} - ${homeScore} ${home} (${status})`;
+}
+
+function extractTeamName(team) {
+  if (!team) {
+    return "";
+  }
+  if (typeof team === "string") {
+    return team;
+  }
+  return team.name || team.abbreviation || team.teamName || team.commonName || "";
 }
 
 function handleGpsWeather() {
