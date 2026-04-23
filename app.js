@@ -112,8 +112,10 @@ const els = {
   chatBubbleTemplate: document.getElementById("chatBubbleTemplate"),
   chatStatus: document.getElementById("chatStatus"),
   fmhyPageInput: document.getElementById("fmhyPageInput"),
+  fmhyPageSuggestions: document.getElementById("fmhyPageSuggestions"),
   fmhySearch: document.getElementById("fmhySearch"),
   refreshFmhy: document.getElementById("refreshFmhy"),
+  fmhyCategories: document.getElementById("fmhyCategories"),
   fmhyMeta: document.getElementById("fmhyMeta"),
   fmhyResults: document.getElementById("fmhyResults"),
   fileForm: document.getElementById("fileForm"),
@@ -1283,8 +1285,30 @@ function renderFmhy() {
   els.fmhySearch.value = state.fmhySearch;
 
   if (!runtime.fmhy) {
+    els.fmhyCategories.innerHTML = "";
+    els.fmhyPageSuggestions.innerHTML = "";
     return;
   }
+
+  const categories = Array.isArray(runtime.fmhy.categories) ? runtime.fmhy.categories : [];
+  els.fmhyPageSuggestions.innerHTML = categories.map((category) => `<option value="${escapeAttribute(category.slug)}"></option>`).join("");
+  els.fmhyCategories.innerHTML = categories.map((category) => `
+    <button
+      type="button"
+      class="portal-chip-button ${category.slug === state.fmhyPage ? "active" : ""}"
+      data-fmhy-slug="${escapeAttribute(category.slug)}"
+    >
+      ${escapeHtml(category.label)}
+    </button>
+  `).join("");
+
+  els.fmhyCategories.querySelectorAll("[data-fmhy-slug]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.fmhyPage = sanitizeFmhyPage(button.dataset.fmhySlug);
+      saveState();
+      loadFmhyPage();
+    });
+  });
 
   const query = state.fmhySearch.toLowerCase();
   const sections = (runtime.fmhy.sections || [])

@@ -56,8 +56,8 @@
               <span class="hero-chip">No clutter</span>
             </div>
             <div class="section-kicker">Private streaming-style front page</div>
-            <h1 class="hero-title mb-3">A real home hub for weather, shifts, bills, League, FMHY, notes, and private chat.</h1>
-            <p class="hero-text mb-4">This page is meant to feel like a front page you actually want to open: today’s weather, your next work block, bills, money check-in, League lookups, FMHY links, and a private assistant that lives on your server.</p>
+            <h1 class="hero-title mb-3">Weather, schedule, money, FMHY, notes, and private chat without the mess.</h1>
+            <p class="hero-text mb-4">A cleaner home hub for the stuff you actually check every day: today’s weather, your next shift, bills, League lookups, FMHY links, and a private assistant that lives on your server.</p>
             <div class="d-flex flex-wrap gap-2 hero-actions">
               <a class="btn btn-warning btn-lg px-4" href="#schedule">Open the schedule</a>
               <a class="btn btn-outline-light btn-lg px-4" href="#fmhy">Browse FMHY</a>
@@ -392,14 +392,7 @@
               <div class="col-12 col-md-3">
                 <label for="fmhyPageInput" class="form-label">Page slug</label>
                 <input id="fmhyPageInput" type="text" class="form-control" list="fmhyPageSuggestions" placeholder="video">
-                <datalist id="fmhyPageSuggestions">
-                  <option value="video"></option>
-                  <option value="audio"></option>
-                  <option value="gaming"></option>
-                  <option value="reading"></option>
-                  <option value="ai"></option>
-                  <option value="downloading"></option>
-                </datalist>
+                <datalist id="fmhyPageSuggestions"></datalist>
               </div>
               <div class="col-12 col-md-7">
                 <label for="fmhySearch" class="form-label">Filter</label>
@@ -410,6 +403,7 @@
                 <button id="refreshFmhy" class="btn btn-outline-light" type="button">Refresh</button>
               </div>
             </div>
+            <div id="fmhyCategories" class="portal-chip-row mb-4"></div>
             <div id="fmhyMeta" class="text-body-secondary mb-3"></div>
             <div id="fmhyResults" class="accordion-list"></div>
           </div>

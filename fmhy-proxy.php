@@ -31,6 +31,31 @@ if (!$root) {
 
 $title = trim((string) ($xpath->query('//title')->item(0)?->textContent ?? 'FMHY'));
 $description = trim((string) ($xpath->query("//meta[@name='description']")->item(0)?->getAttribute('content') ?? ''));
+$categories = [];
+$categoryNodes = $xpath->query("//aside//a[starts-with(@href, '/')]");
+foreach ($categoryNodes as $categoryNode) {
+    if (!($categoryNode instanceof DOMElement)) {
+        continue;
+    }
+
+    $href = trim((string) $categoryNode->getAttribute('href'));
+    $slug = trim($href, '/');
+    if ($slug === '' || !preg_match('/^[a-z0-9-]+$/', $slug)) {
+        continue;
+    }
+
+    $label = trim(app_plain_text($doc->saveHTML($categoryNode)));
+    if ($label === '') {
+        continue;
+    }
+
+    $categories[$slug] = [
+        'slug' => $slug,
+        'label' => $label,
+        'url' => 'https://fmhy.net/' . $slug,
+    ];
+}
+
 $sections = [];
 $headingNodes = $xpath->query('.//h2 | .//h3', $root);
 
@@ -120,6 +145,7 @@ app_json([
     'page' => $page,
     'title' => $title,
     'description' => $description,
+    'categories' => array_values($categories),
     'sections' => $sections,
     'source' => "https://fmhy.net/{$page}",
 ]);

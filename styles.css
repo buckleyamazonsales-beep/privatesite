@@ -201,9 +201,9 @@ a:hover {
 }
 
 .hero-title {
-  max-width: 11ch;
-  font-size: clamp(2.55rem, 5.2vw, 4.7rem);
-  line-height: 0.98;
+  max-width: 12.5ch;
+  font-size: clamp(2rem, 4vw, 3.55rem);
+  line-height: 1.02;
   letter-spacing: -0.055em;
   font-weight: 800;
 }
@@ -218,7 +218,7 @@ a:hover {
 .hero-side-panel {
   position: relative;
   z-index: 1;
-  padding: 1.25rem;
+  padding: 1rem;
   border-radius: 1.55rem;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -275,6 +275,34 @@ a:hover {
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.portal-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.portal-chip-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: #d6e5f9;
+  font-size: 0.82rem;
+  font-weight: 700;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.portal-chip-button:hover,
+.portal-chip-button.active {
+  background: rgba(255, 178, 75, 0.12);
+  border-color: rgba(255, 178, 75, 0.3);
+  color: #fff2da;
+  transform: translateY(-1px);
 }
 
 .summary-card,
@@ -365,13 +393,13 @@ a:hover {
 }
 
 .weather-hero {
-  min-height: 238px;
+  min-height: 0;
 }
 
 .weather-hero-panel {
   display: grid;
   gap: 1rem;
-  min-height: 238px;
+  min-height: 0;
   border-radius: 1.35rem;
   background:
     radial-gradient(circle at top right, rgba(255, 178, 75, 0.26), transparent 28%),
@@ -888,7 +916,7 @@ a:hover {
   }
 
   .hero-title {
-    max-width: 14ch;
+    max-width: 15ch;
   }
 
   .schedule-calendar {
@@ -924,6 +952,10 @@ a:hover {
 
   .hero-title {
     max-width: 100%;
+  }
+
+  .portal-chip-row {
+    gap: 0.5rem;
   }
 
   .schedule-calendar {
