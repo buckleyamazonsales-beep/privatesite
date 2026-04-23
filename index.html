@@ -1,208 +1,259 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>imbuckleyy.xyz | Private Frontpage</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.8/dist/darkly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="page-glow"></div>
-  <div class="app-shell">
-    <header class="topbar">
-      <a class="brand-mark" href="#home">imbuckleyy.xyz</a>
-      <div class="topbar-meta">
-        <span class="clock-chip" id="liveClock">--:--</span>
-        <button id="menuToggle" class="menu-toggle" type="button" aria-expanded="false" aria-controls="menuDrawer" aria-label="Open navigation">
-          <span></span>
-          <span></span>
-          <span></span>
+  <div class="site-backdrop"></div>
+
+  <nav class="navbar navbar-dark navbar-expand-lg sticky-top app-navbar">
+    <div class="container-xxl">
+      <a class="navbar-brand fw-semibold text-uppercase brand-wordmark" href="#home">imbuckleyy.xyz</a>
+      <div class="d-flex align-items-center gap-2">
+        <span id="liveClock" class="clock-pill">--:--</span>
+        <button class="navbar-toggler border-0 menu-trigger" type="button" data-bs-toggle="offcanvas" data-bs-target="#siteMenu" aria-controls="siteMenu">
+          <span class="navbar-toggler-icon"></span>
         </button>
       </div>
-    </header>
+    </div>
+  </nav>
 
-    <div id="menuScrim" class="menu-scrim"></div>
-    <aside id="menuDrawer" class="menu-drawer" aria-hidden="true">
-      <div class="menu-drawer-head">
-        <p class="eyebrow">Navigate</p>
-        <h2>Everything in one place</h2>
+  <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="siteMenu" aria-labelledby="siteMenuLabel">
+    <div class="offcanvas-header border-bottom border-secondary-subtle">
+      <div>
+        <div class="text-uppercase small text-secondary">Navigate</div>
+        <h5 class="offcanvas-title mb-0" id="siteMenuLabel">Private hub</h5>
       </div>
-      <nav class="menu-links">
-        <a href="#home" data-nav-link>Home</a>
-        <a href="#weather" data-nav-link>Weather</a>
-        <a href="#schedule" data-nav-link>Schedule</a>
-        <a href="#finance" data-nav-link>Finance</a>
-        <a href="#lol" data-nav-link>LoL Comparator</a>
-        <a href="#chat" data-nav-link>AI Chat</a>
-        <a href="#links" data-nav-link>FMHY Links</a>
-        <a href="#proxy" data-nav-link>Proxy Links</a>
-        <a href="#files" data-nav-link>File Manager</a>
-      </nav>
-      <p class="menu-note">Tap a section and the page drops you straight into it.</p>
-    </aside>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div class="list-group list-group-flush">
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#home" data-nav-link>Home</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#weather" data-nav-link>Weather</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#schedule" data-nav-link>Schedule</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#finance" data-nav-link>Finance</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#lol" data-nav-link>LoL Comparator</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#chat" data-nav-link>AI Chat</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#links" data-nav-link>FMHY Links</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#proxy" data-nav-link>Proxy Links</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#files" data-nav-link>File Manager</a>
+      </div>
+    </div>
+  </div>
 
-    <main>
-      <section id="home" class="hero-front">
-        <div class="hero-copy-block">
-          <p class="eyebrow">Private frontpage</p>
-          <h1>Home base for life, plans, money, games, and quick links.</h1>
-          <p class="hero-copy">A cleaner frontpage with a drop-down menu, fast shortcuts, and all your tools living below the fold instead of shouting at you all at once.</p>
-          <div class="hero-actions">
-            <a class="primary-btn hero-link" href="#schedule">Open schedule</a>
-            <a class="ghost-btn hero-link" href="#files">Open notes</a>
+  <main class="container-xxl py-4 py-lg-5" id="home">
+    <section class="hero-shell rounded-5 overflow-hidden mb-4">
+      <div class="row g-0">
+        <div class="col-lg-7">
+          <div class="p-4 p-lg-5 h-100 d-flex flex-column justify-content-between hero-copy-panel">
+            <div>
+              <div class="section-kicker">Private frontpage</div>
+              <h1 class="display-4 fw-bold lh-sm mb-3 hero-title">Streaming-style home hub for daily life.</h1>
+              <p class="lead text-secondary-emphasis mb-4 hero-text">Everything important stays one tap away: live weather, shared schedule, bills, shifts, notes, links, and the stuff you actually check every day.</p>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+              <a class="btn btn-warning btn-lg px-4" href="#schedule">Open schedule</a>
+              <a class="btn btn-outline-light btn-lg px-4" href="#files">Open notes</a>
+            </div>
           </div>
         </div>
-        <div class="hero-side">
-          <div class="spotlight-card">
-            <p class="eyebrow">Live now</p>
-            <h2>NHL Ticker</h2>
-            <div class="ticker-wrap home-ticker">
+        <div class="col-lg-5">
+          <div class="p-4 p-lg-5 h-100 hero-feature-panel">
+            <div class="section-kicker">Live now</div>
+            <h2 class="h2 fw-bold mb-3">NHL ticker</h2>
+            <div class="ticker-panel rounded-4 mb-3">
               <div id="nhlTicker" class="ticker-text">Loading latest NHL scores...</div>
             </div>
-            <button id="refreshTicker" class="ghost-btn" type="button">Refresh ticker</button>
-          </div>
-          <div class="spotlight-stack">
-            <article class="mini-card">
-              <span class="mini-label">Weather</span>
-              <strong>GPS or zip lookup</strong>
-            </article>
-            <article class="mini-card">
-              <span class="mini-label">Shared life</span>
-              <strong>Bills, events, shifts</strong>
-            </article>
-            <article class="mini-card">
-              <span class="mini-label">Private</span>
-              <strong>Notes and home links</strong>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="front-grid">
-        <a class="front-card" href="#weather">
-          <span class="front-card-label">Weather</span>
-          <strong>Check local conditions fast</strong>
-          <p>GPS-first with a manual fallback.</p>
-        </a>
-        <a class="front-card" href="#schedule">
-          <span class="front-card-label">Schedule</span>
-          <strong>Keep the month organized</strong>
-          <p>Events, bills, shifts, and edits in one place.</p>
-        </a>
-        <a class="front-card" href="#finance">
-          <span class="front-card-label">Finance</span>
-          <strong>Quick budget snapshot</strong>
-          <p>Income, expenses, goals, and instant guidance.</p>
-        </a>
-        <a class="front-card" href="#chat">
-          <span class="front-card-label">AI</span>
-          <strong>Ask, plan, note, decide</strong>
-          <p>Lightweight private assistant for everyday stuff.</p>
-        </a>
-      </section>
-
-      <section id="weather" class="content-section">
-        <div class="section-intro">
-          <p class="eyebrow">Weather</p>
-          <h2>Weather before you leave</h2>
-        </div>
-        <div class="content-card">
-          <div class="weather-actions">
-            <button id="useGpsWeather" class="primary-btn" type="button">Use My Location</button>
-            <form id="zipWeatherForm" class="inline-form">
-              <input id="zipInput" name="zip" type="text" maxlength="12" placeholder="Zip or postal code">
-              <button type="submit">Check</button>
-            </form>
-          </div>
-          <div id="weatherOutput" class="panel weather-panel">
-            <p class="status-text">Waiting for weather lookup.</p>
+            <button id="refreshTicker" class="btn btn-outline-light" type="button">Refresh ticker</button>
+            <div class="row g-3 mt-4">
+              <div class="col-12 col-md-4 col-lg-12 col-xl-4">
+                <div class="mini-spot rounded-4 p-3 h-100">
+                  <div class="section-kicker">Weather</div>
+                  <div class="fw-semibold">GPS or zip lookup</div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4 col-lg-12 col-xl-4">
+                <div class="mini-spot rounded-4 p-3 h-100">
+                  <div class="section-kicker">Shared life</div>
+                  <div class="fw-semibold">Bills, events, shifts</div>
+                </div>
+              </div>
+              <div class="col-12 col-md-4 col-lg-12 col-xl-4">
+                <div class="mini-spot rounded-4 p-3 h-100">
+                  <div class="section-kicker">Private</div>
+                  <div class="fw-semibold">Notes and home links</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="schedule" class="content-section">
-        <div class="section-intro">
-          <p class="eyebrow">Shared planner</p>
-          <h2>Schedule, bills, and shifts</h2>
+    <section class="row g-3 mb-4">
+      <div class="col-12 col-md-6 col-xl-3">
+        <a class="hub-card card h-100 text-decoration-none" href="#weather">
+          <div class="card-body">
+            <div class="section-kicker">Weather</div>
+            <h3 class="h4 fw-bold">Check local conditions</h3>
+            <p class="text-secondary-emphasis mb-0">Fast location check before heading out.</p>
+          </div>
+        </a>
+      </div>
+      <div class="col-12 col-md-6 col-xl-3">
+        <a class="hub-card card h-100 text-decoration-none" href="#schedule">
+          <div class="card-body">
+            <div class="section-kicker">Schedule</div>
+            <h3 class="h4 fw-bold">Track the next month</h3>
+            <p class="text-secondary-emphasis mb-0">Events, recurring bills, and shift blocks.</p>
+          </div>
+        </a>
+      </div>
+      <div class="col-12 col-md-6 col-xl-3">
+        <a class="hub-card card h-100 text-decoration-none" href="#finance">
+          <div class="card-body">
+            <div class="section-kicker">Finance</div>
+            <h3 class="h4 fw-bold">Quick budget check</h3>
+            <p class="text-secondary-emphasis mb-0">Income, expenses, goal, and instant tips.</p>
+          </div>
+        </a>
+      </div>
+      <div class="col-12 col-md-6 col-xl-3">
+        <a class="hub-card card h-100 text-decoration-none" href="#chat">
+          <div class="card-body">
+            <div class="section-kicker">Assistant</div>
+            <h3 class="h4 fw-bold">Ask, plan, note</h3>
+            <p class="text-secondary-emphasis mb-0">Simple private chat for day-to-day stuff.</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="content-band mb-4" id="weather">
+      <div class="d-flex justify-content-between align-items-end flex-wrap gap-2 mb-3">
+        <div>
+          <div class="section-kicker">Weather</div>
+          <h2 class="mb-0">Weather before you leave</h2>
         </div>
-        <div class="content-card">
-          <div class="triple-grid">
-            <form id="eventForm" class="panel stack-form">
-              <h3>Add Event</h3>
-              <input id="eventTitle" type="text" placeholder="Dinner, appointment, trip, date night">
-              <input id="eventDate" type="date">
-              <button class="primary-btn" type="submit">Add Event</button>
-            </form>
+      </div>
+      <div class="card section-card">
+        <div class="card-body p-4">
+          <div class="row g-3 align-items-start">
+            <div class="col-12 col-lg-5">
+              <button id="useGpsWeather" class="btn btn-warning w-100 mb-3" type="button">Use My Location</button>
+              <form id="zipWeatherForm" class="d-grid gap-2">
+                <input id="zipInput" name="zip" type="text" maxlength="12" class="form-control form-control-lg" placeholder="Zip or postal code">
+                <button class="btn btn-outline-light" type="submit">Check</button>
+              </form>
+            </div>
+            <div class="col-12 col-lg-7">
+              <div id="weatherOutput" class="panel weather-panel">
+                <p class="status-text mb-0">Waiting for weather lookup.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-            <form id="billForm" class="panel stack-form">
-              <h3>Recurring Bill</h3>
-              <input id="billName" type="text" placeholder="Rent, Phone, Netflix">
-              <input id="billAmount" type="number" step="0.01" min="0" placeholder="Amount">
-              <select id="billFrequency">
-                <option value="monthly">Monthly</option>
-                <option value="weekly">Weekly</option>
-              </select>
-              <input id="billDay" type="number" min="1" max="31" placeholder="Day (1-31)">
-              <button class="primary-btn" type="submit">Generate 12 Months</button>
-            </form>
-
-            <form id="shiftForm" class="panel stack-form">
-              <h3>Alamos Shifts</h3>
-              <select id="shiftPattern">
-                <option value="14/14">14/14</option>
-                <option value="20/10">20/10</option>
-              </select>
-              <input id="shiftStart" type="date">
-              <button class="primary-btn" type="submit">Auto-Fill Schedule</button>
-            </form>
+    <section class="content-band mb-4" id="schedule">
+      <div class="mb-3">
+        <div class="section-kicker">Shared planner</div>
+        <h2 class="mb-0">Schedule, bills, and shifts</h2>
+      </div>
+      <div class="card section-card">
+        <div class="card-body p-4">
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-xl-4">
+              <form id="eventForm" class="panel d-grid gap-3 h-100">
+                <h3 class="h5 mb-0">Add Event</h3>
+                <input id="eventTitle" type="text" class="form-control" placeholder="Dinner, appointment, trip, date night">
+                <input id="eventDate" type="date" class="form-control">
+                <button class="btn btn-warning" type="submit">Add Event</button>
+              </form>
+            </div>
+            <div class="col-12 col-xl-4">
+              <form id="billForm" class="panel d-grid gap-3 h-100">
+                <h3 class="h5 mb-0">Recurring Bill</h3>
+                <input id="billName" type="text" class="form-control" placeholder="Rent, Phone, Netflix">
+                <input id="billAmount" type="number" step="0.01" min="0" class="form-control" placeholder="Amount">
+                <select id="billFrequency" class="form-select">
+                  <option value="monthly">Monthly</option>
+                  <option value="weekly">Weekly</option>
+                </select>
+                <input id="billDay" type="number" min="1" max="31" class="form-control" placeholder="Day (1-31)">
+                <button class="btn btn-outline-light" type="submit">Generate 12 Months</button>
+              </form>
+            </div>
+            <div class="col-12 col-xl-4">
+              <form id="shiftForm" class="panel d-grid gap-3 h-100">
+                <h3 class="h5 mb-0">Alamos Shifts</h3>
+                <select id="shiftPattern" class="form-select">
+                  <option value="14/14">14/14</option>
+                  <option value="20/10">20/10</option>
+                </select>
+                <input id="shiftStart" type="date" class="form-control">
+                <button class="btn btn-outline-light" type="submit">Auto-Fill Schedule</button>
+              </form>
+            </div>
           </div>
           <div id="scheduleList" class="schedule-list"></div>
-          <form id="scheduleEditForm" class="panel stack-form hidden">
-            <h3>Edit Schedule Item</h3>
-            <input id="scheduleEditTitle" type="text" placeholder="Title">
-            <input id="scheduleEditDate" type="date">
-            <div class="editor-actions">
-              <button id="scheduleEditSave" class="primary-btn" type="submit">Save Changes</button>
-              <button id="scheduleEditCancel" class="ghost-btn" type="button">Cancel</button>
+          <form id="scheduleEditForm" class="panel d-grid gap-3 hidden mt-3">
+            <h3 class="h5 mb-0">Edit Schedule Item</h3>
+            <input id="scheduleEditTitle" type="text" class="form-control" placeholder="Title">
+            <input id="scheduleEditDate" type="date" class="form-control">
+            <div class="d-flex flex-wrap gap-2">
+              <button id="scheduleEditSave" class="btn btn-warning" type="submit">Save Changes</button>
+              <button id="scheduleEditCancel" class="btn btn-outline-light" type="button">Cancel</button>
             </div>
           </form>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="finance" class="content-section">
-        <div class="section-intro">
-          <p class="eyebrow">Finance</p>
-          <h2>Quick money check-in</h2>
-        </div>
-        <div class="content-card">
-          <form id="financeForm" class="triple-grid compact-grid">
-            <input id="incomeInput" type="number" min="0" step="0.01" placeholder="Monthly income">
-            <input id="expenseInput" type="number" min="0" step="0.01" placeholder="Monthly expenses">
-            <input id="goalInput" type="number" min="0" step="0.01" placeholder="Savings goal">
+    <section class="content-band mb-4" id="finance">
+      <div class="mb-3">
+        <div class="section-kicker">Finance</div>
+        <h2 class="mb-0">Quick money check-in</h2>
+      </div>
+      <div class="card section-card">
+        <div class="card-body p-4">
+          <form id="financeForm" class="row g-3 mb-3">
+            <div class="col-12 col-md-4"><input id="incomeInput" type="number" min="0" step="0.01" class="form-control form-control-lg" placeholder="Monthly income"></div>
+            <div class="col-12 col-md-4"><input id="expenseInput" type="number" min="0" step="0.01" class="form-control form-control-lg" placeholder="Monthly expenses"></div>
+            <div class="col-12 col-md-4"><input id="goalInput" type="number" min="0" step="0.01" class="form-control form-control-lg" placeholder="Savings goal"></div>
           </form>
-          <div class="finance-visual">
-            <div class="chart-wrap">
+          <div class="row g-4 align-items-center">
+            <div class="col-12 col-lg-4 text-center">
               <canvas id="budgetChart" width="260" height="260"></canvas>
             </div>
-            <div id="financeInsights" class="panel finance-notes"></div>
+            <div class="col-12 col-lg-8">
+              <div id="financeInsights" class="panel finance-notes"></div>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="lol" class="content-section">
-        <div class="section-intro">
-          <p class="eyebrow">Games</p>
-          <h2>League comparison board</h2>
-        </div>
-        <div class="content-card">
-          <form id="lolForm" class="stack-form">
-            <input id="lolPlayers" type="text" placeholder="MattB,Gf123,Friend1">
-            <input id="lolApiKey" type="password" placeholder="Optional Riot API key">
-            <button class="primary-btn" type="submit">Compare Players</button>
+    <section class="content-band mb-4" id="lol">
+      <div class="mb-3">
+        <div class="section-kicker">Games</div>
+        <h2 class="mb-0">League comparison board</h2>
+      </div>
+      <div class="card section-card">
+        <div class="card-body p-4">
+          <form id="lolForm" class="row g-3 mb-4">
+            <div class="col-12 col-lg-6"><input id="lolPlayers" type="text" class="form-control form-control-lg" placeholder="MattB,Gf123,Friend1"></div>
+            <div class="col-12 col-lg-4"><input id="lolApiKey" type="password" class="form-control form-control-lg" placeholder="Optional Riot API key"></div>
+            <div class="col-12 col-lg-2 d-grid"><button class="btn btn-warning" type="submit">Compare</button></div>
           </form>
-          <div class="table-wrap">
-            <table>
-              <thead>
+          <div class="table-responsive">
+            <table class="table table-dark table-borderless align-middle mb-0">
+              <thead class="table-light text-dark">
                 <tr>
                   <th>Player</th>
                   <th>Status</th>
@@ -212,94 +263,111 @@
                 </tr>
               </thead>
               <tbody id="lolTableBody">
-                <tr>
-                  <td colspan="5" class="empty-row">Add player names to compare.</td>
-                </tr>
+                <tr><td colspan="5" class="empty-row py-4">Add player names to compare.</td></tr>
               </tbody>
             </table>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="chat" class="content-section">
-        <div class="section-intro">
-          <p class="eyebrow">Assistant</p>
-          <h2>Light private AI chat</h2>
-        </div>
-        <div class="content-card">
-          <div id="chatLog" class="chat-log"></div>
-          <form id="chatForm" class="chat-form">
-            <textarea id="chatInput" rows="4" placeholder="Ask for dinner ideas, reminders, plans, whatever..."></textarea>
-            <button class="primary-btn" type="submit">Send</button>
+    <section class="content-band mb-4" id="chat">
+      <div class="mb-3">
+        <div class="section-kicker">Assistant</div>
+        <h2 class="mb-0">Light private AI chat</h2>
+      </div>
+      <div class="card section-card">
+        <div class="card-body p-4">
+          <div id="chatLog" class="chat-log mb-3"></div>
+          <form id="chatForm" class="d-grid gap-3">
+            <textarea id="chatInput" rows="4" class="form-control" placeholder="Ask for dinner ideas, reminders, plans, whatever..."></textarea>
+            <button class="btn btn-warning align-self-start" type="submit">Send</button>
           </form>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="links" class="content-section">
-        <div class="section-intro">
-          <p class="eyebrow">Links</p>
-          <h2>FMHY and saved categories</h2>
-        </div>
-        <div class="content-card split-card">
-          <div class="stack-form">
-            <form id="categoryForm" class="inline-form">
-              <input id="categoryInput" type="text" placeholder="Add category">
-              <button type="submit">Add Category</button>
-            </form>
-            <form id="linkForm" class="stack-form panel">
-              <input id="linkCategory" type="text" placeholder="Category name">
-              <input id="linkLabel" type="text" placeholder="Link label">
-              <input id="linkUrl" type="url" placeholder="https://example.com">
-              <button class="primary-btn" type="submit">Add Link</button>
-            </form>
+    <section class="content-band mb-4" id="links">
+      <div class="mb-3">
+        <div class="section-kicker">Links</div>
+        <h2 class="mb-0">FMHY and saved categories</h2>
+      </div>
+      <div class="card section-card">
+        <div class="card-body p-4">
+          <div class="row g-4">
+            <div class="col-12 col-xl-4">
+              <div class="d-grid gap-3">
+                <form id="categoryForm" class="d-grid gap-2">
+                  <input id="categoryInput" type="text" class="form-control" placeholder="Add category">
+                  <button class="btn btn-outline-light" type="submit">Add Category</button>
+                </form>
+                <form id="linkForm" class="panel d-grid gap-3">
+                  <input id="linkCategory" type="text" class="form-control" placeholder="Category name">
+                  <input id="linkLabel" type="text" class="form-control" placeholder="Link label">
+                  <input id="linkUrl" type="url" class="form-control" placeholder="https://example.com">
+                  <button class="btn btn-warning" type="submit">Add Link</button>
+                </form>
+              </div>
+            </div>
+            <div class="col-12 col-xl-8">
+              <div id="linksContainer" class="accordion-list"></div>
+            </div>
           </div>
-          <div id="linksContainer" class="accordion-list"></div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="proxy" class="content-section">
-        <div class="section-intro">
-          <p class="eyebrow">Proxy</p>
-          <h2>Work-safe access tools</h2>
-        </div>
-        <div class="content-card">
+    <section class="content-band mb-4" id="proxy">
+      <div class="mb-3">
+        <div class="section-kicker">Proxy</div>
+        <h2 class="mb-0">Work-safe access tools</h2>
+      </div>
+      <div class="card section-card">
+        <div class="card-body p-4">
           <div id="proxyLinks" class="proxy-links"></div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="files" class="content-section">
-        <div class="section-intro">
-          <p class="eyebrow">Files</p>
-          <h2>Private notes and lists</h2>
-        </div>
-        <div class="content-card">
-          <form id="fileForm" class="inline-form">
-            <input id="fileName" type="text" placeholder="New file name">
-            <button type="submit">Create File</button>
+    <section class="content-band" id="files">
+      <div class="mb-3">
+        <div class="section-kicker">Files</div>
+        <h2 class="mb-0">Private notes and lists</h2>
+      </div>
+      <div class="card section-card">
+        <div class="card-body p-4">
+          <form id="fileForm" class="row g-2 mb-3">
+            <div class="col-12 col-md-9"><input id="fileName" type="text" class="form-control" placeholder="New file name"></div>
+            <div class="col-12 col-md-3 d-grid"><button class="btn btn-warning" type="submit">Create File</button></div>
           </form>
-          <div class="file-manager">
-            <aside id="fileList" class="file-list"></aside>
-            <div class="editor-panel">
-              <input id="fileTitle" type="text" placeholder="File title">
-              <textarea id="fileContent" rows="12" placeholder="Private notes, lists, plans..."></textarea>
-              <div class="editor-actions">
-                <button id="saveFile" class="primary-btn" type="button">Save File</button>
-                <button id="deleteFile" class="ghost-btn" type="button">Delete File</button>
+          <div class="row g-4">
+            <div class="col-12 col-xl-3">
+              <aside id="fileList" class="file-list"></aside>
+            </div>
+            <div class="col-12 col-xl-9">
+              <div class="editor-panel">
+                <input id="fileTitle" type="text" class="form-control mb-3" placeholder="File title">
+                <textarea id="fileContent" rows="12" class="form-control mb-3" placeholder="Private notes, lists, plans..."></textarea>
+                <div class="d-flex flex-wrap gap-2">
+                  <button id="saveFile" class="btn btn-warning" type="button">Save File</button>
+                  <button id="deleteFile" class="btn btn-outline-light" type="button">Delete File</button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
-    </main>
-  </div>
+      </div>
+    </section>
+  </main>
 
   <template id="chatBubbleTemplate">
     <div class="chat-bubble">
       <span class="chat-role"></span>
-      <p class="chat-message"></p>
+      <p class="chat-message mb-0"></p>
     </div>
   </template>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   <script src="app.js"></script>
 </body>
 </html>

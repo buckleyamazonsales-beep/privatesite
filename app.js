@@ -59,9 +59,7 @@ const proxyCatalog = [
 
 const els = {
   liveClock: document.getElementById("liveClock"),
-  menuToggle: document.getElementById("menuToggle"),
-  menuDrawer: document.getElementById("menuDrawer"),
-  menuScrim: document.getElementById("menuScrim"),
+  siteMenu: document.getElementById("siteMenu"),
   navLinks: document.querySelectorAll("[data-nav-link]"),
   nhlTicker: document.getElementById("nhlTicker"),
   refreshTicker: document.getElementById("refreshTicker"),
@@ -167,14 +165,7 @@ function primeInputs() {
 }
 
 function bindEvents() {
-  els.menuToggle?.addEventListener("click", toggleMenu);
-  els.menuScrim?.addEventListener("click", closeMenu);
   els.navLinks?.forEach((link) => link.addEventListener("click", closeMenu));
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
-      closeMenu();
-    }
-  });
   els.refreshTicker.addEventListener("click", loadNhlTicker);
   els.useGpsWeather.addEventListener("click", handleGpsWeather);
   els.zipWeatherForm.addEventListener("submit", handleZipWeather);
@@ -193,20 +184,10 @@ function bindEvents() {
   els.deleteFile.addEventListener("click", handleFileDelete);
 }
 
-function toggleMenu() {
-  const isOpen = els.menuDrawer.classList.toggle("is-open");
-  els.menuScrim.classList.toggle("is-open", isOpen);
-  els.menuToggle.classList.toggle("is-open", isOpen);
-  els.menuToggle.setAttribute("aria-expanded", String(isOpen));
-  els.menuDrawer.setAttribute("aria-hidden", String(!isOpen));
-}
-
 function closeMenu() {
-  els.menuDrawer?.classList.remove("is-open");
-  els.menuScrim?.classList.remove("is-open");
-  els.menuToggle?.classList.remove("is-open");
-  els.menuToggle?.setAttribute("aria-expanded", "false");
-  els.menuDrawer?.setAttribute("aria-hidden", "true");
+  if (window.bootstrap && els.siteMenu) {
+    window.bootstrap.Offcanvas.getOrCreateInstance(els.siteMenu).hide();
+  }
 }
 
 function renderAll() {
@@ -261,7 +242,10 @@ function extractTeamName(team) {
   if (typeof team === "string") {
     return team;
   }
-  return team.name || team.abbreviation || team.teamName || team.commonName || "";
+  if (team.team) {
+    return extractTeamName(team.team);
+  }
+  return team.name || team.abbreviation || team.teamName || team.commonName || team.placeName || "";
 }
 
 function handleGpsWeather() {
