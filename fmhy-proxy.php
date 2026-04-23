@@ -32,65 +32,83 @@ if (!$root) {
 $title = trim((string) ($xpath->query('//title')->item(0)?->textContent ?? 'FMHY'));
 $description = trim((string) ($xpath->query("//meta[@name='description']")->item(0)?->getAttribute('content') ?? ''));
 $sections = [];
-$currentSectionIndex = -1;
+$headingNodes = $xpath->query('.//h2 | .//h3', $root);
 
-foreach ($root->childNodes as $node) {
-    if (!($node instanceof DOMElement)) {
+foreach ($headingNodes as $headingNode) {
+    if (!($headingNode instanceof DOMElement)) {
         continue;
     }
 
-    if (in_array(strtolower($node->tagName), ['h2', 'h3'], true)) {
-        $heading = trim(app_plain_text($doc->saveHTML($node)));
-        if ($heading === '') {
+    $heading = trim(app_plain_text($doc->saveHTML($headingNode)));
+    $heading = preg_replace('/\s+​$/u', '', $heading);
+    if ($heading === '') {
+        continue;
+    }
+
+    $items = [];
+    for ($sibling = $headingNode->nextSibling; $sibling !== null; $sibling = $sibling->nextSibling) {
+        if ($sibling instanceof DOMElement && in_array(strtolower($sibling->tagName), ['h2', 'h3'], true)) {
+            break;
+        }
+
+        if (!($sibling instanceof DOMElement)) {
             continue;
         }
 
-        $currentSection = [
-            'title' => preg_replace('/\s+​$/u', '', $heading),
-            'items' => [],
+        $lists = [];
+        if (strtolower($sibling->tagName) === 'ul') {
+            $lists[] = $sibling;
+        } else {
+            foreach ($sibling->getElementsByTagName('ul') as $nestedList) {
+                if ($nestedList instanceof DOMElement) {
+                    $lists[] = $nestedList;
+                }
+            }
+        }
+
+        foreach ($lists as $list) {
+            foreach ($list->childNodes as $li) {
+                if (!($li instanceof DOMElement) || strtolower($li->tagName) !== 'li') {
+                    continue;
+                }
+
+                $anchors = $li->getElementsByTagName('a');
+                if ($anchors->length === 0) {
+                    continue;
+                }
+
+                $fullText = trim(app_plain_text($doc->saveHTML($li)));
+
+                foreach ($anchors as $anchor) {
+                    $href = trim((string) $anchor->getAttribute('href'));
+                    $label = trim(app_plain_text($doc->saveHTML($anchor)));
+
+                    if ($href === '' || $label === '') {
+                        continue;
+                    }
+
+                    if (str_starts_with($href, '/')) {
+                        $href = 'https://fmhy.net' . $href;
+                    }
+
+                    $descriptionText = trim(str_replace($label, '', $fullText));
+                    $descriptionText = preg_replace('/\s+/', ' ', $descriptionText);
+
+                    $items[] = [
+                        'label' => $label,
+                        'url' => $href,
+                        'description' => trim((string) $descriptionText, " -\t\n\r\0\x0B"),
+                    ];
+                }
+            }
+        }
+    }
+
+    if ($items) {
+        $sections[] = [
+            'title' => $heading,
+            'items' => $items,
         ];
-        $sections[] = $currentSection;
-        $currentSectionIndex = count($sections) - 1;
-        continue;
-    }
-
-    if (strtolower($node->tagName) !== 'ul' || $currentSectionIndex < 0) {
-        continue;
-    }
-
-    foreach ($node->childNodes as $li) {
-        if (!($li instanceof DOMElement) || strtolower($li->tagName) !== 'li') {
-            continue;
-        }
-
-        $anchors = $li->getElementsByTagName('a');
-        if ($anchors->length === 0) {
-            continue;
-        }
-
-        $fullText = trim(app_plain_text($doc->saveHTML($li)));
-
-        foreach ($anchors as $anchor) {
-            $href = trim((string) $anchor->getAttribute('href'));
-            $label = trim(app_plain_text($doc->saveHTML($anchor)));
-
-            if ($href === '' || $label === '') {
-                continue;
-            }
-
-            if (str_starts_with($href, '/')) {
-                $href = 'https://fmhy.net' . $href;
-            }
-
-            $descriptionText = trim(str_replace($label, '', $fullText));
-            $descriptionText = preg_replace('/\s+/', ' ', $descriptionText);
-
-            $sections[$currentSectionIndex]['items'][] = [
-                'label' => $label,
-                'url' => $href,
-                'description' => trim((string) $descriptionText, " -\t\n\r\0\x0B"),
-            ];
-        }
     }
 }
 
