@@ -46,86 +46,26 @@
   </div>
 
   <main class="container-xxl py-4 py-lg-5" id="home">
-    <section class="hero-shell rounded-5 overflow-hidden mb-4">
-      <div class="hero-banner p-4 p-lg-5">
-        <div class="hero-grid">
-          <div class="hero-copy-panel">
-            <div class="hero-chip-row mb-3">
-              <span class="hero-chip">Private</span>
-              <span class="hero-chip">Shared life</span>
-              <span class="hero-chip">No clutter</span>
-            </div>
-            <div class="section-kicker">Private streaming-style front page</div>
-            <h1 class="hero-title mb-3">Weather, schedule, money, FMHY, notes, and private chat without the mess.</h1>
-            <p class="hero-text mb-4">A cleaner home hub for the stuff you actually check every day: today’s weather, your next shift, bills, League lookups, FMHY links, and a private assistant that lives on your server.</p>
-            <div class="d-flex flex-wrap gap-2 hero-actions">
-              <a class="btn btn-warning btn-lg px-4" href="#schedule">Open the schedule</a>
-              <a class="btn btn-outline-light btn-lg px-4" href="#fmhy">Browse FMHY</a>
-            </div>
-          </div>
-
-          <div class="hero-side-panel">
-            <div class="section-kicker">Tonight at a glance</div>
-            <div id="weatherHero" class="weather-hero panel weather-hero-panel mb-3">
-              <div class="status-text">Waiting for weather lookup.</div>
-            </div>
-            <div class="hero-summary-grid">
-              <div class="summary-card panel">
-                <div class="section-kicker">Next shift</div>
-                <div id="nextShiftSummary" class="summary-value">Loading…</div>
-                <div id="nextShiftMeta" class="summary-meta">Shift timeline is building.</div>
-              </div>
-              <div class="summary-card panel">
-                <div class="section-kicker">Next bill</div>
-                <div id="nextBillSummary" class="summary-value">Loading…</div>
-                <div id="nextBillMeta" class="summary-meta">Recurring bills will show here.</div>
-              </div>
-              <div class="summary-card panel">
-                <div class="section-kicker">Monthly left</div>
-                <div id="leftoverSummary" class="summary-value">$0</div>
-                <div id="leftoverMeta" class="summary-meta">Add income and bills below.</div>
-              </div>
-              <div class="summary-card panel">
-                <div class="section-kicker">AI chat</div>
-                <div id="chatSummary" class="summary-value">Offline</div>
-                <div id="chatSummaryMeta" class="summary-meta">Needs server key to answer.</div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <section class="overview-strip mb-4">
+      <div class="overview-card panel">
+        <div class="section-kicker">Next shift</div>
+        <div id="nextShiftSummary" class="summary-value">Loading…</div>
+        <div id="nextShiftMeta" class="summary-meta">Shift timeline is building.</div>
       </div>
-
-      <div class="hero-rail">
-        <a class="portal-card" href="#weather">
-          <div class="portal-icon">Sky</div>
-          <strong>Weather</strong>
-          <span>GPS or postal-code forecast with visual cards.</span>
-        </a>
-        <a class="portal-card" href="#schedule">
-          <div class="portal-icon">Plan</div>
-          <strong>Schedule</strong>
-          <span>Shifts, off days, events, and recurring bills in one board.</span>
-        </a>
-        <a class="portal-card" href="#finance">
-          <div class="portal-icon">Cash</div>
-          <strong>Money</strong>
-          <span>Income, bills, free cash, and savings goals that persist.</span>
-        </a>
-        <a class="portal-card" href="#league">
-          <div class="portal-icon">GG</div>
-          <strong>League</strong>
-          <span>Pull OP.GG profile summaries and Lolalytics champ stats.</span>
-        </a>
-        <a class="portal-card" href="#chat">
-          <div class="portal-icon">AI</div>
-          <strong>Private chat</strong>
-          <span>A server-side assistant for plans, bills, meals, and errands.</span>
-        </a>
-        <a class="portal-card" href="#fmhy">
-          <div class="portal-icon">Link</div>
-          <strong>FMHY</strong>
-          <span>Pull full sections of links from any FMHY page slug.</span>
-        </a>
+      <div class="overview-card panel">
+        <div class="section-kicker">Next bill</div>
+        <div id="nextBillSummary" class="summary-value">Loading…</div>
+        <div id="nextBillMeta" class="summary-meta">Recurring bills will show here.</div>
+      </div>
+      <div class="overview-card panel">
+        <div class="section-kicker">Monthly left</div>
+        <div id="leftoverSummary" class="summary-value">$0</div>
+        <div id="leftoverMeta" class="summary-meta">Add income and bills below.</div>
+      </div>
+      <div class="overview-card panel">
+        <div class="section-kicker">AI chat</div>
+        <div id="chatSummary" class="summary-value">Offline</div>
+        <div id="chatSummaryMeta" class="summary-meta">Needs server key to answer.</div>
       </div>
     </section>
 
@@ -154,7 +94,10 @@
         <div class="card section-card h-100">
           <div class="card-body p-4">
             <div class="section-kicker">Weather</div>
-            <h2 class="mb-3">Weather with a little life in it</h2>
+            <h2 class="mb-3">Local weather</h2>
+            <div id="weatherHero" class="weather-hero panel weather-hero-panel mb-3">
+              <div class="status-text">Waiting for weather lookup.</div>
+            </div>
             <div class="d-grid gap-2 mb-3">
               <button id="useGpsWeather" class="btn btn-warning btn-lg" type="button">Use My Location</button>
               <form id="zipWeatherForm" class="d-grid gap-2">
@@ -246,6 +189,7 @@
             <div class="mb-4">
               <div class="section-kicker">Calendar</div>
               <div id="scheduleCalendar" class="schedule-calendar"></div>
+              <div class="status-text mt-2">Month view is powered by the free standard FullCalendar bundle.</div>
             </div>
 
             <div>
@@ -385,16 +329,11 @@
               <div>
                 <div class="section-kicker">FMHY</div>
                 <h2 class="mb-1">FMHY browser</h2>
-                <p class="text-body-secondary mb-0">This section pulls link sections straight from FMHY pages. Defaulting to <code>/video</code> like you asked.</p>
+                <p class="text-body-secondary mb-0">Browse FMHY by category, then filter down the links you want.</p>
               </div>
             </div>
             <div class="row g-3 mb-4">
-              <div class="col-12 col-md-3">
-                <label for="fmhyPageInput" class="form-label">Page slug</label>
-                <input id="fmhyPageInput" type="text" class="form-control" list="fmhyPageSuggestions" placeholder="video">
-                <datalist id="fmhyPageSuggestions"></datalist>
-              </div>
-              <div class="col-12 col-md-7">
+              <div class="col-12 col-md-10">
                 <label for="fmhySearch" class="form-label">Filter</label>
                 <input id="fmhySearch" type="text" class="form-control" placeholder="Search sites or sections">
               </div>
@@ -403,7 +342,9 @@
                 <button id="refreshFmhy" class="btn btn-outline-light" type="button">Refresh</button>
               </div>
             </div>
-            <div id="fmhyCategories" class="portal-chip-row mb-4"></div>
+            <div class="fmhy-browser-bar mb-4">
+              <div id="fmhyCategories" class="fmhy-scroll-menu"></div>
+            </div>
             <div id="fmhyMeta" class="text-body-secondary mb-3"></div>
             <div id="fmhyResults" class="accordion-list"></div>
           </div>
@@ -453,6 +394,7 @@
   </template>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.20/index.global.min.js" crossorigin="anonymous"></script>
   <script src="app.js"></script>
 </body>
 </html>

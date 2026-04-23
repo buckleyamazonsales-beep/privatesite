@@ -43,7 +43,9 @@ const runtime = {
   weather: null,
   nhlGames: [],
   fmhy: null,
-  chatBusy: false
+  chatBusy: false,
+  calendar: null,
+  nhlRefreshTimer: null
 };
 
 const els = {
@@ -111,8 +113,6 @@ const els = {
   chatInput: document.getElementById("chatInput"),
   chatBubbleTemplate: document.getElementById("chatBubbleTemplate"),
   chatStatus: document.getElementById("chatStatus"),
-  fmhyPageInput: document.getElementById("fmhyPageInput"),
-  fmhyPageSuggestions: document.getElementById("fmhyPageSuggestions"),
   fmhySearch: document.getElementById("fmhySearch"),
   refreshFmhy: document.getElementById("refreshFmhy"),
   fmhyCategories: document.getElementById("fmhyCategories"),
@@ -137,9 +137,12 @@ function init() {
   renderAll();
   loadNhlData();
   loadFmhyPage();
+  runtime.nhlRefreshTimer = window.setInterval(loadNhlData, 120000);
 
   if (state.weatherZip) {
     lookupWeatherByQuery(state.weatherZip);
+  } else if (navigator.geolocation) {
+    handleGpsWeather();
   } else {
     renderWeatherStatus("Use GPS or type a city, zip, or postal code to load the weather.");
   }
@@ -183,7 +186,6 @@ function primeInputs() {
   els.incomeInput.value = state.finance.income;
   els.flexSpendInput.value = state.finance.flexSpend;
   els.goalInput.value = state.finance.goal;
-  els.fmhyPageInput.value = state.fmhyPage;
   els.fmhySearch.value = state.fmhySearch;
   els.shiftStart.value = state.shiftConfig.startDate;
   els.dayStartTime.value = state.shiftConfig.dayStart;
@@ -212,11 +214,10 @@ function bindEvents() {
   });
   els.lolForm.addEventListener("submit", handleLolCompare);
   els.chatForm.addEventListener("submit", handleChatSubmit);
-  els.fmhyPageInput.addEventListener("change", handleFmhyPageChange);
-  els.fmhyPageInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
+  els.chatInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
-      handleFmhyPageChange();
+      els.chatForm.requestSubmit();
     }
   });
   els.fmhySearch.addEventListener("input", handleFmhySearchInput);
@@ -284,7 +285,11 @@ function renderNhl() {
     return;
   }
 
-  els.nhlTicker.textContent = runtime.nhlGames.map(formatNhlTicker).join("   •   ");
+  const stamp = new Date().toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit"
+  });
+  els.nhlTicker.textContent = `${runtime.nhlGames.map(formatNhlTicker).join("   •   ")}   •   Updated ${stamp}`;
   els.nhlGames.innerHTML = runtime.nhlGames.slice(0, 8).map((game) => `
     <div class="col-12 col-md-6 col-xl-3">
       <article class="nhl-game-card">
@@ -354,6 +359,8 @@ function handleGpsWeather() {
     try {
       const weather = await fetchWeather(coords.latitude, coords.longitude, "Current location");
       runtime.weather = weather;
+      state.weatherZip = "";
+      saveState();
       renderWeather();
     } catch (error) {
       console.error(error);
@@ -475,6 +482,7 @@ function renderWeather() {
         <div class="weather-temp">${Math.round(current.temperature_2m)}°C</div>
         <div class="weather-location">${escapeHtml(label)}</div>
         <div class="weather-label mt-2">${escapeHtml(meta.label)}</div>
+        <div class="status-text mt-2">Auto-populated and saved in this browser.</div>
       </div>
     </div>
     <div class="weather-detail-grid">
@@ -506,8 +514,10 @@ function renderWeather() {
   `;
 
   els.weatherOutput.innerHTML = detailMarkup;
-  els.weatherHero.className = `weather-hero panel weather-hero-panel mb-3 ${meta.scene}`;
-  els.weatherHero.innerHTML = detailMarkup;
+  if (els.weatherHero) {
+    els.weatherHero.className = `weather-hero panel weather-hero-panel mb-3 ${meta.scene}`;
+    els.weatherHero.innerHTML = detailMarkup;
+  }
   els.weatherForecast.innerHTML = daily.time.map((date, index) => `
     <div class="col-12 col-sm-6 col-lg-4 col-xl">
       <div class="forecast-card h-100">
@@ -524,8 +534,10 @@ function renderWeather() {
 function renderWeatherStatus(message) {
   const markup = `<p class="status-text mb-0">${escapeHtml(message)}</p>`;
   els.weatherOutput.innerHTML = markup;
-  els.weatherHero.className = "weather-hero panel weather-hero-panel mb-3";
-  els.weatherHero.innerHTML = markup;
+  if (els.weatherHero) {
+    els.weatherHero.className = "weather-hero panel weather-hero-panel mb-3";
+    els.weatherHero.innerHTML = markup;
+  }
   els.weatherForecast.innerHTML = `<div class="col-12"><div class="panel"><p class="status-text mb-0">Forecast will show here once weather is loaded.</p></div></div>`;
 }
 
@@ -786,32 +798,57 @@ function renderScheduleSpotlight(items) {
 }
 
 function renderScheduleCalendar(items) {
-  const today = startOfDay(new Date());
-  const days = Array.from({ length: 28 }, (_, index) => addDays(today, index));
+  if (!els.scheduleCalendar) {
+    return;
+  }
 
-  els.scheduleCalendar.innerHTML = days.map((date) => {
-    const iso = toDateInputValue(date);
-    const dayItems = items.filter((item) => item.date === iso).slice(0, 5);
-    return `
-      <div class="schedule-day ${iso === toDateInputValue(today) ? "today" : ""}">
-        <div class="schedule-day-header">
-          <div>
-            <div class="schedule-day-label">${escapeHtml(date.toLocaleDateString([], { weekday: "short" }))}</div>
-            <div class="schedule-day-number">${date.getDate()}</div>
-          </div>
-          <div class="status-text">${escapeHtml(date.toLocaleDateString([], { month: "short" }))}</div>
-        </div>
-        <div class="day-item-list">
-          ${dayItems.length ? dayItems.map((item) => `
-            <div class="day-chip ${escapeHtml(item.type)}">
-              <strong>${escapeHtml(shortItemTitle(item))}</strong>
-              <div>${escapeHtml(item.time || (typeof item.amount === "number" ? formatCurrency(item.amount) : item.title))}</div>
-            </div>
-          `).join("") : `<div class="status-text">Nothing set.</div>`}
-        </div>
-      </div>
-    `;
-  }).join("");
+  if (!window.FullCalendar) {
+    els.scheduleCalendar.innerHTML = `<div class="panel"><p class="status-text mb-0">Calendar library did not load.</p></div>`;
+    return;
+  }
+
+  const calendarEvents = items.map((item) => ({
+    id: item.id,
+    title: buildCalendarTitle(item),
+    start: item.date,
+    allDay: true,
+    backgroundColor: getCalendarEventColor(item),
+    borderColor: getCalendarEventColor(item),
+    extendedProps: {
+      type: item.type,
+      source: item.source,
+      meta: formatScheduleItemMeta(item)
+    }
+  }));
+
+  if (!runtime.calendar) {
+    runtime.calendar = new window.FullCalendar.Calendar(els.scheduleCalendar, {
+      initialView: "dayGridMonth",
+      height: "auto",
+      headerToolbar: {
+        left: "prev,next today",
+        center: "title",
+        right: "dayGridMonth,listWeek"
+      },
+      buttonText: {
+        today: "Today",
+        month: "Month",
+        list: "List"
+      },
+      eventTimeFormat: {
+        hour: "numeric",
+        minute: "2-digit",
+        meridiem: "short"
+      },
+      eventDidMount(info) {
+        info.el.title = info.event.extendedProps.meta;
+      }
+    });
+    runtime.calendar.render();
+  }
+
+  runtime.calendar.removeAllEvents();
+  runtime.calendar.addEventSource(calendarEvents);
 }
 
 function renderUpcomingSchedule(items) {
@@ -871,6 +908,10 @@ function renderUpcomingSchedule(items) {
 }
 
 function renderSummaryCards(items) {
+  if (!els.nextShiftSummary || !els.nextBillSummary || !els.leftoverSummary) {
+    return;
+  }
+
   const today = startOfDay(new Date());
   const nextShift = items.find((item) => item.source === "shift" && item.type !== "off" && new Date(`${item.date}T00:00:00`) >= today);
   const nextBill = items.find((item) => item.source === "bill" && new Date(`${item.date}T00:00:00`) >= today);
@@ -1228,6 +1269,10 @@ function renderChat() {
 }
 
 function renderChatSummary() {
+  if (!els.chatSummary || !els.chatSummaryMeta) {
+    return;
+  }
+
   const lastAssistantMessage = [...state.chat].reverse().find((entry) => entry.role === "assistant")?.message || "";
 
   if (runtime.chatBusy) {
@@ -1246,9 +1291,8 @@ function renderChatSummary() {
   els.chatSummaryMeta.textContent = "Private chat runs through the server-side OpenAI endpoint.";
 }
 
-function handleFmhyPageChange() {
-  state.fmhyPage = sanitizeFmhyPage(els.fmhyPageInput.value);
-  els.fmhyPageInput.value = state.fmhyPage;
+function handleFmhyPageChange(pageSlug) {
+  state.fmhyPage = sanitizeFmhyPage(pageSlug);
   saveState();
   loadFmhyPage();
 }
@@ -1281,17 +1325,14 @@ async function loadFmhyPage() {
 }
 
 function renderFmhy() {
-  els.fmhyPageInput.value = state.fmhyPage;
   els.fmhySearch.value = state.fmhySearch;
 
   if (!runtime.fmhy) {
     els.fmhyCategories.innerHTML = "";
-    els.fmhyPageSuggestions.innerHTML = "";
     return;
   }
 
   const categories = Array.isArray(runtime.fmhy.categories) ? runtime.fmhy.categories : [];
-  els.fmhyPageSuggestions.innerHTML = categories.map((category) => `<option value="${escapeAttribute(category.slug)}"></option>`).join("");
   els.fmhyCategories.innerHTML = categories.map((category) => `
     <button
       type="button"
@@ -1304,9 +1345,7 @@ function renderFmhy() {
 
   els.fmhyCategories.querySelectorAll("[data-fmhy-slug]").forEach((button) => {
     button.addEventListener("click", () => {
-      state.fmhyPage = sanitizeFmhyPage(button.dataset.fmhySlug);
-      saveState();
-      loadFmhyPage();
+      handleFmhyPageChange(button.dataset.fmhySlug);
     });
   });
 
@@ -1479,6 +1518,38 @@ function formatScheduleItemMeta(item) {
 
 function scheduleGroupMeta(items) {
   return items.map((item) => shortItemTitle(item)).join(" • ");
+}
+
+function buildCalendarTitle(item) {
+  if (item.type === "shift-day") {
+    return "Day shift";
+  }
+  if (item.type === "shift-night") {
+    return "Night shift";
+  }
+  if (item.type === "off") {
+    return "Off";
+  }
+  if (item.type === "bill") {
+    return `${item.title} ${formatCurrency(item.amount)}`;
+  }
+  return item.title;
+}
+
+function getCalendarEventColor(item) {
+  if (item.type === "shift-day") {
+    return "#50c78d";
+  }
+  if (item.type === "shift-night") {
+    return "#5da9ff";
+  }
+  if (item.type === "bill") {
+    return "#f0ad4e";
+  }
+  if (item.type === "event") {
+    return "#ff7d92";
+  }
+  return "#728198";
 }
 
 function formatShiftTimeRange(startTime, endTime) {

@@ -97,6 +97,16 @@ a:hover {
   background: rgba(255, 255, 255, 0.04);
 }
 
+.overview-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.overview-card {
+  min-height: 100%;
+}
+
 .hero-shell,
 .section-card,
 .panel,
@@ -283,6 +293,31 @@ a:hover {
   gap: 0.65rem;
 }
 
+.fmhy-browser-bar {
+  padding: 0.35rem;
+  border: 1px solid var(--app-border);
+  border-radius: 1.25rem;
+  background: rgba(255, 255, 255, 0.035);
+  overflow: hidden;
+}
+
+.fmhy-scroll-menu {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding: 0.35rem;
+  scrollbar-width: thin;
+}
+
+.fmhy-scroll-menu::-webkit-scrollbar {
+  height: 8px;
+}
+
+.fmhy-scroll-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+}
+
 .portal-chip-button {
   display: inline-flex;
   align-items: center;
@@ -294,6 +329,7 @@ a:hover {
   color: #d6e5f9;
   font-size: 0.82rem;
   font-weight: 700;
+  white-space: nowrap;
   transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
 
@@ -358,17 +394,12 @@ a:hover {
 }
 
 .ticker-text {
-  display: inline-block;
-  min-width: 100%;
+  display: block;
+  width: 100%;
   padding: 1rem 1.15rem;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
   font-weight: 700;
-  animation: ticker 26s linear infinite;
-}
-
-@keyframes ticker {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
 }
 
 .nhl-game-card {
@@ -566,78 +597,61 @@ a:hover {
 }
 
 .schedule-calendar {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 0.85rem;
+  border: 1px solid var(--app-border);
+  border-radius: 1.3rem;
+  background: rgba(255, 255, 255, 0.035);
+  padding: 0.85rem;
 }
 
-.schedule-day {
-  min-height: 164px;
-  border-radius: 1.05rem;
-  padding: 0.9rem;
+.fc {
+  --fc-border-color: rgba(255, 255, 255, 0.08);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: rgba(255, 255, 255, 0.02);
+  --fc-list-event-hover-bg-color: rgba(255, 255, 255, 0.05);
+  --fc-event-bg-color: rgba(116, 183, 255, 0.2);
+  --fc-event-border-color: rgba(116, 183, 255, 0.28);
+  --fc-event-text-color: #eef4ff;
+  --fc-button-bg-color: rgba(255, 255, 255, 0.06);
+  --fc-button-border-color: rgba(255, 255, 255, 0.1);
+  --fc-button-hover-bg-color: rgba(255, 178, 75, 0.2);
+  --fc-button-hover-border-color: rgba(255, 178, 75, 0.28);
+  --fc-button-active-bg-color: rgba(255, 178, 75, 0.28);
+  --fc-button-active-border-color: rgba(255, 178, 75, 0.38);
+  --fc-today-bg-color: rgba(255, 178, 75, 0.08);
+  color: #edf4ff;
 }
 
-.schedule-day.today {
-  border-color: rgba(255, 178, 75, 0.38) !important;
-  background: rgba(255, 178, 75, 0.08) !important;
+.fc .fc-toolbar {
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
-.schedule-day-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-bottom: 0.75rem;
-}
-
-.schedule-day-label {
-  font-size: 0.76rem;
-  color: var(--app-text-soft);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.schedule-day-number {
-  font-size: 1.3rem;
+.fc .fc-toolbar-title {
+  font-size: clamp(1.05rem, 2.2vw, 1.45rem);
   font-weight: 800;
 }
 
-.day-item-list {
-  display: grid;
-  gap: 0.45rem;
+.fc .fc-button {
+  box-shadow: none !important;
+  border-radius: 999px !important;
+  text-transform: none;
+  font-weight: 700;
 }
 
-.day-chip {
-  padding: 0.48rem 0.58rem;
-  border-radius: 0.8rem;
-  background: rgba(255, 255, 255, 0.05);
-  font-size: 0.82rem;
-  line-height: 1.35;
+.fc .fc-daygrid-day-number,
+.fc .fc-col-header-cell-cushion {
+  color: #dce8f7;
+  text-decoration: none;
 }
 
-.day-chip.shift-day {
-  background: rgba(119, 224, 166, 0.12);
-  color: #e1f9ed;
+.fc .fc-daygrid-event {
+  border-radius: 0.7rem;
+  padding: 0.1rem 0.2rem;
 }
 
-.day-chip.shift-night {
-  background: rgba(116, 183, 255, 0.16);
-  color: #e6f2ff;
-}
-
-.day-chip.off {
-  background: rgba(255, 255, 255, 0.06);
-  color: #dce7f7;
-}
-
-.day-chip.bill {
-  background: rgba(255, 178, 75, 0.14);
-  color: #fff1db;
-}
-
-.day-chip.event {
-  background: rgba(255, 125, 146, 0.14);
-  color: #ffe4ea;
+.fc .fc-event-title,
+.fc .fc-event-time {
+  font-weight: 700;
 }
 
 .schedule-list {
@@ -905,6 +919,10 @@ a:hover {
 }
 
 @media (max-width: 1399.98px) {
+  .overview-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .hero-rail {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
@@ -917,10 +935,6 @@ a:hover {
 
   .hero-title {
     max-width: 15ch;
-  }
-
-  .schedule-calendar {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
@@ -936,6 +950,10 @@ a:hover {
 }
 
 @media (max-width: 767.98px) {
+  .overview-strip {
+    grid-template-columns: 1fr;
+  }
+
   .clock-pill {
     min-width: 6.2rem;
     font-size: 0.82rem;
@@ -957,11 +975,6 @@ a:hover {
   .portal-chip-row {
     gap: 0.5rem;
   }
-
-  .schedule-calendar {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .schedule-item,
   .schedule-entry-row,
   .bill-card-header,
@@ -969,15 +982,5 @@ a:hover {
   .weather-visual {
     grid-template-columns: 1fr;
     display: grid;
-  }
-
-  .ticker-text {
-    animation-duration: 22s;
-  }
-}
-
-@media (max-width: 479.98px) {
-  .schedule-calendar {
-    grid-template-columns: 1fr;
   }
 }
