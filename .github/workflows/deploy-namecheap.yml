@@ -14,6 +14,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Generate server config
+        shell: bash
+        run: |
+          cat > server-config.php <<'PHP'
+          <?php
+          declare(strict_types=1);
+          return [
+              'openai_api_key' => '${{ secrets.OPENAI_API_KEY }}',
+              'openai_model' => '${{ secrets.OPENAI_MODEL }}' ?: 'gpt-5.4-mini',
+          ];
+          PHP
+
       - name: Upload site files over SCP
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -22,6 +34,6 @@ jobs:
           key: ${{ secrets.DEPLOY_KEY }}
           passphrase: ${{ secrets.DEPLOY_PASSPHRASE }}
           port: ${{ secrets.DEPLOY_PORT }}
-          source: "index.html,styles.css,app.js,CNAME"
+          source: "index.html,styles.css,app.js,CNAME,backend-utils.php,fmhy-proxy.php,lol-compare.php,nhl-proxy.php,openai-chat.php,server-config.php"
           target: ${{ secrets.DEPLOY_PATH }}
           strip_components: 0

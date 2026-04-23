@@ -1,80 +1,72 @@
-const STORAGE_KEY = "imbuckleyy-dashboard-v1";
+const STORAGE_KEY = "imbuckleyy-dashboard-v6";
+const DEFAULT_SHIFT_CONFIG = {
+  startDate: "2026-04-29",
+  dayStart: "05:30",
+  dayEnd: "18:00",
+  nightStart: "17:30",
+  nightEnd: "06:00"
+};
 
 const defaultState = {
   events: [],
-  bills: [],
-  shifts: [],
-  finance: { income: "", expenses: "", goal: "" },
+  billDefinitions: [],
+  shiftConfig: { ...DEFAULT_SHIFT_CONFIG },
+  finance: {
+    income: "",
+    flexSpend: "",
+    goal: ""
+  },
   chat: [
     {
-      role: "bot",
-      message: "Private mode is live. I can help brainstorm plans, budgets, meals, or reminders."
+      role: "assistant",
+      message: "Private chat is wired for a real server-side OpenAI response now. Once the key is configured on deploy, I can help with schedules, bills, errands, plans, meals, and day-to-day stuff."
     }
   ],
-  fmhy: {
-    categories: {
-      Streaming: [
-        { label: "FMHY", url: "https://fmhy.net/" },
-        { label: "Internet Archive", url: "https://archive.org/" }
-      ],
-      Tools: [
-        { label: "12ft Ladder", url: "https://12ft.io/" },
-        { label: "Wayback Machine", url: "https://web.archive.org/" }
-      ]
-    }
-  },
   files: [
     {
       id: crypto.randomUUID(),
-      name: "Weekend ideas",
-      content: "- Movie night\n- Costco run\n- Try a new ramen spot",
+      name: "Shared plans",
+      content: "- Groceries\n- Date night ideas\n- Bills to watch\n- Shows to binge",
       updatedAt: Date.now()
     }
   ],
   activeFileId: null,
   weatherZip: "",
   lolPlayers: "",
-  riotApiKey: ""
+  lolRegion: "na",
+  fmhyPage: "video",
+  fmhySearch: ""
 };
 
 let state = loadState();
-
-const proxyCatalog = [
-  {
-    label: "12ft Ladder",
-    description: "Reader-mode style wrapper for article pages.",
-    url: "https://12ft.io/"
-  },
-  {
-    label: "Wayback Machine",
-    description: "Open archived copies of pages without ad-heavy originals.",
-    url: "https://web.archive.org/"
-  },
-  {
-    label: "TXTify",
-    description: "Text-focused proxy for clutter-free article reading.",
-    url: "https://txtify.it/"
-  }
-];
+const runtime = {
+  weather: null,
+  nhlGames: [],
+  fmhy: null,
+  chatBusy: false
+};
 
 const els = {
   liveClock: document.getElementById("liveClock"),
   siteMenu: document.getElementById("siteMenu"),
   navLinks: document.querySelectorAll("[data-nav-link]"),
-  nhlTicker: document.getElementById("nhlTicker"),
   refreshTicker: document.getElementById("refreshTicker"),
+  nhlTicker: document.getElementById("nhlTicker"),
+  nhlGames: document.getElementById("nhlGames"),
   useGpsWeather: document.getElementById("useGpsWeather"),
   zipWeatherForm: document.getElementById("zipWeatherForm"),
   zipInput: document.getElementById("zipInput"),
   weatherOutput: document.getElementById("weatherOutput"),
-  lolForm: document.getElementById("lolForm"),
-  lolPlayers: document.getElementById("lolPlayers"),
-  lolApiKey: document.getElementById("lolApiKey"),
-  lolTableBody: document.getElementById("lolTableBody"),
-  chatLog: document.getElementById("chatLog"),
-  chatForm: document.getElementById("chatForm"),
-  chatInput: document.getElementById("chatInput"),
-  chatBubbleTemplate: document.getElementById("chatBubbleTemplate"),
+  weatherForecast: document.getElementById("weatherForecast"),
+  weatherHero: document.getElementById("weatherHero"),
+  nextShiftSummary: document.getElementById("nextShiftSummary"),
+  nextShiftMeta: document.getElementById("nextShiftMeta"),
+  nextBillSummary: document.getElementById("nextBillSummary"),
+  nextBillMeta: document.getElementById("nextBillMeta"),
+  leftoverSummary: document.getElementById("leftoverSummary"),
+  leftoverMeta: document.getElementById("leftoverMeta"),
+  chatSummary: document.getElementById("chatSummary"),
+  chatSummaryMeta: document.getElementById("chatSummaryMeta"),
   eventForm: document.getElementById("eventForm"),
   eventTitle: document.getElementById("eventTitle"),
   eventDate: document.getElementById("eventDate"),
@@ -82,24 +74,48 @@ const els = {
   billName: document.getElementById("billName"),
   billAmount: document.getElementById("billAmount"),
   billFrequency: document.getElementById("billFrequency"),
-  billDay: document.getElementById("billDay"),
+  billFirstDue: document.getElementById("billFirstDue"),
   shiftForm: document.getElementById("shiftForm"),
-  shiftPattern: document.getElementById("shiftPattern"),
   shiftStart: document.getElementById("shiftStart"),
+  dayStartTime: document.getElementById("dayStartTime"),
+  dayEndTime: document.getElementById("dayEndTime"),
+  nightStartTime: document.getElementById("nightStartTime"),
+  nightEndTime: document.getElementById("nightEndTime"),
+  schedulePatternTitle: document.getElementById("schedulePatternTitle"),
+  schedulePatternMeta: document.getElementById("schedulePatternMeta"),
+  scheduleNowCards: document.getElementById("scheduleNowCards"),
+  scheduleCalendar: document.getElementById("scheduleCalendar"),
   scheduleList: document.getElementById("scheduleList"),
+  scheduleEditForm: document.getElementById("scheduleEditForm"),
+  scheduleEditId: document.getElementById("scheduleEditId"),
+  scheduleEditTitle: document.getElementById("scheduleEditTitle"),
+  scheduleEditDate: document.getElementById("scheduleEditDate"),
+  scheduleEditCancel: document.getElementById("scheduleEditCancel"),
   incomeInput: document.getElementById("incomeInput"),
-  expenseInput: document.getElementById("expenseInput"),
+  flexSpendInput: document.getElementById("flexSpendInput"),
   goalInput: document.getElementById("goalInput"),
+  incomeSummary: document.getElementById("incomeSummary"),
   budgetChart: document.getElementById("budgetChart"),
   financeInsights: document.getElementById("financeInsights"),
-  categoryForm: document.getElementById("categoryForm"),
-  categoryInput: document.getElementById("categoryInput"),
-  linkForm: document.getElementById("linkForm"),
-  linkCategory: document.getElementById("linkCategory"),
-  linkLabel: document.getElementById("linkLabel"),
-  linkUrl: document.getElementById("linkUrl"),
-  linksContainer: document.getElementById("linksContainer"),
-  proxyLinks: document.getElementById("proxyLinks"),
+  recurringSummary: document.getElementById("recurringSummary"),
+  goalSummary: document.getElementById("goalSummary"),
+  freeCashSummary: document.getElementById("freeCashSummary"),
+  billCollectionMeta: document.getElementById("billCollectionMeta"),
+  billDefinitionList: document.getElementById("billDefinitionList"),
+  lolForm: document.getElementById("lolForm"),
+  lolPlayers: document.getElementById("lolPlayers"),
+  lolRegion: document.getElementById("lolRegion"),
+  lolResults: document.getElementById("lolResults"),
+  chatLog: document.getElementById("chatLog"),
+  chatForm: document.getElementById("chatForm"),
+  chatInput: document.getElementById("chatInput"),
+  chatBubbleTemplate: document.getElementById("chatBubbleTemplate"),
+  chatStatus: document.getElementById("chatStatus"),
+  fmhyPageInput: document.getElementById("fmhyPageInput"),
+  fmhySearch: document.getElementById("fmhySearch"),
+  refreshFmhy: document.getElementById("refreshFmhy"),
+  fmhyMeta: document.getElementById("fmhyMeta"),
+  fmhyResults: document.getElementById("fmhyResults"),
   fileForm: document.getElementById("fileForm"),
   fileName: document.getElementById("fileName"),
   fileList: document.getElementById("fileList"),
@@ -114,13 +130,16 @@ init();
 function init() {
   primeInputs();
   bindEvents();
-  renderAll();
   tickClock();
   setInterval(tickClock, 1000);
-  loadNhlTicker();
-  renderProxyLinks();
+  renderAll();
+  loadNhlData();
+  loadFmhyPage();
+
   if (state.weatherZip) {
     lookupWeatherByQuery(state.weatherZip);
+  } else {
+    renderWeatherStatus("Use GPS or type a city, zip, or postal code to load the weather.");
   }
 }
 
@@ -130,20 +149,23 @@ function loadState() {
     if (!raw) {
       return structuredClone(defaultState);
     }
+
     const parsed = JSON.parse(raw);
     return {
       ...structuredClone(defaultState),
       ...parsed,
-      finance: { ...defaultState.finance, ...(parsed.finance || {}) },
-      fmhy: {
-        categories: {
-          ...defaultState.fmhy.categories,
-          ...((parsed.fmhy && parsed.fmhy.categories) || {})
-        }
-      }
+      finance: {
+        ...defaultState.finance,
+        ...(parsed.finance || {})
+      },
+      shiftConfig: {
+        ...DEFAULT_SHIFT_CONFIG,
+        ...(parsed.shiftConfig || {})
+      },
+      fmhyPage: sanitizeFmhyPage(parsed.fmhyPage || defaultState.fmhyPage)
     };
   } catch (error) {
-    console.error("Failed to load state", error);
+    console.error("Failed to load saved state", error);
     return structuredClone(defaultState);
   }
 }
@@ -153,32 +175,50 @@ function saveState() {
 }
 
 function primeInputs() {
-  els.zipInput.value = state.weatherZip || "";
-  els.lolPlayers.value = state.lolPlayers || "";
-  els.lolApiKey.value = state.riotApiKey || "";
+  els.zipInput.value = state.weatherZip;
+  els.lolPlayers.value = state.lolPlayers;
+  els.lolRegion.value = state.lolRegion;
   els.incomeInput.value = state.finance.income;
-  els.expenseInput.value = state.finance.expenses;
+  els.flexSpendInput.value = state.finance.flexSpend;
   els.goalInput.value = state.finance.goal;
+  els.fmhyPageInput.value = state.fmhyPage;
+  els.fmhySearch.value = state.fmhySearch;
+  els.shiftStart.value = state.shiftConfig.startDate;
+  els.dayStartTime.value = state.shiftConfig.dayStart;
+  els.dayEndTime.value = state.shiftConfig.dayEnd;
+  els.nightStartTime.value = state.shiftConfig.nightStart;
+  els.nightEndTime.value = state.shiftConfig.nightEnd;
+  els.billFirstDue.value = todayIso();
+
   if (!state.activeFileId && state.files.length) {
     state.activeFileId = state.files[0].id;
   }
 }
 
 function bindEvents() {
-  els.navLinks?.forEach((link) => link.addEventListener("click", closeMenu));
-  els.refreshTicker.addEventListener("click", loadNhlTicker);
+  els.navLinks.forEach((link) => link.addEventListener("click", closeMenu));
+  els.refreshTicker.addEventListener("click", loadNhlData);
   els.useGpsWeather.addEventListener("click", handleGpsWeather);
   els.zipWeatherForm.addEventListener("submit", handleZipWeather);
-  els.lolForm.addEventListener("submit", handleLolCompare);
-  els.chatForm.addEventListener("submit", handleChatSubmit);
   els.eventForm.addEventListener("submit", handleEventSubmit);
   els.billForm.addEventListener("submit", handleBillSubmit);
   els.shiftForm.addEventListener("submit", handleShiftSubmit);
-  [els.incomeInput, els.expenseInput, els.goalInput].forEach((input) => {
+  els.scheduleEditForm.addEventListener("submit", handleEventEditSave);
+  els.scheduleEditCancel.addEventListener("click", hideScheduleEditForm);
+  [els.incomeInput, els.flexSpendInput, els.goalInput].forEach((input) => {
     input.addEventListener("input", handleFinanceInput);
   });
-  els.categoryForm.addEventListener("submit", handleCategorySubmit);
-  els.linkForm.addEventListener("submit", handleLinkSubmit);
+  els.lolForm.addEventListener("submit", handleLolCompare);
+  els.chatForm.addEventListener("submit", handleChatSubmit);
+  els.fmhyPageInput.addEventListener("change", handleFmhyPageChange);
+  els.fmhyPageInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      handleFmhyPageChange();
+    }
+  });
+  els.fmhySearch.addEventListener("input", handleFmhySearchInput);
+  els.refreshFmhy.addEventListener("click", loadFmhyPage);
   els.fileForm.addEventListener("submit", handleFileCreate);
   els.saveFile.addEventListener("click", handleFileSave);
   els.deleteFile.addEventListener("click", handleFileDelete);
@@ -190,14 +230,6 @@ function closeMenu() {
   }
 }
 
-function renderAll() {
-  renderChat();
-  renderSchedule();
-  renderFinance();
-  renderLinks();
-  renderFiles();
-}
-
 function tickClock() {
   els.liveClock.textContent = new Date().toLocaleTimeString([], {
     hour: "2-digit",
@@ -205,47 +237,108 @@ function tickClock() {
   });
 }
 
-async function loadNhlTicker() {
-  els.nhlTicker.textContent = "Loading latest NHL scores...";
-  try {
-    const response = await fetch("https://nhl-score-api.herokuapp.com/api/scores/latest");
-    if (!response.ok) {
-      throw new Error(`Ticker request failed: ${response.status}`);
-    }
-    const data = await response.json();
-    const games = Array.isArray(data.games) ? data.games : Array.isArray(data) ? data : [];
-    if (!games.length) {
-      els.nhlTicker.textContent = "No live NHL games right now. Check back later.";
+function renderAll() {
+  renderSchedule();
+  renderFinance();
+  renderChat();
+  renderFiles();
+  renderFmhy();
+  renderChatSummary();
+}
+
+async function loadNhlData() {
+  els.nhlTicker.textContent = "Loading the NHL scoreboard…";
+  els.nhlGames.innerHTML = "";
+
+  const sources = [
+    "nhl-proxy.php",
+    "https://api-web.nhle.com/v1/score/now"
+  ];
+
+  for (const source of sources) {
+    try {
+      const response = await fetch(source, { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error(`NHL request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      runtime.nhlGames = Array.isArray(data.games) ? data.games : [];
+      renderNhl();
       return;
+    } catch (error) {
+      console.warn("NHL source failed", source, error);
     }
-    const tickerLine = games.map(formatGameTicker).join("   •   ");
-    els.nhlTicker.textContent = tickerLine;
-  } catch (error) {
-    console.error(error);
-    els.nhlTicker.textContent = "Unable to load NHL scores right now.";
   }
+
+  els.nhlTicker.textContent = "The NHL feed is unavailable right now.";
+  els.nhlGames.innerHTML = `<div class="col-12"><div class="panel"><p class="status-text mb-0">Official NHL data could not be loaded.</p></div></div>`;
 }
 
-function formatGameTicker(game) {
-  const away = extractTeamName(game.away || game.awayTeam || game.teams?.away?.team) || "Away";
-  const home = extractTeamName(game.home || game.homeTeam || game.teams?.home?.team) || "Home";
-  const awayScore = game.awayScore ?? game.teams?.away?.score ?? game.away?.score ?? "-";
-  const homeScore = game.homeScore ?? game.teams?.home?.score ?? game.home?.score ?? "-";
-  const status = game.status || game.period || game.gameState || "Final/Live";
-  return `${away} ${awayScore} - ${homeScore} ${home} (${status})`;
+function renderNhl() {
+  if (!runtime.nhlGames.length) {
+    els.nhlTicker.textContent = "No NHL games are listed at the moment.";
+    els.nhlGames.innerHTML = `<div class="col-12"><div class="panel"><p class="status-text mb-0">No games on the official scoreboard right now.</p></div></div>`;
+    return;
+  }
+
+  els.nhlTicker.textContent = runtime.nhlGames.map(formatNhlTicker).join("   •   ");
+  els.nhlGames.innerHTML = runtime.nhlGames.slice(0, 8).map((game) => `
+    <div class="col-12 col-md-6 col-xl-3">
+      <article class="nhl-game-card">
+        <div class="section-kicker">${escapeHtml(formatNhlStatus(game))}</div>
+        <div class="nhl-teams">
+          <div>
+            <div>${escapeHtml(getNhlTeamName(game.awayTeam))}</div>
+            <div class="status-text">${escapeHtml(getNhlTeamAbbrev(game.awayTeam))}</div>
+          </div>
+          <div class="nhl-score">${escapeHtml(String(game.awayTeam?.score ?? "-"))}</div>
+        </div>
+        <div class="nhl-teams">
+          <div>
+            <div>${escapeHtml(getNhlTeamName(game.homeTeam))}</div>
+            <div class="status-text">${escapeHtml(getNhlTeamAbbrev(game.homeTeam))}</div>
+          </div>
+          <div class="nhl-score">${escapeHtml(String(game.homeTeam?.score ?? "-"))}</div>
+        </div>
+        <div class="status-text mt-2">${escapeHtml(formatNhlVenue(game))}</div>
+      </article>
+    </div>
+  `).join("");
 }
 
-function extractTeamName(team) {
-  if (!team) {
-    return "";
+function formatNhlTicker(game) {
+  return `${getNhlTeamAbbrev(game.awayTeam)} ${game.awayTeam?.score ?? "-"} - ${game.homeTeam?.score ?? "-"} ${getNhlTeamAbbrev(game.homeTeam)} (${formatNhlStatus(game)})`;
+}
+
+function getNhlTeamName(team) {
+  return team?.name?.default || team?.commonName?.default || team?.placeName?.default || team?.abbrev || "Team";
+}
+
+function getNhlTeamAbbrev(team) {
+  return team?.abbrev || getNhlTeamName(team);
+}
+
+function formatNhlStatus(game) {
+  if (game.gameState === "LIVE" || game.gameState === "CRIT") {
+    const periodLabel = game.periodDescriptor?.periodType === "OT"
+      ? "OT"
+      : game.periodDescriptor?.number
+        ? `P${game.periodDescriptor.number}`
+        : "Live";
+    return `Live ${periodLabel} • ${game.clock?.timeRemaining || "00:00"}`;
   }
-  if (typeof team === "string") {
-    return team;
+  if (game.gameState === "FINAL" || game.gameState === "OFF") {
+    return "Final";
   }
-  if (team.team) {
-    return extractTeamName(team.team);
-  }
-  return team.name || team.abbreviation || team.teamName || team.commonName || team.placeName || "";
+  const kickoff = game.startTimeUTC ? new Date(game.startTimeUTC) : null;
+  return kickoff ? kickoff.toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" }) : "Scheduled";
+}
+
+function formatNhlVenue(game) {
+  const venue = game.venue?.default || "Arena TBD";
+  const series = game.seriesStatus?.seriesTitle ? ` • ${game.seriesStatus.seriesTitle}` : "";
+  return `${venue}${series}`;
 }
 
 function handleGpsWeather() {
@@ -253,17 +346,19 @@ function handleGpsWeather() {
     renderWeatherStatus("Geolocation is not available in this browser.");
     return;
   }
-  renderWeatherStatus("Checking your location...");
+
+  renderWeatherStatus("Checking your location…");
   navigator.geolocation.getCurrentPosition(async ({ coords }) => {
     try {
-      const weather = await fetchWeather(coords.latitude, coords.longitude);
-      renderWeather(weather);
+      const weather = await fetchWeather(coords.latitude, coords.longitude, "Current location");
+      runtime.weather = weather;
+      renderWeather();
     } catch (error) {
       console.error(error);
       renderWeatherStatus("Could not load weather from your current location.");
     }
   }, () => {
-    renderWeatherStatus("Location permission was denied. Use the zip box instead.");
+    renderWeatherStatus("Location permission was denied. Try a zip or postal code instead.");
   });
 }
 
@@ -271,225 +366,210 @@ async function handleZipWeather(event) {
   event.preventDefault();
   const query = els.zipInput.value.trim();
   if (!query) {
-    renderWeatherStatus("Enter a zip or postal code first.");
+    renderWeatherStatus("Enter a city, zip, or postal code first.");
     return;
   }
+
   state.weatherZip = query;
   saveState();
   await lookupWeatherByQuery(query);
 }
 
 async function lookupWeatherByQuery(query) {
-  renderWeatherStatus(`Looking up weather for ${query}...`);
+  renderWeatherStatus(`Looking up weather for ${query}…`);
+
   try {
-    const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=en&format=json`;
-    const geoResponse = await fetch(geoUrl);
-    const geoData = await geoResponse.json();
-    const match = geoData.results && geoData.results[0];
+    const match = await lookupLocation(query);
+
     if (!match) {
-      renderWeatherStatus("No location match found. Try city + province/state or a postal code.");
+      renderWeatherStatus("No location match found. Try a city, province/state, or postal code.");
       return;
     }
-    const weather = await fetchWeather(match.latitude, match.longitude, match.name, match.admin1, match.country);
-    renderWeather(weather);
+
+    runtime.weather = await fetchWeather(match.latitude, match.longitude, match.label);
+    renderWeather();
   } catch (error) {
     console.error(error);
-    renderWeatherStatus("Weather lookup failed. Try again in a moment.");
+    renderWeatherStatus("Weather lookup failed.");
   }
 }
 
-async function fetchWeather(latitude, longitude, city = "Current location", region = "", country = "") {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=auto`;
-  const response = await fetch(url);
+async function lookupLocation(query) {
+  const geoResponse = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=en&format=json`, {
+    cache: "no-store"
+  });
+
+  if (geoResponse.ok) {
+    const geoData = await geoResponse.json();
+    const match = geoData.results?.[0];
+
+    if (match) {
+      return {
+        latitude: match.latitude,
+        longitude: match.longitude,
+        label: [match.name, match.admin1, match.country].filter(Boolean).join(", ")
+      };
+    }
+  }
+
+  const fallbackResponse = await fetch(`https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(query)}`, {
+    cache: "no-store",
+    headers: {
+      Accept: "application/json"
+    }
+  });
+
+  if (!fallbackResponse.ok) {
+    return null;
+  }
+
+  const fallbackData = await fallbackResponse.json();
+  const fallback = fallbackData?.[0];
+  if (!fallback) {
+    return null;
+  }
+
+  return {
+    latitude: Number(fallback.lat),
+    longitude: Number(fallback.lon),
+    label: fallback.display_name
+  };
+}
+
+async function fetchWeather(latitude, longitude, label) {
+  const response = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=5`, {
+    cache: "no-store"
+  });
   if (!response.ok) {
     throw new Error(`Weather request failed: ${response.status}`);
   }
+
   const data = await response.json();
   return {
-    location: [city, region, country].filter(Boolean).join(", "),
-    temp: data.current.temperature_2m,
-    feels: data.current.apparent_temperature,
-    wind: data.current.wind_speed_10m,
-    code: data.current.weather_code,
-    high: data.daily.temperature_2m_max[0],
-    low: data.daily.temperature_2m_min[0]
+    label,
+    current: data.current,
+    daily: data.daily
   };
 }
 
-function renderWeather(weather) {
-  const conditions = describeWeatherCode(weather.code);
-  els.weatherOutput.innerHTML = `
-    <div class="weather-stats">
-      <h3>${escapeHtml(weather.location)}</h3>
-      <p><strong>${weather.temp}&deg;C</strong> and ${conditions}</p>
-      <p class="status-text">Feels like ${weather.feels}&deg;C • Wind ${weather.wind} km/h</p>
-      <p class="status-text">Today: High ${weather.high}&deg;C / Low ${weather.low}&deg;C</p>
+function renderWeather() {
+  if (!runtime.weather) {
+    renderWeatherStatus("Weather data is not loaded yet.");
+    return;
+  }
+
+  const { current, daily, label } = runtime.weather;
+  const meta = weatherCodeMeta(current.weather_code);
+  const humidity = Number(current.relative_humidity_2m ?? 0);
+  const rainChance = Number(daily.precipitation_probability_max?.[0] ?? 0);
+
+  const detailMarkup = `
+    <div class="weather-visual">
+      <div class="weather-scene ${escapeHtml(meta.scene)}">
+        <div class="weather-scene-lines"></div>
+      </div>
+      <div>
+        <div class="weather-icon">${meta.icon}</div>
+        <div class="weather-temp">${Math.round(current.temperature_2m)}°C</div>
+        <div class="weather-location">${escapeHtml(label)}</div>
+        <div class="weather-label mt-2">${escapeHtml(meta.label)}</div>
+      </div>
+    </div>
+    <div class="weather-detail-grid">
+      <div class="weather-detail">
+        <div class="section-kicker">Feels like</div>
+        <div class="summary-value">${Math.round(current.apparent_temperature)}°C</div>
+      </div>
+      <div class="weather-detail">
+        <div class="section-kicker">Wind</div>
+        <div class="summary-value">${Math.round(current.wind_speed_10m)} km/h</div>
+      </div>
+      <div class="weather-detail">
+        <div class="section-kicker">Humidity</div>
+        <div class="summary-value">${humidity}%</div>
+      </div>
+      <div class="weather-detail">
+        <div class="section-kicker">Today</div>
+        <div class="summary-value">${Math.round(daily.temperature_2m_max[0])}° / ${Math.round(daily.temperature_2m_min[0])}°</div>
+      </div>
+      <div class="weather-detail">
+        <div class="section-kicker">Rain chance</div>
+        <div class="summary-value">${rainChance}%</div>
+      </div>
+      <div class="weather-detail">
+        <div class="section-kicker">Outlook</div>
+        <div class="summary-value">${escapeHtml(meta.shortLabel)}</div>
+      </div>
     </div>
   `;
-}
 
-function renderWeatherStatus(message) {
-  els.weatherOutput.innerHTML = `<p class="status-text">${escapeHtml(message)}</p>`;
-}
-
-function describeWeatherCode(code) {
-  const map = {
-    0: "clear skies",
-    1: "mostly clear",
-    2: "partly cloudy",
-    3: "overcast",
-    45: "foggy",
-    48: "rime fog",
-    51: "light drizzle",
-    61: "light rain",
-    63: "rain",
-    71: "snow",
-    80: "showers",
-    95: "thunderstorms"
-  };
-  return map[code] || "mixed conditions";
-}
-
-async function handleLolCompare(event) {
-  event.preventDefault();
-  const players = els.lolPlayers.value
-    .split(",")
-    .map((value) => value.trim())
-    .filter(Boolean);
-
-  state.lolPlayers = els.lolPlayers.value.trim();
-  state.riotApiKey = els.lolApiKey.value.trim();
-  saveState();
-
-  if (!players.length) {
-    renderLolRows([]);
-    return;
-  }
-
-  renderLolRows(players.map((player) => ({
-    player,
-    status: "Loading...",
-    level: "-",
-    queue: "-",
-    rank: "-"
-  })));
-
-  const rows = await Promise.all(players.map((player) => fetchLolPlayer(player, state.riotApiKey)));
-  renderLolRows(rows);
-}
-
-async function fetchLolPlayer(player, apiKey) {
-  if (!apiKey) {
-    return {
-      player,
-      status: "Mock mode",
-      level: randomRange(65, 480),
-      queue: ["Solo/Duo", "Flex", "Normals"][randomRange(0, 2)],
-      rank: ["Gold II", "Platinum IV", "Emerald III", "Diamond IV"][randomRange(0, 3)]
-    };
-  }
-
-  try {
-    const encoded = encodeURIComponent(player);
-    const summonerRes = await fetch(`https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/${encoded}`, {
-      headers: { "X-Riot-Token": apiKey }
-    });
-    if (!summonerRes.ok) {
-      throw new Error(`Summoner lookup failed: ${summonerRes.status}`);
-    }
-    const summoner = await summonerRes.json();
-    const leagueRes = await fetch(`https://na1.api.riotgames.com/lol/league/v4/entries/by-summoner/${summoner.id}`, {
-      headers: { "X-Riot-Token": apiKey }
-    });
-    const queues = leagueRes.ok ? await leagueRes.json() : [];
-    const solo = queues.find((queue) => queue.queueType === "RANKED_SOLO_5x5");
-    return {
-      player,
-      status: "Live",
-      level: summoner.summonerLevel ?? "-",
-      queue: solo ? "Solo/Duo" : (queues[0]?.queueType || "No ranked data"),
-      rank: solo ? `${solo.tier} ${solo.rank}` : "Unranked"
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      player,
-      status: "Unavailable",
-      level: "-",
-      queue: "-",
-      rank: "Check Riot key / player tag"
-    };
-  }
-}
-
-function renderLolRows(rows) {
-  if (!rows.length) {
-    els.lolTableBody.innerHTML = `<tr><td colspan="5" class="empty-row">Add player names to compare.</td></tr>`;
-    return;
-  }
-  els.lolTableBody.innerHTML = rows.map((row) => `
-    <tr>
-      <td>${escapeHtml(String(row.player))}</td>
-      <td>${escapeHtml(String(row.status))}</td>
-      <td>${escapeHtml(String(row.level))}</td>
-      <td>${escapeHtml(String(row.queue))}</td>
-      <td>${escapeHtml(String(row.rank))}</td>
-    </tr>
+  els.weatherOutput.innerHTML = detailMarkup;
+  els.weatherHero.className = `weather-hero panel weather-hero-panel mb-3 ${meta.scene}`;
+  els.weatherHero.innerHTML = detailMarkup;
+  els.weatherForecast.innerHTML = daily.time.map((date, index) => `
+    <div class="col-12 col-sm-6 col-lg-4 col-xl">
+      <div class="forecast-card h-100">
+        <span class="forecast-icon">${weatherCodeMeta(daily.weather_code[index]).icon}</span>
+        <div class="fw-bold">${escapeHtml(formatShortDate(date))}</div>
+        <div class="status-text">${escapeHtml(weatherCodeMeta(daily.weather_code[index]).label)}</div>
+        <div class="mt-2 fw-semibold">${Math.round(daily.temperature_2m_max[index])}° / ${Math.round(daily.temperature_2m_min[index])}°</div>
+        <div class="status-text mt-2">${Math.round(daily.precipitation_probability_max[index] ?? 0)}% precip</div>
+      </div>
+    </div>
   `).join("");
 }
 
-function handleChatSubmit(event) {
-  event.preventDefault();
-  const message = els.chatInput.value.trim();
-  if (!message) {
-    return;
-  }
-  state.chat.push({ role: "user", message });
-  state.chat.push({ role: "bot", message: buildMockResponse(message) });
-  els.chatInput.value = "";
-  saveState();
-  renderChat();
+function renderWeatherStatus(message) {
+  const markup = `<p class="status-text mb-0">${escapeHtml(message)}</p>`;
+  els.weatherOutput.innerHTML = markup;
+  els.weatherHero.className = "weather-hero panel weather-hero-panel mb-3";
+  els.weatherHero.innerHTML = markup;
+  els.weatherForecast.innerHTML = `<div class="col-12"><div class="panel"><p class="status-text mb-0">Forecast will show here once weather is loaded.</p></div></div>`;
 }
 
-function renderChat() {
-  els.chatLog.innerHTML = "";
-  state.chat.forEach((entry) => {
-    const node = els.chatBubbleTemplate.content.firstElementChild.cloneNode(true);
-    node.classList.add(entry.role);
-    node.querySelector(".chat-role").textContent = entry.role === "user" ? "You" : "Assistant";
-    node.querySelector(".chat-message").textContent = entry.message;
-    els.chatLog.appendChild(node);
-  });
-  els.chatLog.scrollTop = els.chatLog.scrollHeight;
-}
+function weatherCodeMeta(code) {
+  const map = {
+    0: { icon: "☀️", label: "Clear skies", shortLabel: "Clear", scene: "sunny" },
+    1: { icon: "🌤️", label: "Mostly clear", shortLabel: "Bright", scene: "sunny" },
+    2: { icon: "⛅", label: "Partly cloudy", shortLabel: "Mixed sky", scene: "cloudy" },
+    3: { icon: "☁️", label: "Overcast", shortLabel: "Cloudy", scene: "cloudy" },
+    45: { icon: "🌫️", label: "Foggy", shortLabel: "Fog", scene: "cloudy" },
+    48: { icon: "🌫️", label: "Icy fog", shortLabel: "Fog", scene: "cloudy" },
+    51: { icon: "🌦️", label: "Light drizzle", shortLabel: "Drizzle", scene: "rainy" },
+    53: { icon: "🌦️", label: "Drizzle", shortLabel: "Drizzle", scene: "rainy" },
+    55: { icon: "🌧️", label: "Heavy drizzle", shortLabel: "Rainy", scene: "rainy" },
+    61: { icon: "🌧️", label: "Light rain", shortLabel: "Rain", scene: "rainy" },
+    63: { icon: "🌧️", label: "Rain", shortLabel: "Rain", scene: "rainy" },
+    65: { icon: "🌧️", label: "Heavy rain", shortLabel: "Heavy rain", scene: "rainy" },
+    71: { icon: "🌨️", label: "Light snow", shortLabel: "Snow", scene: "snowy" },
+    73: { icon: "🌨️", label: "Snow", shortLabel: "Snow", scene: "snowy" },
+    75: { icon: "❄️", label: "Heavy snow", shortLabel: "Snow", scene: "snowy" },
+    80: { icon: "🌦️", label: "Rain showers", shortLabel: "Showers", scene: "rainy" },
+    81: { icon: "🌧️", label: "Showers", shortLabel: "Showers", scene: "rainy" },
+    82: { icon: "🌧️", label: "Heavy showers", shortLabel: "Showers", scene: "rainy" },
+    95: { icon: "⛈️", label: "Thunderstorms", shortLabel: "Storms", scene: "stormy" },
+    96: { icon: "⛈️", label: "Storms and hail", shortLabel: "Storms", scene: "stormy" },
+    99: { icon: "⛈️", label: "Strong storms", shortLabel: "Storms", scene: "stormy" }
+  };
 
-function buildMockResponse(message) {
-  const lower = message.toLowerCase();
-  if (lower.includes("dinner") || lower.includes("food")) {
-    return "Try a low-effort plan: one comfort meal tonight, one freezer backup, and one delivery budget cap for the week.";
-  }
-  if (lower.includes("money") || lower.includes("budget")) {
-    return "Start with fixed bills, then choose one savings target and one guilt-free fun amount so the month feels sustainable.";
-  }
-  if (lower.includes("date")) {
-    return "Mini date plan: pick a time block, choose food first, then add one tiny extra like a walk, playlist, or dessert stop.";
-  }
-  return "I can help turn that into a short plan, checklist, budget split, or reminder sequence. Try being a bit more specific.";
+  return map[code] || { icon: "🌥️", label: "Mixed conditions", shortLabel: "Mixed", scene: "cloudy" };
 }
 
 function handleEventSubmit(event) {
   event.preventDefault();
   const title = els.eventTitle.value.trim();
   const date = els.eventDate.value;
+
   if (!title || !date) {
     return;
   }
+
   state.events.push({
     id: crypto.randomUUID(),
-    type: "event",
     title,
     date
   });
+
   els.eventForm.reset();
   saveState();
   renderSchedule();
@@ -500,158 +580,344 @@ function handleBillSubmit(event) {
   const name = els.billName.value.trim();
   const amount = Number(els.billAmount.value);
   const frequency = els.billFrequency.value;
-  const day = Number(els.billDay.value);
+  const firstDue = els.billFirstDue.value;
 
-  if (!name || !amount || !day) {
+  if (!name || amount <= 0 || !firstDue) {
     return;
   }
 
-  const generated = generateBillOccurrences(name, amount, frequency, day);
-  state.bills.push(...generated);
+  state.billDefinitions.push({
+    id: crypto.randomUUID(),
+    name,
+    amount,
+    frequency,
+    firstDue
+  });
+
   els.billForm.reset();
+  els.billFirstDue.value = todayIso();
   saveState();
   renderSchedule();
-}
-
-function generateBillOccurrences(name, amount, frequency, day) {
-  const items = [];
-  const today = new Date();
-  const start = new Date(today.getFullYear(), today.getMonth(), 1);
-
-  for (let i = 0; i < 12; i += 1) {
-    if (frequency === "monthly") {
-      const billDate = new Date(start.getFullYear(), start.getMonth() + i, Math.min(day, 28));
-      items.push({
-        id: crypto.randomUUID(),
-        type: "bill",
-        title: `${name} - $${amount.toFixed(2)}`,
-        amount,
-        date: toDateInputValue(billDate)
-      });
-    } else {
-      for (let w = 0; w < 4; w += 1) {
-        const weeklyDate = new Date(start.getFullYear(), start.getMonth() + i, 1 + ((day - 1) % 7) + (w * 7));
-        items.push({
-          id: crypto.randomUUID(),
-          type: "bill",
-          title: `${name} - $${amount.toFixed(2)}`,
-          amount,
-          date: toDateInputValue(weeklyDate)
-        });
-      }
-    }
-  }
-
-  return items;
+  renderFinance();
 }
 
 function handleShiftSubmit(event) {
   event.preventDefault();
-  const pattern = els.shiftPattern.value;
-  const startDate = els.shiftStart.value;
-  if (!startDate) {
-    return;
-  }
-  state.shifts.push(...generateShiftEvents(pattern, startDate));
-  els.shiftForm.reset();
+  state.shiftConfig = {
+    startDate: els.shiftStart.value || DEFAULT_SHIFT_CONFIG.startDate,
+    dayStart: els.dayStartTime.value || DEFAULT_SHIFT_CONFIG.dayStart,
+    dayEnd: els.dayEndTime.value || DEFAULT_SHIFT_CONFIG.dayEnd,
+    nightStart: els.nightStartTime.value || DEFAULT_SHIFT_CONFIG.nightStart,
+    nightEnd: els.nightEndTime.value || DEFAULT_SHIFT_CONFIG.nightEnd
+  };
   saveState();
   renderSchedule();
 }
 
-function generateShiftEvents(pattern, startDate) {
-  const [workDays, offDays] = pattern.split("/").map(Number);
-  const items = [];
-  const start = new Date(`${startDate}T00:00:00`);
-  let cursor = new Date(start);
+function getShiftPattern() {
+  return [
+    {
+      type: "shift-day",
+      title: "Alamos day shift",
+      count: 7,
+      time: formatShiftTimeRange(state.shiftConfig.dayStart, state.shiftConfig.dayEnd)
+    },
+    {
+      type: "off",
+      title: "Home day",
+      count: 6,
+      time: "Off"
+    },
+    {
+      type: "shift-night",
+      title: "Alamos Tuesday night return",
+      count: 1,
+      time: formatShiftTimeRange(state.shiftConfig.nightStart, state.shiftConfig.nightEnd)
+    }
+  ];
+}
 
-  for (let cycle = 0; cycle < 6; cycle += 1) {
-    for (let work = 0; work < workDays; work += 1) {
+function buildShiftItems(daysAhead = 120) {
+  const start = new Date(`${state.shiftConfig.startDate}T00:00:00`);
+  const end = addDays(startOfDay(new Date()), daysAhead);
+  const items = [];
+  const pattern = getShiftPattern();
+  let cursor = new Date(start);
+  let patternIndex = 0;
+
+  while (cursor <= end) {
+    const block = pattern[patternIndex];
+
+    for (let i = 0; i < block.count && cursor <= end; i += 1) {
       items.push({
-        id: crypto.randomUUID(),
-        type: "shift",
-        title: `Alamos Work Day ${work + 1}`,
+        id: `${block.type}-${toDateInputValue(cursor)}`,
+        source: "shift",
+        type: block.type,
+        title: block.title,
         date: toDateInputValue(cursor),
-        pattern
+        time: block.time
       });
       cursor.setDate(cursor.getDate() + 1);
     }
-    for (let off = 0; off < offDays; off += 1) {
-      items.push({
-        id: crypto.randomUUID(),
-        type: "shift",
-        title: `Alamos Off Day ${off + 1}`,
-        date: toDateInputValue(cursor),
-        pattern
-      });
-      cursor.setDate(cursor.getDate() + 1);
-    }
+
+    patternIndex = (patternIndex + 1) % pattern.length;
   }
+
   return items;
 }
 
-function renderSchedule() {
-  const today = startOfDay(new Date());
-  const cutoff = new Date(today);
-  cutoff.setDate(cutoff.getDate() + 30);
-  const items = [...state.events, ...state.bills, ...state.shifts]
-    .filter((item) => {
-      const itemDate = startOfDay(new Date(`${item.date}T00:00:00`));
-      return itemDate >= today && itemDate <= cutoff;
-    })
-    .sort((a, b) => new Date(a.date) - new Date(b.date));
+function buildBillOccurrences(daysAhead = 365) {
+  const occurrences = [];
+  const horizon = addDays(startOfDay(new Date()), daysAhead);
 
-  if (!items.length) {
-    els.scheduleList.innerHTML = `<div class="panel"><p class="status-text">Nothing scheduled in the next 30 days yet.</p></div>`;
+  state.billDefinitions.forEach((definition) => {
+    if (!definition.firstDue) {
+      return;
+    }
+
+    let due = new Date(`${definition.firstDue}T00:00:00`);
+    if (Number.isNaN(due.getTime())) {
+      return;
+    }
+
+    while (due <= horizon) {
+      occurrences.push({
+        id: `${definition.id}-${toDateInputValue(due)}`,
+        source: "bill",
+        definitionId: definition.id,
+        type: "bill",
+        title: definition.name,
+        amount: definition.amount,
+        date: toDateInputValue(due)
+      });
+
+      if (definition.frequency === "one-time") {
+        break;
+      }
+
+      if (definition.frequency === "weekly") {
+        due = addDays(due, 7);
+      } else if (definition.frequency === "biweekly") {
+        due = addDays(due, 14);
+      } else {
+        due = appMonthAddJs(due, 1);
+      }
+    }
+  });
+
+  return occurrences;
+}
+
+function getScheduleItems() {
+  const shifts = buildShiftItems();
+  const bills = buildBillOccurrences();
+  const events = state.events.map((event) => ({
+    ...event,
+    source: "event",
+    type: "event"
+  }));
+
+  return [...shifts, ...bills, ...events].sort((a, b) => {
+    if (a.date === b.date) {
+      return (a.type || "").localeCompare(b.type || "");
+    }
+    return new Date(`${a.date}T00:00:00`) - new Date(`${b.date}T00:00:00`);
+  });
+}
+
+function renderSchedule() {
+  const items = getScheduleItems();
+  renderScheduleSpotlight(items);
+  renderScheduleCalendar(items);
+  renderUpcomingSchedule(items);
+  renderSummaryCards(items);
+}
+
+function renderScheduleSpotlight(items) {
+  const today = startOfDay(new Date());
+  const nextShift = items.find((item) => item.source === "shift" && item.type !== "off" && new Date(`${item.date}T00:00:00`) >= today);
+  const nextHome = items.find((item) => item.source === "shift" && item.type === "off" && new Date(`${item.date}T00:00:00`) >= today);
+  const nextExtra = items.find((item) => (item.source === "event" || item.source === "bill") && new Date(`${item.date}T00:00:00`) >= today);
+
+  els.schedulePatternTitle.textContent = "7 day shifts -> 6 home days -> Tuesday night return";
+  els.schedulePatternMeta.textContent = `Starts ${formatLongDate(state.shiftConfig.startDate)} • day shift ${formatShiftTimeRange(state.shiftConfig.dayStart, state.shiftConfig.dayEnd)} • night shift ${formatShiftTimeRange(state.shiftConfig.nightStart, state.shiftConfig.nightEnd)}`;
+
+  const cards = [
+    nextShift ? {
+      label: shortItemTitle(nextShift),
+      title: formatLongDate(nextShift.date),
+      meta: nextShift.time
+    } : {
+      label: "No next shift",
+      title: "Adjust the pattern",
+      meta: "Work blocks will show here."
+    },
+    nextHome ? {
+      label: "Next home day",
+      title: formatLongDate(nextHome.date),
+      meta: "Off"
+    } : {
+      label: "No home block",
+      title: "Pattern missing",
+      meta: "Home days will show here."
+    },
+    nextExtra ? {
+      label: nextExtra.source === "bill" ? "Next bill" : "Next event",
+      title: nextExtra.title,
+      meta: nextExtra.source === "bill"
+        ? `${formatLongDate(nextExtra.date)} • ${formatCurrency(nextExtra.amount)}`
+        : formatLongDate(nextExtra.date)
+    } : {
+      label: "Nothing extra",
+      title: "No bills or events yet",
+      meta: "Add something below."
+    }
+  ];
+
+  els.scheduleNowCards.innerHTML = cards.map((card) => `
+    <div class="schedule-now-card">
+      <div class="section-kicker">${escapeHtml(card.label)}</div>
+      <strong>${escapeHtml(card.title)}</strong>
+      <div class="status-text">${escapeHtml(card.meta)}</div>
+    </div>
+  `).join("");
+}
+
+function renderScheduleCalendar(items) {
+  const today = startOfDay(new Date());
+  const days = Array.from({ length: 28 }, (_, index) => addDays(today, index));
+
+  els.scheduleCalendar.innerHTML = days.map((date) => {
+    const iso = toDateInputValue(date);
+    const dayItems = items.filter((item) => item.date === iso).slice(0, 5);
+    return `
+      <div class="schedule-day ${iso === toDateInputValue(today) ? "today" : ""}">
+        <div class="schedule-day-header">
+          <div>
+            <div class="schedule-day-label">${escapeHtml(date.toLocaleDateString([], { weekday: "short" }))}</div>
+            <div class="schedule-day-number">${date.getDate()}</div>
+          </div>
+          <div class="status-text">${escapeHtml(date.toLocaleDateString([], { month: "short" }))}</div>
+        </div>
+        <div class="day-item-list">
+          ${dayItems.length ? dayItems.map((item) => `
+            <div class="day-chip ${escapeHtml(item.type)}">
+              <strong>${escapeHtml(shortItemTitle(item))}</strong>
+              <div>${escapeHtml(item.time || (typeof item.amount === "number" ? formatCurrency(item.amount) : item.title))}</div>
+            </div>
+          `).join("") : `<div class="status-text">Nothing set.</div>`}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderUpcomingSchedule(items) {
+  const today = startOfDay(new Date());
+  const dayGroups = Array.from({ length: 14 }, (_, index) => {
+    const date = addDays(today, index);
+    const iso = toDateInputValue(date);
+    return {
+      iso,
+      items: items.filter((item) => item.date === iso)
+    };
+  }).filter((group) => group.items.length);
+
+  if (!dayGroups.length) {
+    els.scheduleList.innerHTML = `<div class="panel"><p class="status-text mb-0">Nothing scheduled yet.</p></div>`;
     return;
   }
 
-  els.scheduleList.innerHTML = items.map((item) => `
+  els.scheduleList.innerHTML = dayGroups.map((group) => `
     <article class="schedule-item">
       <div>
         <div class="schedule-title">
-          <strong>${escapeHtml(item.title)}</strong>
-          <span class="pill ${escapeHtml(item.type)}">${escapeHtml(item.type)}</span>
+          <strong>${escapeHtml(formatLongDate(group.iso))}</strong>
+          ${group.iso === todayIso() ? `<span class="pill off">Today</span>` : ""}
         </div>
-        <p class="schedule-meta">${formatLongDate(item.date)}${item.amount ? ` • $${item.amount.toFixed(2)}` : ""}${item.pattern ? ` • ${item.pattern}` : ""}</p>
+        <div class="schedule-meta">${escapeHtml(scheduleGroupMeta(group.items))}</div>
       </div>
-      <div class="schedule-actions">
-        <button type="button" data-action="edit-schedule" data-id="${item.id}" class="ghost-btn">Edit</button>
-        <button type="button" data-action="delete-schedule" data-id="${item.id}" class="ghost-btn">Delete</button>
+      <div class="schedule-stack">
+        ${group.items.map((item) => `
+          <div class="schedule-entry-row">
+            <div>
+              <div class="d-flex flex-wrap align-items-center gap-2">
+                <span class="pill ${escapeHtml(item.type)}">${escapeHtml(shortItemTitle(item))}</span>
+                <strong>${escapeHtml(displayScheduleItemLabel(item))}</strong>
+              </div>
+              <div class="status-text mt-1">${escapeHtml(formatScheduleItemMeta(item))}</div>
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+              ${item.source === "event" ? `
+                <button class="btn btn-sm btn-outline-light" type="button" data-edit-event="${item.id}">Edit</button>
+                <button class="btn btn-sm btn-outline-danger" type="button" data-delete-event="${item.id}">Delete</button>
+              ` : ""}
+            </div>
+          </div>
+        `).join("")}
       </div>
     </article>
   `).join("");
 
-  els.scheduleList.querySelectorAll("[data-action='delete-schedule']").forEach((button) => {
-    button.addEventListener("click", () => deleteScheduleItem(button.dataset.id));
+  els.scheduleList.querySelectorAll("[data-edit-event]").forEach((button) => {
+    button.addEventListener("click", () => showScheduleEditForm(button.dataset.editEvent));
   });
-  els.scheduleList.querySelectorAll("[data-action='edit-schedule']").forEach((button) => {
-    button.addEventListener("click", () => editScheduleItem(button.dataset.id));
+
+  els.scheduleList.querySelectorAll("[data-delete-event]").forEach((button) => {
+    button.addEventListener("click", () => deleteEvent(button.dataset.deleteEvent));
   });
 }
 
-function deleteScheduleItem(id) {
-  state.events = state.events.filter((item) => item.id !== id);
-  state.bills = state.bills.filter((item) => item.id !== id);
-  state.shifts = state.shifts.filter((item) => item.id !== id);
+function renderSummaryCards(items) {
+  const today = startOfDay(new Date());
+  const nextShift = items.find((item) => item.source === "shift" && item.type !== "off" && new Date(`${item.date}T00:00:00`) >= today);
+  const nextBill = items.find((item) => item.source === "bill" && new Date(`${item.date}T00:00:00`) >= today);
+  const finance = getFinanceSnapshot();
+
+  els.nextShiftSummary.textContent = nextShift ? shortItemTitle(nextShift) : "Nothing set";
+  els.nextShiftMeta.textContent = nextShift ? `${formatLongDate(nextShift.date)} • ${nextShift.time}` : "No work shifts found in the current pattern.";
+
+  els.nextBillSummary.textContent = nextBill ? `${nextBill.title} ${formatCurrency(nextBill.amount)}` : "No bills";
+  els.nextBillMeta.textContent = nextBill ? formatLongDate(nextBill.date) : "Add recurring bills to see due dates.";
+
+  els.leftoverSummary.textContent = formatCurrency(finance.leftover);
+  els.leftoverMeta.textContent = finance.income ? `Income ${formatCurrency(finance.income)} • recurring ${formatCurrency(finance.recurring)}` : "Add your monthly income to see the real number.";
+}
+
+function showScheduleEditForm(eventId) {
+  const event = state.events.find((item) => item.id === eventId);
+  if (!event) {
+    return;
+  }
+
+  els.scheduleEditId.value = event.id;
+  els.scheduleEditTitle.value = event.title;
+  els.scheduleEditDate.value = event.date;
+  els.scheduleEditForm.classList.remove("hidden");
+  els.scheduleEditForm.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function hideScheduleEditForm() {
+  els.scheduleEditForm.classList.add("hidden");
+  els.scheduleEditForm.reset();
+}
+
+function handleEventEditSave(event) {
+  event.preventDefault();
+  const current = state.events.find((item) => item.id === els.scheduleEditId.value);
+  if (!current) {
+    return;
+  }
+
+  current.title = els.scheduleEditTitle.value.trim() || current.title;
+  current.date = els.scheduleEditDate.value || current.date;
   saveState();
+  hideScheduleEditForm();
   renderSchedule();
 }
 
-function editScheduleItem(id) {
-  const item = [...state.events, ...state.bills, ...state.shifts].find((entry) => entry.id === id);
-  if (!item) {
-    return;
-  }
-  const newTitle = window.prompt("Edit title", item.title);
-  if (newTitle === null) {
-    return;
-  }
-  const newDate = window.prompt("Edit date (YYYY-MM-DD)", item.date);
-  if (!newDate) {
-    return;
-  }
-  item.title = newTitle.trim() || item.title;
-  item.date = newDate;
+function deleteEvent(eventId) {
+  state.events = state.events.filter((item) => item.id !== eventId);
   saveState();
   renderSchedule();
 }
@@ -659,154 +925,407 @@ function editScheduleItem(id) {
 function handleFinanceInput() {
   state.finance = {
     income: els.incomeInput.value,
-    expenses: els.expenseInput.value,
+    flexSpend: els.flexSpendInput.value,
     goal: els.goalInput.value
   };
   saveState();
   renderFinance();
+  renderSummaryCards(getScheduleItems());
+}
+
+function getFinanceSnapshot() {
+  const income = Number(state.finance.income) || 0;
+  const flexSpend = Number(state.finance.flexSpend) || 0;
+  const goal = Number(state.finance.goal) || 0;
+  const recurring = state.billDefinitions.reduce((total, bill) => total + estimateMonthlyBill(bill), 0);
+  const totalSpend = recurring + flexSpend;
+  const leftover = income - totalSpend;
+  const goalGap = Math.max(goal - leftover, 0);
+
+  return { income, flexSpend, goal, recurring, totalSpend, leftover, goalGap };
 }
 
 function renderFinance() {
-  const income = Number(state.finance.income) || 0;
-  const expenses = Number(state.finance.expenses) || 0;
-  const goal = Number(state.finance.goal) || 0;
-  const remaining = Math.max(income - expenses, 0);
-  const goalGap = Math.max(goal - remaining, 0);
-
-  drawBudgetChart(income, expenses, remaining);
+  const snapshot = getFinanceSnapshot();
+  els.incomeSummary.textContent = formatCurrency(snapshot.income);
+  els.recurringSummary.textContent = formatCurrency(snapshot.recurring);
+  els.goalSummary.textContent = snapshot.goal ? formatCurrency(snapshot.goalGap) : "No goal";
+  els.freeCashSummary.textContent = formatCurrency(snapshot.leftover);
 
   const tips = [];
-  if (!income && !expenses) {
-    tips.push("Add income and expenses to get a live snapshot.");
+  if (!snapshot.income) {
+    tips.push("Add income to get a real monthly picture.");
   } else {
-    const expenseRatio = income ? expenses / income : 1;
-    tips.push(`Monthly remaining: $${remaining.toFixed(2)}`);
-    tips.push(expenseRatio > 0.75 ? "Spending is heavy relative to income. Trim one recurring cost or cap takeout for a quick win." : "Your expense ratio looks manageable. Protect the margin with an automatic transfer.");
-    tips.push(goal ? (goalGap > 0 ? `You are $${goalGap.toFixed(2)} short of the savings goal.` : "Savings goal is covered at the current pace.") : "Set a savings goal to get tighter coaching.");
+    tips.push(`Income saved in the browser: ${formatCurrency(snapshot.income)}.`);
+    tips.push(`${state.billDefinitions.length} saved bill${state.billDefinitions.length === 1 ? "" : "s"} with a monthly load of ${formatCurrency(snapshot.recurring)}.`);
+    tips.push(`Other monthly spending is ${formatCurrency(snapshot.flexSpend)}.`);
+    tips.push(snapshot.leftover >= 0 ? `Estimated free cash after bills and spending: ${formatCurrency(snapshot.leftover)}.` : `You are over budget by ${formatCurrency(Math.abs(snapshot.leftover))}.`);
+    if (snapshot.goal) {
+      tips.push(snapshot.goalGap === 0 ? "Your current setup covers the savings goal." : `${formatCurrency(snapshot.goalGap)} more is needed to hit the goal.`);
+    }
   }
 
   els.financeInsights.innerHTML = tips.map((tip) => `<div class="finance-tip">${escapeHtml(tip)}</div>`).join("");
+  els.billCollectionMeta.textContent = state.billDefinitions.length
+    ? `${state.billDefinitions.length} bills saved locally. Add as many as you need; they will stay here.`
+    : "Add as many bills as you need and they will stay saved in the browser.";
+  drawBudgetChart(snapshot);
+  renderBillDefinitions();
 }
 
-function drawBudgetChart(income, expenses, remaining) {
+function renderBillDefinitions() {
+  if (!state.billDefinitions.length) {
+    els.billDefinitionList.innerHTML = `<div class="panel"><p class="status-text mb-0">No bills added yet.</p></div>`;
+    return;
+  }
+
+  const allOccurrences = buildBillOccurrences(450);
+  const today = startOfDay(new Date());
+  const sortedBills = [...state.billDefinitions].sort((a, b) => {
+    const nextA = allOccurrences.find((item) => item.definitionId === a.id && new Date(`${item.date}T00:00:00`) >= today);
+    const nextB = allOccurrences.find((item) => item.definitionId === b.id && new Date(`${item.date}T00:00:00`) >= today);
+    return new Date(`${nextA?.date || "2999-12-31"}T00:00:00`) - new Date(`${nextB?.date || "2999-12-31"}T00:00:00`);
+  });
+
+  els.billDefinitionList.innerHTML = sortedBills.map((bill) => {
+    const nextDates = allOccurrences
+      .filter((item) => item.definitionId === bill.id && new Date(`${item.date}T00:00:00`) >= today)
+      .slice(0, 3)
+      .map((item) => formatShortDate(item.date));
+    return `
+      <div class="bill-card">
+        <div class="bill-card-header">
+          <div>
+            <div class="section-kicker">${escapeHtml(bill.frequency)}</div>
+            <div class="fw-bold">${escapeHtml(bill.name)}</div>
+          </div>
+          <div class="bill-card-amount">${escapeHtml(formatCurrency(bill.amount))}</div>
+        </div>
+        <div class="status-text mb-2">First due ${escapeHtml(formatLongDate(bill.firstDue))}</div>
+        <div class="status-text mb-2">${nextDates.length ? `Next: ${escapeHtml(nextDates.join(" • "))}` : "No future due dates found."}</div>
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <div class="status-text">Monthly impact ${escapeHtml(formatCurrency(estimateMonthlyBill(bill)))}</div>
+          <button class="btn btn-sm btn-outline-danger" type="button" data-delete-bill="${bill.id}">Delete</button>
+        </div>
+      </div>
+    `;
+  }).join("");
+
+  els.billDefinitionList.querySelectorAll("[data-delete-bill]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.billDefinitions = state.billDefinitions.filter((bill) => bill.id !== button.dataset.deleteBill);
+      saveState();
+      renderSchedule();
+      renderFinance();
+    });
+  });
+}
+
+function estimateMonthlyBill(bill) {
+  if (bill.frequency === "weekly") {
+    return (bill.amount * 52) / 12;
+  }
+  if (bill.frequency === "biweekly") {
+    return (bill.amount * 26) / 12;
+  }
+  if (bill.frequency === "one-time") {
+    return 0;
+  }
+  return bill.amount;
+}
+
+function drawBudgetChart(snapshot) {
   const canvas = els.budgetChart;
   const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    return;
+  }
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const total = Math.max(income, expenses + remaining, 1);
-  const centerX = canvas.width / 2;
-  const centerY = canvas.height / 2;
-  const radius = 92;
-  const lineWidth = 26;
-  const start = -Math.PI / 2;
+  const recurring = Math.max(snapshot.recurring, 0);
+  const flexSpend = Math.max(snapshot.flexSpend, 0);
+  const leftover = Math.max(snapshot.leftover, 0);
+  const total = Math.max(snapshot.income, recurring + flexSpend + leftover, 1);
+
   const slices = [
-    { value: expenses, color: "#73a7ff" },
-    { value: remaining, color: "#8bf3d5" },
-    { value: Math.max(total - (expenses + remaining), 0), color: "rgba(255,255,255,0.08)" }
+    { value: recurring, color: "#f0ad4e" },
+    { value: flexSpend, color: "#ff7b88" },
+    { value: leftover, color: "#55d6a1" },
+    { value: Math.max(total - recurring - flexSpend - leftover, 0), color: "rgba(255,255,255,0.08)" }
   ];
 
-  let current = start;
+  let current = -Math.PI / 2;
   slices.forEach((slice) => {
+    if (slice.value <= 0) {
+      return;
+    }
     const angle = (slice.value / total) * Math.PI * 2;
     ctx.beginPath();
     ctx.strokeStyle = slice.color;
-    ctx.lineWidth = lineWidth;
+    ctx.lineWidth = 24;
     ctx.lineCap = "round";
-    ctx.arc(centerX, centerY, radius, current, current + angle);
+    ctx.arc(canvas.width / 2, canvas.height / 2, 88, current, current + angle);
     ctx.stroke();
     current += angle;
   });
 
-  ctx.fillStyle = "#f2f6fb";
-  ctx.font = '700 28px "Trebuchet MS"';
+  ctx.fillStyle = "#f4f7fb";
+  ctx.font = '700 24px "Segoe UI"';
   ctx.textAlign = "center";
-  ctx.fillText(`$${Math.round(income)}`, centerX, centerY - 2);
-  ctx.fillStyle = "#8fa2bb";
-  ctx.font = '500 12px "Consolas"';
-  ctx.fillText("income", centerX, centerY + 18);
+  ctx.fillText(formatCompactCurrency(snapshot.income), canvas.width / 2, canvas.height / 2 - 4);
+  ctx.fillStyle = "#95a3b8";
+  ctx.font = '600 12px "Segoe UI"';
+  ctx.fillText("monthly income", canvas.width / 2, canvas.height / 2 + 18);
 }
 
-function handleCategorySubmit(event) {
+async function handleLolCompare(event) {
   event.preventDefault();
-  const category = els.categoryInput.value.trim();
-  if (!category || state.fmhy.categories[category]) {
+  const players = els.lolPlayers.value.trim();
+  const region = els.lolRegion.value;
+
+  state.lolPlayers = players;
+  state.lolRegion = region;
+  saveState();
+
+  if (!players) {
+    els.lolResults.innerHTML = `<div class="col-12"><div class="panel"><p class="status-text mb-0">Add Riot IDs like Name#Tag to compare players.</p></div></div>`;
     return;
   }
-  state.fmhy.categories[category] = [];
-  els.categoryForm.reset();
-  saveState();
-  renderLinks();
+
+  els.lolResults.innerHTML = `<div class="col-12"><div class="panel"><p class="status-text mb-0">Loading OP.GG and Lolalytics data…</p></div></div>`;
+
+  try {
+    const response = await fetch(`lol-compare.php?region=${encodeURIComponent(region)}&players=${encodeURIComponent(players)}`, { cache: "no-store" });
+    const data = await response.json();
+    if (!response.ok || !data.ok) {
+      throw new Error(data.error || "League comparison failed.");
+    }
+    renderLolResults(data.players || []);
+  } catch (error) {
+    console.error(error);
+    els.lolResults.innerHTML = `<div class="col-12"><div class="panel"><p class="status-text mb-0">League comparison could not be loaded.</p></div></div>`;
+  }
 }
 
-function handleLinkSubmit(event) {
-  event.preventDefault();
-  const category = els.linkCategory.value.trim();
-  const label = els.linkLabel.value.trim();
-  const url = els.linkUrl.value.trim();
-  if (!category || !label || !url) {
-    return;
-  }
-  if (!state.fmhy.categories[category]) {
-    state.fmhy.categories[category] = [];
-  }
-  state.fmhy.categories[category].push({ label, url });
-  els.linkForm.reset();
-  saveState();
-  renderLinks();
-}
-
-function renderLinks() {
-  const categories = Object.entries(state.fmhy.categories);
-  if (!categories.length) {
-    els.linksContainer.innerHTML = `<div class="panel"><p class="status-text">No categories yet.</p></div>`;
+function renderLolResults(players = []) {
+  if (!players.length) {
+    els.lolResults.innerHTML = `<div class="col-12"><div class="panel"><p class="status-text mb-0">No player data to show yet.</p></div></div>`;
     return;
   }
 
-  els.linksContainer.innerHTML = categories.map(([category, links]) => `
-    <details class="accordion" open>
-      <summary>
-        <span>${escapeHtml(category)}</span>
-        <span class="meta">${links.length} links</span>
-      </summary>
-      <div class="accordion-body">
-        ${links.length ? links.map((link, index) => `
-          <div class="link-item">
-            <a href="${escapeAttribute(link.url)}" target="_blank" rel="noreferrer noopener">${escapeHtml(link.label)}</a>
-            <div class="file-entry-actions">
-              <button class="ghost-btn" type="button" data-remove-link="${escapeAttribute(category)}::${index}">Delete</button>
+  els.lolResults.innerHTML = players.map((player) => {
+    if (!player.ok) {
+      return `
+        <div class="col-12 col-xl-6">
+          <article class="lol-card">
+            <div class="section-kicker">Unavailable</div>
+            <h3>${escapeHtml(player.player)}</h3>
+            <p class="status-text mb-2">${escapeHtml(player.error || "Unable to load profile.")}</p>
+            ${player.source ? `<a href="${escapeAttribute(player.source)}" target="_blank" rel="noreferrer noopener">Open source</a>` : ""}
+          </article>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="col-12 col-xl-6">
+        <article class="lol-card">
+          <div class="lol-topline">
+            <div>
+              <div class="section-kicker">OP.GG</div>
+              <h3 class="mb-1">${escapeHtml(player.player)}</h3>
+              <div class="lol-record">${escapeHtml(String(player.record.wins))}W ${escapeHtml(String(player.record.losses))}L • ${escapeHtml(String(player.record.winRate))}% WR</div>
+            </div>
+            <div class="text-end">
+              <div class="lol-rank">${escapeHtml(player.rank || "Unranked")}</div>
+              <div class="status-text">${player.lp !== null ? `${escapeHtml(String(player.lp))} LP` : "No LP shown"}</div>
             </div>
           </div>
-        `).join("") : `<p class="status-text">No links in this category yet.</p>`}
-        <button class="ghost-btn" type="button" data-remove-category="${escapeAttribute(category)}">Delete Category</button>
+          <div class="lol-champ-list">
+            ${(player.champions || []).length ? player.champions.map((champion) => `
+              <div class="champ-card">
+                <div class="champ-card-top">
+                  <strong>${escapeHtml(champion.name)}</strong>
+                  <span>${escapeHtml(String(champion.winRate))}% player WR</span>
+                </div>
+                <div class="status-text mt-1">${escapeHtml(String(champion.wins))}W ${escapeHtml(String(champion.losses))}L</div>
+                <div class="champ-meta">
+                  <span>${champion.lolalytics?.tier ? `Tier ${escapeHtml(champion.lolalytics.tier)}` : "Tier N/A"}</span>
+                  <span>${champion.lolalytics?.winRate ? `${escapeHtml(String(champion.lolalytics.winRate))}% Lolalytics WR` : "WR N/A"}</span>
+                  <span>${champion.lolalytics?.pickRate ? `${escapeHtml(String(champion.lolalytics.pickRate))}% pick` : "Pick N/A"}</span>
+                  <span>${champion.lolalytics?.banRate ? `${escapeHtml(String(champion.lolalytics.banRate))}% ban` : "Ban N/A"}</span>
+                </div>
+                <div class="d-flex flex-wrap gap-2 mt-2">
+                  <a class="btn btn-sm btn-outline-light" href="${escapeAttribute(player.source)}" target="_blank" rel="noreferrer noopener">OP.GG</a>
+                  ${champion.lolalyticsUrl ? `<a class="btn btn-sm btn-outline-light" href="${escapeAttribute(champion.lolalyticsUrl)}" target="_blank" rel="noreferrer noopener">Lolalytics</a>` : ""}
+                </div>
+              </div>
+            `).join("") : `<div class="status-text">No champion summary was found on OP.GG for this player.</div>`}
+          </div>
+        </article>
       </div>
-    </details>
-  `).join("");
-
-  els.linksContainer.querySelectorAll("[data-remove-link]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const [category, index] = button.dataset.removeLink.split("::");
-      state.fmhy.categories[category].splice(Number(index), 1);
-      saveState();
-      renderLinks();
-    });
-  });
-
-  els.linksContainer.querySelectorAll("[data-remove-category]").forEach((button) => {
-    button.addEventListener("click", () => {
-      delete state.fmhy.categories[button.dataset.removeCategory];
-      saveState();
-      renderLinks();
-    });
-  });
+    `;
+  }).join("");
 }
 
-function renderProxyLinks() {
-  els.proxyLinks.innerHTML = proxyCatalog.map((entry) => `
-    <article class="proxy-link">
-      <strong>${escapeHtml(entry.label)}</strong>
-      <p class="status-text">${escapeHtml(entry.description)}</p>
-      <a href="${escapeAttribute(entry.url)}" target="_blank" rel="noreferrer noopener">Open</a>
-    </article>
+async function handleChatSubmit(event) {
+  event.preventDefault();
+  const message = els.chatInput.value.trim();
+  if (!message || runtime.chatBusy) {
+    return;
+  }
+
+  state.chat.push({ role: "user", message });
+  els.chatInput.value = "";
+  runtime.chatBusy = true;
+  els.chatStatus.textContent = "Thinking…";
+  renderChat();
+  renderChatSummary();
+
+  try {
+    const response = await fetch("openai-chat.php", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ messages: state.chat })
+    });
+    const data = await response.json();
+
+    if (!response.ok || !data.ok) {
+      throw new Error(data.error || "The chat request failed.");
+    }
+
+    state.chat.push({ role: "assistant", message: data.reply });
+    els.chatStatus.textContent = "Connected";
+  } catch (error) {
+    console.error(error);
+    state.chat.push({
+      role: "assistant",
+      message: `Chat is not ready yet: ${error.message}`
+    });
+    els.chatStatus.textContent = "Server needs key";
+  } finally {
+    runtime.chatBusy = false;
+    saveState();
+    renderChat();
+    renderChatSummary();
+  }
+}
+
+function renderChat() {
+  els.chatLog.innerHTML = "";
+  state.chat.forEach((entry) => {
+    const bubble = els.chatBubbleTemplate.content.firstElementChild.cloneNode(true);
+    bubble.classList.add(entry.role);
+    bubble.querySelector(".chat-role").textContent = entry.role === "assistant" ? "Assistant" : "You";
+    bubble.querySelector(".chat-message").textContent = entry.message;
+    els.chatLog.appendChild(bubble);
+  });
+  els.chatLog.scrollTop = els.chatLog.scrollHeight;
+}
+
+function renderChatSummary() {
+  const lastAssistantMessage = [...state.chat].reverse().find((entry) => entry.role === "assistant")?.message || "";
+
+  if (runtime.chatBusy) {
+    els.chatSummary.textContent = "Thinking…";
+    els.chatSummaryMeta.textContent = "Sending your message through the private server-side endpoint.";
+    return;
+  }
+
+  if (lastAssistantMessage.startsWith("Chat is not ready yet:")) {
+    els.chatSummary.textContent = "Needs setup";
+    els.chatSummaryMeta.textContent = "Add OPENAI_API_KEY in GitHub Actions secrets so the server can answer.";
+    return;
+  }
+
+  els.chatSummary.textContent = state.chat.length > 1 ? "Live" : "Ready";
+  els.chatSummaryMeta.textContent = "Private chat runs through the server-side OpenAI endpoint.";
+}
+
+function handleFmhyPageChange() {
+  state.fmhyPage = sanitizeFmhyPage(els.fmhyPageInput.value);
+  els.fmhyPageInput.value = state.fmhyPage;
+  saveState();
+  loadFmhyPage();
+}
+
+function handleFmhySearchInput() {
+  state.fmhySearch = els.fmhySearch.value.trim();
+  saveState();
+  renderFmhy();
+}
+
+async function loadFmhyPage() {
+  els.fmhyMeta.textContent = "Loading FMHY page…";
+  els.fmhyResults.innerHTML = `<div class="panel"><p class="status-text mb-0">Loading links from FMHY…</p></div>`;
+  runtime.fmhy = null;
+
+  try {
+    const response = await fetch(`fmhy-proxy.php?page=${encodeURIComponent(state.fmhyPage)}`, { cache: "no-store" });
+    const data = await response.json();
+    if (!response.ok || !data.ok) {
+      throw new Error(data.error || "FMHY load failed.");
+    }
+    runtime.fmhy = data;
+    renderFmhy();
+  } catch (error) {
+    console.error(error);
+    runtime.fmhy = null;
+    els.fmhyMeta.textContent = "FMHY could not be loaded right now.";
+    els.fmhyResults.innerHTML = `<div class="panel"><p class="status-text mb-0">FMHY content could not be loaded.</p></div>`;
+  }
+}
+
+function renderFmhy() {
+  els.fmhyPageInput.value = state.fmhyPage;
+  els.fmhySearch.value = state.fmhySearch;
+
+  if (!runtime.fmhy) {
+    return;
+  }
+
+  const query = state.fmhySearch.toLowerCase();
+  const sections = (runtime.fmhy.sections || [])
+    .map((section) => ({
+      ...section,
+      items: section.items.filter((item) => {
+        if (!query) {
+          return true;
+        }
+        return [section.title, item.label, item.description, item.url].join(" ").toLowerCase().includes(query);
+      })
+    }))
+    .filter((section) => section.items.length);
+
+  const totalLinks = sections.reduce((sum, section) => sum + section.items.length, 0);
+  els.fmhyMeta.innerHTML = `
+    <div><strong>${escapeHtml(runtime.fmhy.title || "FMHY")}</strong></div>
+    <div class="status-text">${escapeHtml(runtime.fmhy.description || "")}</div>
+    <div class="status-text">${sections.length} sections • ${totalLinks} links • Source: <a href="${escapeAttribute(runtime.fmhy.source)}" target="_blank" rel="noreferrer noopener">${escapeHtml(runtime.fmhy.source)}</a></div>
+  `;
+
+  if (!sections.length) {
+    els.fmhyResults.innerHTML = `<div class="panel"><p class="status-text mb-0">No FMHY links matched your filter.</p></div>`;
+    return;
+  }
+
+  els.fmhyResults.innerHTML = sections.map((section) => `
+    <details class="fmhy-section" open>
+      <summary>
+        <span>${escapeHtml(section.title)}</span>
+        <span class="status-text">${section.items.length} links</span>
+      </summary>
+      <div class="fmhy-grid">
+        ${section.items.map((item) => `
+          <div class="fmhy-item">
+            <a href="${escapeAttribute(item.url)}" target="_blank" rel="noreferrer noopener">${escapeHtml(item.label)}</a>
+            <div class="status-text">${escapeHtml(item.description || "")}</div>
+          </div>
+        `).join("")}
+      </div>
+    </details>
   `).join("");
 }
 
@@ -816,6 +1335,7 @@ function handleFileCreate(event) {
   if (!name) {
     return;
   }
+
   const file = {
     id: crypto.randomUUID(),
     name,
@@ -831,40 +1351,44 @@ function handleFileCreate(event) {
 
 function renderFiles() {
   if (!state.files.length) {
-    els.fileList.innerHTML = `<div class="muted">No files yet.</div>`;
+    els.fileList.innerHTML = `<div class="panel"><p class="status-text mb-0">No notes yet.</p></div>`;
     els.fileTitle.value = "";
     els.fileContent.value = "";
     return;
   }
 
-  const activeFile = state.files.find((file) => file.id === state.activeFileId) || state.files[0];
-  state.activeFileId = activeFile.id;
-  els.fileList.innerHTML = state.files.map((file) => `
-    <button type="button" class="file-entry ${file.id === activeFile.id ? "active" : ""}" data-file-id="${file.id}">
-      <strong>${escapeHtml(file.name)}</strong>
-      <div class="file-time">${new Date(file.updatedAt).toLocaleString()}</div>
+  const orderedFiles = [...state.files].sort((a, b) => b.updatedAt - a.updatedAt);
+  const active = orderedFiles.find((file) => file.id === state.activeFileId) || orderedFiles[0];
+  state.activeFileId = active.id;
+
+  els.fileList.innerHTML = orderedFiles.map((file) => `
+    <button type="button" class="file-entry ${file.id === active.id ? "active" : ""}" data-file-id="${file.id}">
+      <div class="fw-bold">${escapeHtml(file.name)}</div>
+      <div class="file-time mt-1">${new Date(file.updatedAt).toLocaleString()}</div>
     </button>
   `).join("");
 
   els.fileList.querySelectorAll("[data-file-id]").forEach((button) => {
     button.addEventListener("click", () => {
       state.activeFileId = button.dataset.fileId;
+      saveState();
       renderFiles();
     });
   });
 
-  els.fileTitle.value = activeFile.name;
-  els.fileContent.value = activeFile.content;
+  els.fileTitle.value = active.name;
+  els.fileContent.value = active.content;
 }
 
 function handleFileSave() {
-  const activeFile = state.files.find((file) => file.id === state.activeFileId);
-  if (!activeFile) {
+  const active = state.files.find((file) => file.id === state.activeFileId);
+  if (!active) {
     return;
   }
-  activeFile.name = els.fileTitle.value.trim() || activeFile.name;
-  activeFile.content = els.fileContent.value;
-  activeFile.updatedAt = Date.now();
+
+  active.name = els.fileTitle.value.trim() || active.name;
+  active.content = els.fileContent.value;
+  active.updatedAt = Date.now();
   saveState();
   renderFiles();
 }
@@ -873,15 +1397,110 @@ function handleFileDelete() {
   if (!state.activeFileId) {
     return;
   }
+
   state.files = state.files.filter((file) => file.id !== state.activeFileId);
   state.activeFileId = state.files[0]?.id || null;
   saveState();
   renderFiles();
 }
 
+function shortItemTitle(item) {
+  if (item.type === "off") {
+    return "Home";
+  }
+  if (item.type === "shift-day") {
+    return "Day shift";
+  }
+  if (item.type === "shift-night") {
+    return "Night shift";
+  }
+  if (item.type === "bill") {
+    return "Bill";
+  }
+  if (item.type === "event") {
+    return "Event";
+  }
+  return item.title;
+}
+
+function displayScheduleItemLabel(item) {
+  if (item.type === "shift-day") {
+    return "Alamos day shift";
+  }
+  if (item.type === "shift-night") {
+    return "Alamos Tuesday night return";
+  }
+  if (item.type === "off") {
+    return "Home day";
+  }
+  return item.title;
+}
+
+function formatScheduleItemMeta(item) {
+  const parts = [];
+  if (item.time) {
+    parts.push(item.time);
+  }
+  if (typeof item.amount === "number") {
+    parts.push(formatCurrency(item.amount));
+  }
+  if (item.source === "event" && !parts.length) {
+    parts.push("Saved event");
+  }
+  if (!parts.length) {
+    parts.push(formatLongDate(item.date));
+  }
+  return parts.join(" • ");
+}
+
+function scheduleGroupMeta(items) {
+  return items.map((item) => shortItemTitle(item)).join(" • ");
+}
+
+function formatShiftTimeRange(startTime, endTime) {
+  if (!startTime || !endTime) {
+    return "Time TBD";
+  }
+  return `${formatClockTime(startTime)} - ${formatClockTime(endTime)}`;
+}
+
+function formatClockTime(value) {
+  const [hoursString = "0", minutesString = "00"] = String(value).split(":");
+  const hours = Number(hoursString);
+  const minutes = Number(minutesString);
+  const date = new Date();
+  date.setHours(hours, minutes, 0, 0);
+  return date.toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
+function sanitizeFmhyPage(value) {
+  const normalized = String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\/(www\.)?fmhy\.net\//, "")
+    .replace(/^\/+/, "")
+    .replace(/\/+$/, "")
+    .replace(/[^a-z0-9-]/g, "");
+
+  return normalized || "video";
+}
+
+function todayIso() {
+  return toDateInputValue(startOfDay(new Date()));
+}
+
 function startOfDay(date) {
   const copy = new Date(date);
   copy.setHours(0, 0, 0, 0);
+  return copy;
+}
+
+function addDays(date, days) {
+  const copy = new Date(date);
+  copy.setDate(copy.getDate() + days);
   return copy;
 }
 
@@ -892,8 +1511,8 @@ function toDateInputValue(date) {
   return `${year}-${month}-${day}`;
 }
 
-function formatLongDate(date) {
-  return new Date(`${date}T00:00:00`).toLocaleDateString([], {
+function formatLongDate(dateString) {
+  return new Date(`${dateString}T00:00:00`).toLocaleDateString([], {
     weekday: "short",
     month: "short",
     day: "numeric",
@@ -901,8 +1520,38 @@ function formatLongDate(date) {
   });
 }
 
-function randomRange(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function formatShortDate(dateString) {
+  return new Date(`${dateString}T00:00:00`).toLocaleDateString([], {
+    weekday: "short",
+    month: "short",
+    day: "numeric"
+  });
+}
+
+function formatCurrency(amount) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 2
+  }).format(amount || 0);
+}
+
+function formatCompactCurrency(amount) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    notation: "compact",
+    maximumFractionDigits: 1
+  }).format(amount || 0);
+}
+
+function appMonthAddJs(date, months) {
+  const base = new Date(date);
+  const currentDay = base.getDate();
+  const target = new Date(base.getFullYear(), base.getMonth() + months, 1);
+  const lastDay = new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate();
+  target.setDate(Math.min(currentDay, lastDay));
+  return target;
 }
 
 function escapeHtml(value) {
