@@ -1384,13 +1384,13 @@ function renderFmhy() {
   }
 
   els.fmhyResults.innerHTML = sections.map((section, index) => `
-    <details class="fmhy-section" ${index === 0 ? "open" : ""} data-fmhy-section-index="${index}">
+    <details class="fmhy-section" data-fmhy-section-index="${index}">
       <summary>
         <span>${escapeHtml(section.title)}</span>
         <span class="status-text">${section.items.length} links</span>
       </summary>
       <div class="fmhy-grid" data-fmhy-grid>
-        ${index === 0 ? renderFmhyItems(section.items) : `<div class="status-text">Open to load links.</div>`}
+        <div class="status-text">Open to load links.</div>
       </div>
     </details>
   `).join("");
