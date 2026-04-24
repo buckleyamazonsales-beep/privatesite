@@ -1,10 +1,11 @@
 const STORAGE_KEY = "imbuckleyy-dashboard-v7";
 const DEFAULT_SHIFT_CONFIG = {
   startDate: "2026-04-29",
+  runType: "days",
   dayStart: "05:30",
   dayEnd: "18:00",
   nightStart: "17:30",
-  nightEnd: "06:00"
+  nightEnd: "06:30"
 };
 
 const COLLECTION_LOG_DATA = {
@@ -341,6 +342,7 @@ const els = {
   billFrequency: document.getElementById("billFrequency"),
   billFirstDue: document.getElementById("billFirstDue"),
   shiftForm: document.getElementById("shiftForm"),
+  shiftRunType: document.getElementById("shiftRunType"),
   shiftStart: document.getElementById("shiftStart"),
   dayStartTime: document.getElementById("dayStartTime"),
   dayEndTime: document.getElementById("dayEndTime"),
@@ -497,6 +499,7 @@ function primeInputs() {
   els.fmhySearch.value = state.fmhySearch;
   els.collectionSearch.value = state.collectionLog.search;
   els.collectionHideCompleted.checked = Boolean(state.collectionLog.hideCompleted);
+  els.shiftRunType.value = state.shiftConfig.runType || DEFAULT_SHIFT_CONFIG.runType;
   els.shiftStart.value = state.shiftConfig.startDate;
   els.dayStartTime.value = state.shiftConfig.dayStart;
   els.dayEndTime.value = state.shiftConfig.dayEnd;
@@ -932,6 +935,7 @@ function handleShiftSubmit(event) {
   event.preventDefault();
   state.shiftConfig = {
     startDate: els.shiftStart.value || DEFAULT_SHIFT_CONFIG.startDate,
+    runType: els.shiftRunType.value || DEFAULT_SHIFT_CONFIG.runType,
     dayStart: els.dayStartTime.value || DEFAULT_SHIFT_CONFIG.dayStart,
     dayEnd: els.dayEndTime.value || DEFAULT_SHIFT_CONFIG.dayEnd,
     nightStart: els.nightStartTime.value || DEFAULT_SHIFT_CONFIG.nightStart,
@@ -942,24 +946,21 @@ function handleShiftSubmit(event) {
 }
 
 function getShiftPattern() {
+  const isNightRun = state.shiftConfig.runType === "nights";
   return [
     {
-      type: "shift-day",
-      title: "Alamos day shift",
-      count: 7,
-      time: formatShiftTimeRange(state.shiftConfig.dayStart, state.shiftConfig.dayEnd)
+      type: isNightRun ? "shift-night" : "shift-day",
+      title: isNightRun ? "Alamos night shift" : "Alamos day shift",
+      count: isNightRun ? 6 : 7,
+      time: isNightRun
+        ? formatShiftTimeRange(state.shiftConfig.nightStart, state.shiftConfig.nightEnd)
+        : formatShiftTimeRange(state.shiftConfig.dayStart, state.shiftConfig.dayEnd)
     },
     {
       type: "off",
       title: "Home day",
       count: 6,
       time: "Off"
-    },
-    {
-      type: "shift-night",
-      title: "Alamos Tuesday night return",
-      count: 1,
-      time: formatShiftTimeRange(state.shiftConfig.nightStart, state.shiftConfig.nightEnd)
     }
   ];
 }
@@ -1066,8 +1067,11 @@ function renderScheduleSpotlight(items) {
   const nextHome = items.find((item) => item.source === "shift" && item.type === "off" && new Date(`${item.date}T00:00:00`) >= today);
   const nextExtra = items.find((item) => (item.source === "event" || item.source === "bill") && new Date(`${item.date}T00:00:00`) >= today);
 
-  els.schedulePatternTitle.textContent = "7 day shifts -> 6 home days -> Tuesday night return";
+  const patternLabel = state.shiftConfig.runType === "nights"
+    ? "6 night shifts -> 6 home days"
+    : "7 day shifts -> 6 home days";
   els.schedulePatternMeta.textContent = `Starts ${formatLongDate(state.shiftConfig.startDate)} • day shift ${formatShiftTimeRange(state.shiftConfig.dayStart, state.shiftConfig.dayEnd)} • night shift ${formatShiftTimeRange(state.shiftConfig.nightStart, state.shiftConfig.nightEnd)}`;
+  els.schedulePatternTitle.textContent = patternLabel;
 
   const cards = [
     nextShift ? {
@@ -2132,7 +2136,7 @@ function displayScheduleItemLabel(item) {
     return "Alamos day shift";
   }
   if (item.type === "shift-night") {
-    return "Alamos Tuesday night return";
+    return "Alamos night shift";
   }
   if (item.type === "off") {
     return "Home day";
