@@ -6,6 +6,7 @@ const DEFAULT_SHIFT_CONFIG = {
   nightStart: "18:30",
   nightEnd: "06:30"
 };
+const SCHEDULE_END_DATE = "2035-12-31";
 
 const defaultState = {
   events: [],
@@ -628,9 +629,9 @@ function handleShiftSubmit(event) {
   renderSchedule();
 }
 
-function buildShiftItems(daysAhead = 120) {
+function buildShiftItems() {
   const start = new Date(`${state.shiftConfig.startDate}T00:00:00`);
-  const end = addDays(startOfDay(new Date()), daysAhead);
+  const end = getScheduleHorizonEnd();
   const items = [];
   const horizonStart = startOfDay(new Date());
   const renderStart = start < horizonStart ? start : horizonStart;
@@ -685,9 +686,9 @@ function buildShiftItems(daysAhead = 120) {
   return items;
 }
 
-function buildBillOccurrences(daysAhead = 365) {
+function buildBillOccurrences() {
   const occurrences = [];
-  const horizon = addDays(startOfDay(new Date()), daysAhead);
+  const horizon = getScheduleHorizonEnd();
 
   state.billDefinitions.forEach((definition) => {
     if (!definition.firstDue) {
@@ -1590,6 +1591,10 @@ function sanitizeFmhyPage(value) {
 
 function todayIso() {
   return toDateInputValue(startOfDay(new Date()));
+}
+
+function getScheduleHorizonEnd() {
+  return startOfDay(new Date(`${SCHEDULE_END_DATE}T00:00:00`));
 }
 
 function startOfDay(date) {
