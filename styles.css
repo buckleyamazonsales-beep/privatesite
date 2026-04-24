@@ -976,6 +976,29 @@ a:hover {
   gap: 1rem;
 }
 
+.fmhy-results-window {
+  max-height: 68vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 0.45rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 214, 143, 0.45) rgba(255, 255, 255, 0.05);
+}
+
+.fmhy-results-window::-webkit-scrollbar {
+  width: 0.6rem;
+}
+
+.fmhy-results-window::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+}
+
+.fmhy-results-window::-webkit-scrollbar-thumb {
+  background: rgba(255, 214, 143, 0.45);
+  border-radius: 999px;
+}
+
 .fmhy-section {
   border: 1px solid var(--app-border);
   border-radius: 1rem;
@@ -1012,6 +1035,13 @@ a:hover {
 .fmhy-item a {
   font-weight: 700;
   color: #ffe8bd;
+}
+
+@media (max-width: 767.98px) {
+  .fmhy-results-window {
+    max-height: 56vh;
+    padding-right: 0.2rem;
+  }
 }
 
 .file-list {
