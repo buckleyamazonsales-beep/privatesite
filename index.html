@@ -37,7 +37,6 @@
         <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#schedule" data-nav-link>Schedule</a>
         <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#finance" data-nav-link>Money</a>
         <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#league" data-nav-link>League</a>
-        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#collection" data-nav-link>Collection Log</a>
         <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#chat" data-nav-link>AI Chat</a>
         <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#fmhy" data-nav-link>FMHY</a>
         <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#notes" data-nav-link>Notes</a>
@@ -55,7 +54,6 @@
           <a class="quick-link" href="#live-strip">Live</a>
           <a class="quick-link" href="#schedule">Schedule</a>
           <a class="quick-link" href="#finance">Money</a>
-          <a class="quick-link" href="#collection">Collection Log</a>
           <a class="quick-link" href="#fmhy">FMHY</a>
           <a class="quick-link" href="#notes">Notes</a>
         </div>
@@ -240,47 +238,6 @@
               <button id="scheduleEditCancel" class="btn btn-outline-light" type="button">Cancel</button>
             </div>
           </form>
-        </div>
-      </div>
-    </section>
-
-    <section class="feature-band mb-4" id="collection">
-      <div class="feature-band-header mb-3">
-        <div>
-          <div class="section-kicker">RuneScape grind</div>
-          <h2 class="section-band-title mb-1">Collection log tracker</h2>
-          <p class="text-body-secondary mb-0">Built around the in-game flow from your video: category tabs, encounter list, KC updates, and drop tracking that stays saved locally.</p>
-        </div>
-      </div>
-      <div class="card section-card">
-        <div class="card-body p-4">
-          <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
-            <div>
-              <div class="section-kicker">Progress board</div>
-              <h3 class="section-panel-title mb-1">Bosses, raids, and side logs</h3>
-              <p class="text-body-secondary mb-0">Open a log, set your kill count, and tick off every unique as you get it.</p>
-            </div>
-            <div class="collection-badge">Saved locally in this browser</div>
-          </div>
-
-          <div id="collectionSummary" class="collection-summary-grid mb-4"></div>
-
-          <div class="collection-toolbar mb-4">
-            <div id="collectionTabs" class="collection-tabs"></div>
-            <div class="collection-toolbar-search">
-              <label for="collectionSearch" class="form-label mb-2">Search logs</label>
-              <input id="collectionSearch" type="text" class="form-control" placeholder="General Graardor, Kraken, Barrows...">
-            </div>
-            <label class="collection-toggle">
-              <input id="collectionHideCompleted" type="checkbox">
-              <span>Hide completed logs</span>
-            </label>
-          </div>
-
-          <div class="collection-shell">
-            <aside id="collectionEncounterList" class="collection-encounter-list"></aside>
-            <div id="collectionDetail" class="collection-detail-panel"></div>
-          </div>
         </div>
       </div>
     </section>
