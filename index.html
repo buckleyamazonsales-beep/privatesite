@@ -12,7 +12,7 @@
 
   <nav class="navbar navbar-dark sticky-top app-navbar">
     <div class="container-xxl">
-      <a class="navbar-brand brand-wordmark" href="#home">imbuckleyy.xyz</a>
+      <a class="navbar-brand brand-wordmark" href="index.html">imbuckleyy.xyz</a>
       <div class="d-flex align-items-center gap-2">
         <span id="liveClock" class="clock-pill">--:--</span>
         <button class="navbar-toggler border-0 menu-trigger" type="button" data-bs-toggle="offcanvas" data-bs-target="#siteMenu" aria-controls="siteMenu">
@@ -32,394 +32,122 @@
     </div>
     <div class="offcanvas-body">
       <div class="list-group list-group-flush">
-        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#home" data-nav-link>Home</a>
-        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#live-strip" data-nav-link>Live</a>
-        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#schedule" data-nav-link>Schedule</a>
-        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#finance" data-nav-link>Money</a>
-        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#league" data-nav-link>League</a>
-        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#chat" data-nav-link>AI Chat</a>
-        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#fmhy" data-nav-link>FMHY</a>
-        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="#notes" data-nav-link>Notes</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle nav-current" href="index.html" data-nav-link>Home</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="live.html" data-nav-link>Live</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="schedule.html" data-nav-link>Schedule</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="finance.html" data-nav-link>Money + League</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="tools.html" data-nav-link>FMHY + Chat</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="notes.html" data-nav-link>Notes</a>
       </div>
     </div>
   </div>
 
-  <main class="container-xxl py-4 py-lg-5" id="home">
-    <section class="hub-intro mb-4">
-      <div class="hub-intro-copy">
+  <main class="container-xxl py-4 py-lg-5">
+    <section class="page-hero mb-4">
+      <div class="page-hero-copy">
         <div class="section-kicker">Private home hub</div>
-        <h1 class="hub-title">The stuff you actually check, without the clutter.</h1>
-        <p class="hub-subtitle mb-4">Live scores, weather, plans, money, FMHY, chat, and notes in a cleaner flow that feels more like a real front page.</p>
+        <h1 class="page-title">A clean front door for the stuff you actually use.</h1>
+        <p class="page-subtitle">No more one-page pileup. Live updates, schedule, money, FMHY, chat, and notes each get their own space so the site feels calmer and easier to use.</p>
         <div class="quick-link-bar">
-          <a class="quick-link" href="#live-strip">Live</a>
-          <a class="quick-link" href="#schedule">Schedule</a>
-          <a class="quick-link" href="#finance">Money</a>
-          <a class="quick-link" href="#fmhy">FMHY</a>
-          <a class="quick-link" href="#notes">Notes</a>
+          <a class="quick-link" href="live.html">Open live</a>
+          <a class="quick-link" href="schedule.html">Open schedule</a>
+          <a class="quick-link" href="finance.html">Open money</a>
+          <a class="quick-link" href="tools.html">Open tools</a>
+          <a class="quick-link" href="notes.html">Open notes</a>
         </div>
       </div>
       <div class="overview-strip">
         <div class="overview-card panel">
           <div class="section-kicker">Next shift</div>
           <div id="nextShiftSummary" class="summary-value">Loading…</div>
-          <div id="nextShiftMeta" class="summary-meta">Shift timeline is building.</div>
+          <div id="nextShiftMeta" class="summary-meta">Shift timing will show here.</div>
         </div>
         <div class="overview-card panel">
           <div class="section-kicker">Next bill</div>
           <div id="nextBillSummary" class="summary-value">Loading…</div>
-          <div id="nextBillMeta" class="summary-meta">Recurring bills will show here.</div>
+          <div id="nextBillMeta" class="summary-meta">Upcoming bills will show here.</div>
         </div>
         <div class="overview-card panel">
           <div class="section-kicker">Monthly left</div>
           <div id="leftoverSummary" class="summary-value">$0</div>
-          <div id="leftoverMeta" class="summary-meta">Add income and bills below.</div>
+          <div id="leftoverMeta" class="summary-meta">Add income and bills to see the real number.</div>
         </div>
         <div class="overview-card panel">
           <div class="section-kicker">AI chat</div>
-          <div id="chatSummary" class="summary-value">Offline</div>
-          <div id="chatSummaryMeta" class="summary-meta">Needs server key to answer.</div>
+          <div id="chatSummary" class="summary-value">Ready</div>
+          <div id="chatSummaryMeta" class="summary-meta">Private chat status will show here.</div>
         </div>
       </div>
     </section>
 
-    <section class="feature-band mb-4" id="live-strip">
-      <div class="feature-band-header mb-3">
-        <div>
-          <div class="section-kicker">Live now</div>
-          <h2 class="section-band-title mb-1">Live and local</h2>
-          <p class="text-body-secondary mb-0">Scores and weather first, because that’s what you actually open the page for.</p>
-        </div>
-      </div>
-      <div class="feature-grid feature-grid-live">
-        <div class="feature-cell feature-cell-wide" id="nhl">
-          <div class="card section-card h-100">
-            <div class="card-body p-4">
-              <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
-                <div>
-                  <div class="section-kicker">NHL</div>
-                  <h3 class="section-panel-title mb-0">Live tracker</h3>
-                </div>
-                <button id="refreshTicker" class="btn btn-outline-light" type="button">Refresh</button>
-              </div>
-              <div class="ticker-panel rounded-4 mb-4">
-                <div id="nhlTicker" class="ticker-text">Loading the official NHL scoreboard…</div>
-              </div>
-              <div id="nhlGames" class="row g-3"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="feature-cell" id="weather">
-          <div class="card section-card h-100">
-            <div class="card-body p-4">
-              <div class="section-kicker">Weather</div>
-              <h3 class="section-panel-title mb-3">Local weather</h3>
-              <div id="weatherHero" class="weather-hero panel weather-hero-panel mb-3">
-                <div class="status-text">Waiting for weather lookup.</div>
-              </div>
-              <div class="d-grid gap-2 mb-3">
-                <button id="useGpsWeather" class="btn btn-warning btn-lg" type="button">Use My Location</button>
-                <form id="zipWeatherForm" class="d-grid gap-2">
-                  <input id="zipInput" name="zip" type="text" maxlength="12" class="form-control form-control-lg" placeholder="Zip or postal code">
-                  <button class="btn btn-outline-light" type="submit">Check weather</button>
-                </form>
-              </div>
-              <div id="weatherOutput" class="panel weather-panel">
-                <p class="status-text mb-0">Waiting for weather lookup.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="feature-cell feature-cell-full">
-          <div class="card section-card">
-            <div class="card-body p-4">
-              <div class="section-kicker">Forecast</div>
-              <h3 class="section-panel-title mb-3">Next few days</h3>
-              <div id="weatherForecast" class="row g-3"></div>
-            </div>
-          </div>
-        </div>
+    <section class="page-card-grid mb-4">
+      <a class="page-link-card page-link-primary" href="live.html">
+        <div class="section-kicker">Live</div>
+        <h2>Scores and weather</h2>
+        <p>NHL, current weather, and the next few days in one cleaner page.</p>
+        <span class="page-link-arrow">Open page</span>
+      </a>
+      <a class="page-link-card" href="schedule.html">
+        <div class="section-kicker">Plan</div>
+        <h2>Schedule and bills</h2>
+        <p>Your repeating Alamos cycle, recurring bills, and a proper calendar board.</p>
+        <span class="page-link-arrow">Open page</span>
+      </a>
+      <a class="page-link-card" href="finance.html">
+        <div class="section-kicker">Track</div>
+        <h2>Money and League</h2>
+        <p>Budget check-ins, saved bills, and League comparisons without crowding the rest of the site.</p>
+        <span class="page-link-arrow">Open page</span>
+      </a>
+      <a class="page-link-card" href="tools.html">
+        <div class="section-kicker">Tools</div>
+        <h2>FMHY and AI chat</h2>
+        <p>Private browsing tools and household chat in a dedicated space that does not take over the homepage.</p>
+        <span class="page-link-arrow">Open page</span>
+      </a>
+      <a class="page-link-card" href="notes.html">
+        <div class="section-kicker">Notes</div>
+        <h2>Private notes</h2>
+        <p>Quick notes, lists, and shared plans with more room to breathe.</p>
+        <span class="page-link-arrow">Open page</span>
+      </a>
+      <div class="page-link-card page-link-muted">
+        <div class="section-kicker">Local-first</div>
+        <h2>Same saved data</h2>
+        <p>Everything still stays in the browser using the same local storage, just organized into better pages.</p>
+        <span class="page-link-arrow">No extra setup</span>
       </div>
     </section>
 
-    <section class="feature-band mb-4" id="schedule">
-      <div class="feature-band-header mb-3">
-        <div>
-          <div class="section-kicker">Plan ahead</div>
-          <h2 class="section-band-title mb-1">Schedule and bills</h2>
-          <p class="text-body-secondary mb-0">One place for the shift cycle, recurring costs, and the days coming up next.</p>
-        </div>
-      </div>
+    <section class="feature-band">
       <div class="card section-card">
-        <div class="card-body p-4">
-          <div class="mb-3">
-            <div class="section-kicker">Schedule</div>
-            <h3 class="section-panel-title mb-1">A real schedule board</h3>
-            <p class="text-body-secondary mb-0">This board now follows your repeating rotation automatically: 1 week of days starting Wednesday, 1 week off, 1 week of nights starting the following Tuesday evening, 1 week off, then repeat.</p>
-          </div>
-
-          <div class="schedule-spotlight panel mb-4">
-            <div class="row g-3 align-items-center">
-              <div class="col-12 col-lg-7">
-                <div class="section-kicker">Shift pattern</div>
-                <h3 id="schedulePatternTitle" class="h4 mb-1">Loading your work rhythm…</h3>
-                <p id="schedulePatternMeta" class="text-body-secondary mb-0">Building today, tomorrow, and the next few shift blocks.</p>
-              </div>
-              <div class="col-12 col-lg-5">
-                <div id="scheduleNowCards" class="schedule-now-grid"></div>
-              </div>
+        <div class="card-body p-4 p-lg-5">
+          <div class="section-kicker">What changed</div>
+          <h2 class="section-band-title mb-3">The site is now split by job, not dumped in one long feed.</h2>
+          <div class="home-detail-grid">
+            <div class="panel">
+              <strong class="d-block mb-2">Home</strong>
+              <div class="status-text">Quick status, useful summaries, and clear entry points.</div>
             </div>
-          </div>
-
-          <div class="row g-3 mb-4">
-            <div class="col-12 col-xl-4">
-              <form id="eventForm" class="panel d-grid gap-3 h-100">
-                <h3 class="h5 mb-0">Add event</h3>
-                <input id="eventTitle" type="text" class="form-control" placeholder="Dinner, appointment, trip, date night">
-                <input id="eventDate" type="date" class="form-control">
-                <button class="btn btn-warning" type="submit">Add event</button>
-              </form>
+            <div class="panel">
+              <strong class="d-block mb-2">Live</strong>
+              <div class="status-text">Weather and NHL stay together because they are both quick-check info.</div>
             </div>
-            <div class="col-12 col-xl-4">
-              <form id="billForm" class="panel d-grid gap-3 h-100">
-                <h3 class="h5 mb-0">Add recurring bill</h3>
-                <input id="billName" type="text" class="form-control" placeholder="Rent, phone, credit card">
-                <input id="billAmount" type="number" step="0.01" min="0" class="form-control" placeholder="Amount">
-                <select id="billFrequency" class="form-select">
-                  <option value="monthly">Monthly</option>
-                  <option value="biweekly">Biweekly</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="one-time">One time</option>
-                </select>
-                <input id="billFirstDue" type="date" class="form-control">
-                <button class="btn btn-outline-light" type="submit">Add bill</button>
-              </form>
+            <div class="panel">
+              <strong class="d-block mb-2">Schedule</strong>
+              <div class="status-text">Shift rotation, bills, events, and calendar live in one planning page.</div>
             </div>
-              <div class="col-12 col-xl-4">
-                <form id="shiftForm" class="panel d-grid gap-3 h-100">
-                  <h3 class="h5 mb-0">Alamos shift preset</h3>
-                  <input id="shiftStart" type="date" class="form-control">
-                <div class="row g-2">
-                  <div class="col-6"><input id="dayStartTime" type="time" class="form-control"></div>
-                  <div class="col-6"><input id="dayEndTime" type="time" class="form-control"></div>
-                </div>
-                <div class="row g-2">
-                  <div class="col-6"><input id="nightStartTime" type="time" class="form-control"></div>
-                  <div class="col-6"><input id="nightEndTime" type="time" class="form-control"></div>
-                </div>
-                <button class="btn btn-outline-light" type="submit">Apply shift pattern</button>
-              </form>
+            <div class="panel">
+              <strong class="d-block mb-2">Money + League</strong>
+              <div class="status-text">The tracking page keeps finance and comparison tools together without clutter.</div>
             </div>
-          </div>
-
-          <div class="mb-4">
-            <div class="section-kicker">Calendar</div>
-            <div id="scheduleCalendar" class="schedule-calendar"></div>
-            <div class="status-text mt-2">Month view is powered by the free standard FullCalendar bundle.</div>
-          </div>
-
-          <div>
-            <div class="section-kicker">Upcoming</div>
-            <div id="scheduleList" class="schedule-list"></div>
-          </div>
-
-          <form id="scheduleEditForm" class="panel d-grid gap-3 hidden mt-4">
-            <input id="scheduleEditId" type="hidden">
-            <h3 class="h5 mb-0">Edit event</h3>
-            <input id="scheduleEditTitle" type="text" class="form-control" placeholder="Title">
-            <input id="scheduleEditDate" type="date" class="form-control">
-            <div class="d-flex flex-wrap gap-2">
-              <button id="scheduleEditSave" class="btn btn-warning" type="submit">Save changes</button>
-              <button id="scheduleEditCancel" class="btn btn-outline-light" type="button">Cancel</button>
+            <div class="panel">
+              <strong class="d-block mb-2">Tools</strong>
+              <div class="status-text">FMHY and AI chat now have their own space instead of fighting the homepage.</div>
             </div>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <section class="feature-band mb-4">
-      <div class="feature-band-header mb-3">
-        <div>
-          <div class="section-kicker">Track and compare</div>
-          <h2 class="section-band-title mb-1">Money and League</h2>
-          <p class="text-body-secondary mb-0">Budget on one side, League stats and comparisons on the other.</p>
-        </div>
-      </div>
-      <div class="feature-grid feature-grid-duo">
-        <div class="feature-cell" id="finance">
-          <div class="card section-card h-100">
-            <div class="card-body p-4">
-              <div class="section-kicker">Money</div>
-              <h3 class="section-panel-title mb-3">Money check-in</h3>
-              <form id="financeForm" class="d-grid gap-3 mb-3">
-                <input id="incomeInput" type="number" min="0" step="0.01" class="form-control form-control-lg" placeholder="Monthly income">
-                <input id="flexSpendInput" type="number" min="0" step="0.01" class="form-control form-control-lg" placeholder="Other monthly spending">
-                <input id="goalInput" type="number" min="0" step="0.01" class="form-control form-control-lg" placeholder="Savings goal">
-              </form>
-              <div class="row g-3 mb-3">
-                <div class="col-6 col-lg-4">
-                  <div class="panel mini-stat">
-                    <div class="section-kicker">Income</div>
-                    <div id="incomeSummary" class="summary-value">$0</div>
-                  </div>
-                </div>
-                <div class="col-6 col-lg-4">
-                  <div class="panel mini-stat">
-                    <div class="section-kicker">Recurring</div>
-                    <div id="recurringSummary" class="summary-value">$0</div>
-                  </div>
-                </div>
-                <div class="col-12 col-lg-4">
-                  <div class="panel mini-stat">
-                    <div class="section-kicker">Goal gap</div>
-                    <div id="goalSummary" class="summary-value">$0</div>
-                  </div>
-                </div>
-              </div>
-              <div class="panel mini-stat mb-3">
-                <div class="section-kicker">Free cash</div>
-                <div id="freeCashSummary" class="summary-value">$0</div>
-              </div>
-              <canvas id="budgetChart" width="260" height="260" class="mx-auto d-block"></canvas>
-            </div>
-          </div>
-        </div>
-
-        <div class="feature-cell">
-          <div class="card section-card h-100">
-            <div class="card-body p-4">
-              <div class="section-kicker">Bills</div>
-              <h3 class="section-panel-title mb-3">Bills that actually persist</h3>
-              <div id="financeInsights" class="finance-insights mb-3"></div>
-              <div id="billCollectionMeta" class="text-body-secondary mb-3">Add as many bills as you need and they will stay saved in the browser.</div>
-              <div id="billDefinitionList" class="bill-definition-list"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="feature-cell feature-cell-full" id="league">
-          <div class="card section-card">
-            <div class="card-body p-4">
-              <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-3">
-                <div>
-                  <div class="section-kicker">League</div>
-                  <h3 class="section-panel-title mb-1">OP.GG + Lolalytics comparison</h3>
-                  <p class="text-body-secondary mb-0">Use Riot IDs like <code>Name#Tag</code>. Player summaries are pulled from OP.GG and top champion stat snapshots are enriched from Lolalytics.</p>
-                </div>
-              </div>
-              <form id="lolForm" class="row g-3 align-items-end mb-4">
-                <div class="col-12 col-lg-2">
-                  <label for="lolRegion" class="form-label">Region</label>
-                  <select id="lolRegion" class="form-select">
-                    <option value="na">NA</option>
-                    <option value="euw">EUW</option>
-                    <option value="eune">EUNE</option>
-                    <option value="kr">KR</option>
-                  </select>
-                </div>
-                <div class="col-12 col-lg-8">
-                  <label for="lolPlayers" class="form-label">Players</label>
-                  <input id="lolPlayers" type="text" class="form-control form-control-lg" placeholder="Json#Jsoon, AnotherName#Tag">
-                </div>
-                <div class="col-12 col-lg-2 d-grid">
-                  <button class="btn btn-warning btn-lg" type="submit">Compare</button>
-                </div>
-              </form>
-              <div id="lolResults" class="row g-3"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="feature-band mb-4">
-      <div class="feature-band-header mb-3">
-        <div>
-          <div class="section-kicker">Browse and ask</div>
-          <h2 class="section-band-title mb-1">Private tools</h2>
-          <p class="text-body-secondary mb-0">AI chat on one side, FMHY browser on the other.</p>
-        </div>
-      </div>
-      <div class="feature-grid feature-grid-chat">
-        <div class="feature-cell" id="chat">
-          <div class="card section-card h-100">
-            <div class="card-body p-4">
-              <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-3">
-                <div>
-                  <div class="section-kicker">AI chat</div>
-                  <h3 class="section-panel-title mb-1">Private household assistant</h3>
-                  <p class="text-body-secondary mb-0">This uses a server-side chat endpoint. Once the OpenAI key is configured on deploy, it should answer like a real assistant instead of the fake placeholder.</p>
-                </div>
-                <div id="chatStatus" class="chat-status">Ready to try</div>
-              </div>
-              <div id="chatLog" class="chat-log mb-3"></div>
-              <form id="chatForm" class="d-grid gap-3">
-                <textarea id="chatInput" rows="4" class="form-control" placeholder="Ask about plans, bills, dinner, errands, or anything else..."></textarea>
-                <button class="btn btn-warning align-self-start" type="submit">Send</button>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        <div class="feature-cell feature-cell-wide" id="fmhy">
-          <div class="card section-card h-100">
-            <div class="card-body p-4">
-              <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-3">
-                <div>
-                  <div class="section-kicker">FMHY</div>
-                  <h3 class="section-panel-title mb-1">FMHY browser</h3>
-                  <p class="text-body-secondary mb-0">Browse FMHY by category, then filter down the links you want.</p>
-                </div>
-              </div>
-              <div class="row g-3 mb-4">
-                <div class="col-12 col-md-10">
-                  <label for="fmhySearch" class="form-label">Filter</label>
-                  <input id="fmhySearch" type="text" class="form-control" placeholder="Search sites or sections">
-                </div>
-                <div class="col-12 col-md-2 d-grid">
-                  <label class="form-label invisible">Refresh</label>
-                  <button id="refreshFmhy" class="btn btn-outline-light" type="button">Refresh</button>
-                </div>
-              </div>
-              <div class="fmhy-browser-bar mb-4">
-                <div id="fmhyCategories" class="fmhy-scroll-menu"></div>
-              </div>
-              <div id="fmhyMeta" class="text-body-secondary mb-3"></div>
-              <div id="fmhyResults" class="accordion-list fmhy-results-window"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="feature-band" id="notes">
-      <div class="feature-band-header mb-3">
-        <div>
-          <div class="section-kicker">Keep it handy</div>
-          <h2 class="section-band-title mb-1">Private notes</h2>
-          <p class="text-body-secondary mb-0">Quick capture on the left, editing on the right, and it all stays local.</p>
-        </div>
-      </div>
-      <div class="card section-card">
-        <div class="card-body p-4">
-          <form id="fileForm" class="row g-2 mb-3">
-            <div class="col-12 col-md-9"><input id="fileName" type="text" class="form-control" placeholder="New note title"></div>
-            <div class="col-12 col-md-3 d-grid"><button class="btn btn-warning" type="submit">Create note</button></div>
-          </form>
-          <div class="row g-4">
-            <div class="col-12 col-xl-3">
-              <aside id="fileList" class="file-list"></aside>
-            </div>
-            <div class="col-12 col-xl-9">
-              <div class="editor-panel">
-                <input id="fileTitle" type="text" class="form-control mb-3" placeholder="Note title">
-                <textarea id="fileContent" rows="14" class="form-control mb-3" placeholder="Private notes, lists, plans, reminders..."></textarea>
-                <div class="d-flex flex-wrap gap-2">
-                  <button id="saveFile" class="btn btn-warning" type="button">Save note</button>
-                  <button id="deleteFile" class="btn btn-outline-light" type="button">Delete note</button>
-                </div>
-              </div>
+            <div class="panel">
+              <strong class="d-block mb-2">Notes</strong>
+              <div class="status-text">Notes get a quieter editing view so they feel more like a real notebook.</div>
             </div>
           </div>
         </div>
@@ -427,15 +155,7 @@
     </section>
   </main>
 
-  <template id="chatBubbleTemplate">
-    <div class="chat-bubble">
-      <div class="chat-role"></div>
-      <p class="chat-message mb-0"></p>
-    </div>
-  </template>
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.20/index.global.min.js" crossorigin="anonymous"></script>
   <script src="app.js"></script>
 </body>
 </html>

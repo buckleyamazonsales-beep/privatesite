@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>imbuckleyy.xyz | Live</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.8/dist/darkly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="site-backdrop"></div>
+  <nav class="navbar navbar-dark sticky-top app-navbar">
+    <div class="container-xxl">
+      <a class="navbar-brand brand-wordmark" href="index.html">imbuckleyy.xyz</a>
+      <div class="d-flex align-items-center gap-2">
+        <span id="liveClock" class="clock-pill">--:--</span>
+        <button class="navbar-toggler border-0 menu-trigger" type="button" data-bs-toggle="offcanvas" data-bs-target="#siteMenu" aria-controls="siteMenu">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+  <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="siteMenu" aria-labelledby="siteMenuLabel">
+    <div class="offcanvas-header border-bottom border-secondary-subtle">
+      <div>
+        <div class="section-kicker">Menu</div>
+        <h5 class="offcanvas-title mb-0" id="siteMenuLabel">Private hub</h5>
+      </div>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div class="list-group list-group-flush">
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="index.html" data-nav-link>Home</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle nav-current" href="live.html" data-nav-link>Live</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="schedule.html" data-nav-link>Schedule</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="finance.html" data-nav-link>Money + League</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="tools.html" data-nav-link>FMHY + Chat</a>
+        <a class="list-group-item list-group-item-action bg-transparent text-light border-secondary-subtle" href="notes.html" data-nav-link>Notes</a>
+      </div>
+    </div>
+  </div>
+
+  <main class="container-xxl py-4 py-lg-5">
+    <section class="page-shell mb-4">
+      <div class="section-kicker">Live</div>
+      <h1 class="page-title page-title-small">Scores and weather</h1>
+      <p class="page-subtitle">The quick-check page for what is happening now, without the rest of the dashboard stacked underneath it.</p>
+    </section>
+
+    <section class="feature-grid feature-grid-live">
+      <div class="feature-cell feature-cell-wide">
+        <div class="card section-card h-100">
+          <div class="card-body p-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+              <div>
+                <div class="section-kicker">NHL</div>
+                <h2 class="section-panel-title mb-0">Live tracker</h2>
+              </div>
+              <button id="refreshTicker" class="btn btn-outline-light" type="button">Refresh</button>
+            </div>
+            <div class="ticker-panel rounded-4 mb-4">
+              <div id="nhlTicker" class="ticker-text">Loading the official NHL scoreboard…</div>
+            </div>
+            <div id="nhlGames" class="row g-3"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-cell">
+        <div class="card section-card h-100">
+          <div class="card-body p-4">
+            <div class="section-kicker">Weather</div>
+            <h2 class="section-panel-title mb-3">Local weather</h2>
+            <div id="weatherHero" class="weather-hero panel weather-hero-panel mb-3">
+              <div class="status-text">Waiting for weather lookup.</div>
+            </div>
+            <div class="d-grid gap-2 mb-3">
+              <button id="useGpsWeather" class="btn btn-warning btn-lg" type="button">Use My Location</button>
+              <form id="zipWeatherForm" class="d-grid gap-2">
+                <input id="zipInput" name="zip" type="text" maxlength="12" class="form-control form-control-lg" placeholder="Zip or postal code">
+                <button class="btn btn-outline-light" type="submit">Check weather</button>
+              </form>
+            </div>
+            <div id="weatherOutput" class="panel weather-panel">
+              <p class="status-text mb-0">Waiting for weather lookup.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-cell feature-cell-full">
+        <div class="card section-card">
+          <div class="card-body p-4">
+            <div class="section-kicker">Forecast</div>
+            <h2 class="section-panel-title mb-3">Next few days</h2>
+            <div id="weatherForecast" class="row g-3"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <script src="app.js"></script>
+</body>
+</html>

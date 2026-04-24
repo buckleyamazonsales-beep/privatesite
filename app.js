@@ -137,16 +137,22 @@ function init() {
   tickClock();
   setInterval(tickClock, 1000);
   renderAll();
-  loadNhlData();
-  loadFmhyPage();
-  runtime.nhlRefreshTimer = window.setInterval(loadNhlData, 120000);
+  if (els.nhlTicker && els.nhlGames) {
+    loadNhlData();
+    runtime.nhlRefreshTimer = window.setInterval(loadNhlData, 120000);
+  }
+  if (els.fmhySearch && els.fmhyMeta && els.fmhyResults && els.fmhyCategories) {
+    loadFmhyPage();
+  }
 
-  if (state.weatherZip) {
-    lookupWeatherByQuery(state.weatherZip);
-  } else if (navigator.geolocation) {
-    handleGpsWeather();
-  } else {
-    renderWeatherStatus("Use GPS or type a city, zip, or postal code to load the weather.");
+  if (els.weatherOutput && els.weatherForecast) {
+    if (state.weatherZip) {
+      lookupWeatherByQuery(state.weatherZip);
+    } else if (navigator.geolocation) {
+      handleGpsWeather();
+    } else {
+      renderWeatherStatus("Use GPS or type a city, zip, or postal code to load the weather.");
+    }
   }
 }
 
@@ -182,19 +188,19 @@ function saveState() {
 }
 
 function primeInputs() {
-  els.zipInput.value = state.weatherZip;
-  els.lolPlayers.value = state.lolPlayers;
-  els.lolRegion.value = state.lolRegion;
-  els.incomeInput.value = state.finance.income;
-  els.flexSpendInput.value = state.finance.flexSpend;
-  els.goalInput.value = state.finance.goal;
-  els.fmhySearch.value = state.fmhySearch;
-  els.shiftStart.value = state.shiftConfig.startDate;
-  els.dayStartTime.value = state.shiftConfig.dayStart;
-  els.dayEndTime.value = state.shiftConfig.dayEnd;
-  els.nightStartTime.value = state.shiftConfig.nightStart;
-  els.nightEndTime.value = state.shiftConfig.nightEnd;
-  els.billFirstDue.value = todayIso();
+  if (els.zipInput) els.zipInput.value = state.weatherZip;
+  if (els.lolPlayers) els.lolPlayers.value = state.lolPlayers;
+  if (els.lolRegion) els.lolRegion.value = state.lolRegion;
+  if (els.incomeInput) els.incomeInput.value = state.finance.income;
+  if (els.flexSpendInput) els.flexSpendInput.value = state.finance.flexSpend;
+  if (els.goalInput) els.goalInput.value = state.finance.goal;
+  if (els.fmhySearch) els.fmhySearch.value = state.fmhySearch;
+  if (els.shiftStart) els.shiftStart.value = state.shiftConfig.startDate;
+  if (els.dayStartTime) els.dayStartTime.value = state.shiftConfig.dayStart;
+  if (els.dayEndTime) els.dayEndTime.value = state.shiftConfig.dayEnd;
+  if (els.nightStartTime) els.nightStartTime.value = state.shiftConfig.nightStart;
+  if (els.nightEndTime) els.nightEndTime.value = state.shiftConfig.nightEnd;
+  if (els.billFirstDue) els.billFirstDue.value = todayIso();
 
   if (!state.activeFileId && state.files.length) {
     state.activeFileId = state.files[0].id;
@@ -203,30 +209,32 @@ function primeInputs() {
 
 function bindEvents() {
   els.navLinks.forEach((link) => link.addEventListener("click", closeMenu));
-  els.refreshTicker.addEventListener("click", loadNhlData);
-  els.useGpsWeather.addEventListener("click", handleGpsWeather);
-  els.zipWeatherForm.addEventListener("submit", handleZipWeather);
-  els.eventForm.addEventListener("submit", handleEventSubmit);
-  els.billForm.addEventListener("submit", handleBillSubmit);
-  els.shiftForm.addEventListener("submit", handleShiftSubmit);
-  els.scheduleEditForm.addEventListener("submit", handleEventEditSave);
-  els.scheduleEditCancel.addEventListener("click", hideScheduleEditForm);
-  [els.incomeInput, els.flexSpendInput, els.goalInput].forEach((input) => {
+  if (els.refreshTicker) els.refreshTicker.addEventListener("click", loadNhlData);
+  if (els.useGpsWeather) els.useGpsWeather.addEventListener("click", handleGpsWeather);
+  if (els.zipWeatherForm) els.zipWeatherForm.addEventListener("submit", handleZipWeather);
+  if (els.eventForm) els.eventForm.addEventListener("submit", handleEventSubmit);
+  if (els.billForm) els.billForm.addEventListener("submit", handleBillSubmit);
+  if (els.shiftForm) els.shiftForm.addEventListener("submit", handleShiftSubmit);
+  if (els.scheduleEditForm) els.scheduleEditForm.addEventListener("submit", handleEventEditSave);
+  if (els.scheduleEditCancel) els.scheduleEditCancel.addEventListener("click", hideScheduleEditForm);
+  [els.incomeInput, els.flexSpendInput, els.goalInput].filter(Boolean).forEach((input) => {
     input.addEventListener("input", handleFinanceInput);
   });
-  els.lolForm.addEventListener("submit", handleLolCompare);
-  els.chatForm.addEventListener("submit", handleChatSubmit);
-  els.chatInput.addEventListener("keydown", (event) => {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault();
-      els.chatForm.requestSubmit();
-    }
-  });
-  els.fmhySearch.addEventListener("input", handleFmhySearchInput);
-  els.refreshFmhy.addEventListener("click", loadFmhyPage);
-  els.fileForm.addEventListener("submit", handleFileCreate);
-  els.saveFile.addEventListener("click", handleFileSave);
-  els.deleteFile.addEventListener("click", handleFileDelete);
+  if (els.lolForm) els.lolForm.addEventListener("submit", handleLolCompare);
+  if (els.chatForm) els.chatForm.addEventListener("submit", handleChatSubmit);
+  if (els.chatInput && els.chatForm) {
+    els.chatInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        els.chatForm.requestSubmit();
+      }
+    });
+  }
+  if (els.fmhySearch) els.fmhySearch.addEventListener("input", handleFmhySearchInput);
+  if (els.refreshFmhy) els.refreshFmhy.addEventListener("click", loadFmhyPage);
+  if (els.fileForm) els.fileForm.addEventListener("submit", handleFileCreate);
+  if (els.saveFile) els.saveFile.addEventListener("click", handleFileSave);
+  if (els.deleteFile) els.deleteFile.addEventListener("click", handleFileDelete);
 }
 
 function closeMenu() {
@@ -236,6 +244,10 @@ function closeMenu() {
 }
 
 function tickClock() {
+  if (!els.liveClock) {
+    return;
+  }
+
   els.liveClock.textContent = new Date().toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit"
@@ -252,6 +264,10 @@ function renderAll() {
 }
 
 async function loadNhlData() {
+  if (!els.nhlTicker || !els.nhlGames) {
+    return;
+  }
+
   els.nhlTicker.textContent = "Loading the NHL scoreboard…";
   els.nhlGames.innerHTML = "";
 
@@ -281,6 +297,10 @@ async function loadNhlData() {
 }
 
 function renderNhl() {
+  if (!els.nhlTicker || !els.nhlGames) {
+    return;
+  }
+
   if (!runtime.nhlGames.length) {
     els.nhlTicker.textContent = "No NHL games are listed at the moment.";
     els.nhlGames.innerHTML = `<div class="col-12"><div class="panel"><p class="status-text mb-0">No games on the official scoreboard right now.</p></div></div>`;
@@ -351,6 +371,10 @@ function formatNhlVenue(game) {
 }
 
 function handleGpsWeather() {
+  if (!els.weatherOutput || !els.weatherForecast) {
+    return;
+  }
+
   if (!navigator.geolocation) {
     renderWeatherStatus("Geolocation is not available in this browser.");
     return;
@@ -375,6 +399,10 @@ function handleGpsWeather() {
 
 async function handleZipWeather(event) {
   event.preventDefault();
+  if (!els.zipInput) {
+    return;
+  }
+
   const query = els.zipInput.value.trim();
   if (!query) {
     renderWeatherStatus("Enter a city, zip, or postal code first.");
@@ -387,6 +415,10 @@ async function handleZipWeather(event) {
 }
 
 async function lookupWeatherByQuery(query) {
+  if (!els.weatherOutput || !els.weatherForecast) {
+    return;
+  }
+
   renderWeatherStatus(`Looking up weather for ${query}…`);
 
   try {
@@ -464,6 +496,10 @@ async function fetchWeather(latitude, longitude, label) {
 }
 
 function renderWeather() {
+  if (!els.weatherOutput || !els.weatherForecast) {
+    return;
+  }
+
   if (!runtime.weather) {
     renderWeatherStatus("Weather data is not loaded yet.");
     return;
@@ -534,6 +570,10 @@ function renderWeather() {
 }
 
 function renderWeatherStatus(message) {
+  if (!els.weatherOutput || !els.weatherForecast) {
+    return;
+  }
+
   const markup = `<p class="status-text mb-0">${escapeHtml(message)}</p>`;
   els.weatherOutput.innerHTML = markup;
   if (els.weatherHero) {
@@ -747,6 +787,10 @@ function getScheduleItems() {
 }
 
 function renderSchedule() {
+  if (!els.schedulePatternTitle && !els.scheduleList && !els.scheduleCalendar && !els.nextShiftSummary) {
+    return;
+  }
+
   const items = getScheduleItems();
   renderScheduleSpotlight(items);
   renderScheduleCalendar(items);
@@ -755,6 +799,10 @@ function renderSchedule() {
 }
 
 function renderScheduleSpotlight(items) {
+  if (!els.schedulePatternTitle || !els.schedulePatternMeta || !els.scheduleNowCards) {
+    return;
+  }
+
   const today = startOfDay(new Date());
   const nextShift = items.find((item) => item.source === "shift" && item.type !== "off" && new Date(`${item.date}T00:00:00`) >= today);
   const nextHome = items.find((item) => item.source === "shift" && item.type === "off" && new Date(`${item.date}T00:00:00`) >= today);
@@ -859,6 +907,10 @@ function renderScheduleCalendar(items) {
 }
 
 function renderUpcomingSchedule(items) {
+  if (!els.scheduleList) {
+    return;
+  }
+
   const today = startOfDay(new Date());
   const dayGroups = Array.from({ length: 14 }, (_, index) => {
     const date = addDays(today, index);
@@ -935,6 +987,10 @@ function renderSummaryCards(items) {
 }
 
 function showScheduleEditForm(eventId) {
+  if (!els.scheduleEditId || !els.scheduleEditTitle || !els.scheduleEditDate || !els.scheduleEditForm) {
+    return;
+  }
+
   const event = state.events.find((item) => item.id === eventId);
   if (!event) {
     return;
@@ -948,12 +1004,20 @@ function showScheduleEditForm(eventId) {
 }
 
 function hideScheduleEditForm() {
+  if (!els.scheduleEditForm) {
+    return;
+  }
+
   els.scheduleEditForm.classList.add("hidden");
   els.scheduleEditForm.reset();
 }
 
 function handleEventEditSave(event) {
   event.preventDefault();
+  if (!els.scheduleEditId || !els.scheduleEditTitle || !els.scheduleEditDate) {
+    return;
+  }
+
   const current = state.events.find((item) => item.id === els.scheduleEditId.value);
   if (!current) {
     return;
@@ -973,6 +1037,10 @@ function deleteEvent(eventId) {
 }
 
 function handleFinanceInput() {
+  if (!els.incomeInput || !els.flexSpendInput || !els.goalInput) {
+    return;
+  }
+
   state.finance = {
     income: els.incomeInput.value,
     flexSpend: els.flexSpendInput.value,
@@ -996,6 +1064,10 @@ function getFinanceSnapshot() {
 }
 
 function renderFinance() {
+  if (!els.incomeSummary || !els.recurringSummary || !els.goalSummary || !els.freeCashSummary || !els.financeInsights || !els.billCollectionMeta || !els.billDefinitionList || !els.budgetChart) {
+    return;
+  }
+
   const snapshot = getFinanceSnapshot();
   els.incomeSummary.textContent = formatCurrency(snapshot.income);
   els.recurringSummary.textContent = formatCurrency(snapshot.recurring);
@@ -1024,6 +1096,10 @@ function renderFinance() {
 }
 
 function renderBillDefinitions() {
+  if (!els.billDefinitionList) {
+    return;
+  }
+
   if (!state.billDefinitions.length) {
     els.billDefinitionList.innerHTML = `<div class="panel"><p class="status-text mb-0">No bills added yet.</p></div>`;
     return;
@@ -1085,6 +1161,10 @@ function estimateMonthlyBill(bill) {
 }
 
 function drawBudgetChart(snapshot) {
+  if (!els.budgetChart) {
+    return;
+  }
+
   const canvas = els.budgetChart;
   const ctx = canvas.getContext("2d");
   if (!ctx) {
@@ -1130,6 +1210,10 @@ function drawBudgetChart(snapshot) {
 
 async function handleLolCompare(event) {
   event.preventDefault();
+  if (!els.lolPlayers || !els.lolRegion || !els.lolResults) {
+    return;
+  }
+
   const players = els.lolPlayers.value.trim();
   const region = els.lolRegion.value;
 
@@ -1158,6 +1242,10 @@ async function handleLolCompare(event) {
 }
 
 function renderLolResults(players = []) {
+  if (!els.lolResults) {
+    return;
+  }
+
   if (!players.length) {
     els.lolResults.innerHTML = `<div class="col-12"><div class="panel"><p class="status-text mb-0">No player data to show yet.</p></div></div>`;
     return;
@@ -1220,6 +1308,10 @@ function renderLolResults(players = []) {
 
 async function handleChatSubmit(event) {
   event.preventDefault();
+  if (!els.chatInput || !els.chatStatus) {
+    return;
+  }
+
   const message = els.chatInput.value.trim();
   if (!message || runtime.chatBusy) {
     return;
@@ -1264,6 +1356,10 @@ async function handleChatSubmit(event) {
 }
 
 function renderChat() {
+  if (!els.chatLog || !els.chatBubbleTemplate) {
+    return;
+  }
+
   els.chatLog.innerHTML = "";
   state.chat.forEach((entry) => {
     const bubble = els.chatBubbleTemplate.content.firstElementChild.cloneNode(true);
@@ -1311,6 +1407,10 @@ function handleFmhySearchInput() {
 }
 
 async function loadFmhyPage() {
+  if (!els.fmhyMeta || !els.fmhyResults) {
+    return;
+  }
+
   els.fmhyMeta.textContent = "Loading FMHY page…";
   els.fmhyResults.innerHTML = `<div class="panel"><p class="status-text mb-0">Loading links from FMHY…</p></div>`;
   runtime.fmhy = null;
@@ -1332,6 +1432,10 @@ async function loadFmhyPage() {
 }
 
 function renderFmhy() {
+  if (!els.fmhySearch || !els.fmhyCategories || !els.fmhyMeta || !els.fmhyResults) {
+    return;
+  }
+
   els.fmhySearch.value = state.fmhySearch;
 
   if (!runtime.fmhy) {
@@ -1427,6 +1531,10 @@ function renderFmhyItems(items) {
 
 function handleFileCreate(event) {
   event.preventDefault();
+  if (!els.fileName || !els.fileForm) {
+    return;
+  }
+
   const name = els.fileName.value.trim();
   if (!name) {
     return;
@@ -1446,6 +1554,10 @@ function handleFileCreate(event) {
 }
 
 function renderFiles() {
+  if (!els.fileList || !els.fileTitle || !els.fileContent) {
+    return;
+  }
+
   if (!state.files.length) {
     els.fileList.innerHTML = `<div class="panel"><p class="status-text mb-0">No notes yet.</p></div>`;
     els.fileTitle.value = "";
@@ -1477,6 +1589,10 @@ function renderFiles() {
 }
 
 function handleFileSave() {
+  if (!els.fileTitle || !els.fileContent) {
+    return;
+  }
+
   const active = state.files.find((file) => file.id === state.activeFileId);
   if (!active) {
     return;
