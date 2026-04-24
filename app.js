@@ -1,10 +1,9 @@
 const STORAGE_KEY = "imbuckleyy-dashboard-v6";
 const DEFAULT_SHIFT_CONFIG = {
   startDate: "2026-04-29",
-  runType: "days",
   dayStart: "05:30",
-  dayEnd: "18:00",
-  nightStart: "17:30",
+  dayEnd: "18:30",
+  nightStart: "18:30",
   nightEnd: "06:30"
 };
 
@@ -79,7 +78,6 @@ const els = {
   billFrequency: document.getElementById("billFrequency"),
   billFirstDue: document.getElementById("billFirstDue"),
   shiftForm: document.getElementById("shiftForm"),
-  shiftRunType: document.getElementById("shiftRunType"),
   shiftStart: document.getElementById("shiftStart"),
   dayStartTime: document.getElementById("dayStartTime"),
   dayEndTime: document.getElementById("dayEndTime"),
@@ -189,7 +187,6 @@ function primeInputs() {
   els.flexSpendInput.value = state.finance.flexSpend;
   els.goalInput.value = state.finance.goal;
   els.fmhySearch.value = state.fmhySearch;
-  els.shiftRunType.value = state.shiftConfig.runType || DEFAULT_SHIFT_CONFIG.runType;
   els.shiftStart.value = state.shiftConfig.startDate;
   els.dayStartTime.value = state.shiftConfig.dayStart;
   els.dayEndTime.value = state.shiftConfig.dayEnd;
@@ -622,7 +619,6 @@ function handleShiftSubmit(event) {
   event.preventDefault();
   state.shiftConfig = {
     startDate: els.shiftStart.value || DEFAULT_SHIFT_CONFIG.startDate,
-    runType: els.shiftRunType.value || DEFAULT_SHIFT_CONFIG.runType,
     dayStart: els.dayStartTime.value || DEFAULT_SHIFT_CONFIG.dayStart,
     dayEnd: els.dayEndTime.value || DEFAULT_SHIFT_CONFIG.dayEnd,
     nightStart: els.nightStartTime.value || DEFAULT_SHIFT_CONFIG.nightStart,
@@ -632,50 +628,58 @@ function handleShiftSubmit(event) {
   renderSchedule();
 }
 
-function getShiftPattern() {
-  const isNightRun = state.shiftConfig.runType === "nights";
-  return [
-    {
-      type: isNightRun ? "shift-night" : "shift-day",
-      title: isNightRun ? "Alamos night shift" : "Alamos day shift",
-      count: isNightRun ? 6 : 7,
-      time: isNightRun
-        ? formatShiftTimeRange(state.shiftConfig.nightStart, state.shiftConfig.nightEnd)
-        : formatShiftTimeRange(state.shiftConfig.dayStart, state.shiftConfig.dayEnd)
-    },
-    {
-      type: "off",
-      title: "Home day",
-      count: 6,
-      time: "Off"
-    }
-  ];
-}
-
 function buildShiftItems(daysAhead = 120) {
   const start = new Date(`${state.shiftConfig.startDate}T00:00:00`);
   const end = addDays(startOfDay(new Date()), daysAhead);
   const items = [];
-  const pattern = getShiftPattern();
-  let cursor = new Date(start);
-  let patternIndex = 0;
+  const horizonStart = startOfDay(new Date());
+  const renderStart = start < horizonStart ? start : horizonStart;
 
-  while (cursor <= end) {
-    const block = pattern[patternIndex];
-
-    for (let i = 0; i < block.count && cursor <= end; i += 1) {
-      items.push({
-        id: `${block.type}-${toDateInputValue(cursor)}`,
-        source: "shift",
-        type: block.type,
-        title: block.title,
-        date: toDateInputValue(cursor),
-        time: block.time
-      });
-      cursor.setDate(cursor.getDate() + 1);
+  for (let cursor = new Date(renderStart); cursor <= end; cursor = addDays(cursor, 1)) {
+    const diffDays = Math.floor((startOfDay(cursor).getTime() - start.getTime()) / 86400000);
+    if (diffDays < 0) {
+      continue;
     }
 
-    patternIndex = (patternIndex + 1) % pattern.length;
+    const cycleDay = diffDays % 28;
+    const iso = toDateInputValue(cursor);
+
+    if (cycleDay <= 6) {
+      items.push({
+        id: `shift-day-${iso}`,
+        source: "shift",
+        type: "shift-day",
+        title: "Alamos day shift",
+        date: iso,
+        time: formatShiftTimeRange(state.shiftConfig.dayStart, state.shiftConfig.dayEnd)
+      });
+      continue;
+    }
+
+    if (cycleDay >= 13 && cycleDay <= 19) {
+      items.push({
+        id: `shift-night-${iso}`,
+        source: "shift",
+        type: "shift-night",
+        title: "Alamos night shift",
+        date: iso,
+        time: formatShiftTimeRange(state.shiftConfig.nightStart, state.shiftConfig.nightEnd)
+      });
+      continue;
+    }
+
+    items.push({
+      id: `off-${iso}`,
+      source: "shift",
+      type: "off",
+      title: "Home day",
+      date: iso,
+      time: cycleDay === 12
+        ? "Home until 6:30 p.m., then night shift"
+        : cycleDay === 20
+          ? "Home after 6:30 a.m."
+          : "Off"
+    });
   }
 
   return items;
@@ -754,11 +758,8 @@ function renderScheduleSpotlight(items) {
   const nextHome = items.find((item) => item.source === "shift" && item.type === "off" && new Date(`${item.date}T00:00:00`) >= today);
   const nextExtra = items.find((item) => (item.source === "event" || item.source === "bill") && new Date(`${item.date}T00:00:00`) >= today);
 
-  const patternLabel = state.shiftConfig.runType === "nights"
-    ? "6 night shifts -> 6 home days"
-    : "7 day shifts -> 6 home days";
-  els.schedulePatternMeta.textContent = `Starts ${formatLongDate(state.shiftConfig.startDate)} • day shift ${formatShiftTimeRange(state.shiftConfig.dayStart, state.shiftConfig.dayEnd)} • night shift ${formatShiftTimeRange(state.shiftConfig.nightStart, state.shiftConfig.nightEnd)}`;
-  els.schedulePatternTitle.textContent = patternLabel;
+  els.schedulePatternTitle.textContent = "Wednesday to Tuesday days, then Tuesday to Tuesday nights";
+  els.schedulePatternMeta.textContent = `Day block: ${formatShiftTimeRange(state.shiftConfig.dayStart, state.shiftConfig.dayEnd)} from Wednesday morning through Tuesday evening. Night block: ${formatShiftTimeRange(state.shiftConfig.nightStart, state.shiftConfig.nightEnd)} starting the following Tuesday evening and ending the next Tuesday morning.`;
 
   const cards = [
     nextShift ? {

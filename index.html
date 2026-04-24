@@ -156,7 +156,7 @@
           <div class="mb-3">
             <div class="section-kicker">Schedule</div>
             <h3 class="section-panel-title mb-1">A real schedule board</h3>
-            <p class="text-body-secondary mb-0">Set the run type, start date, and shift times below. Night runs now stay on nights for the whole work block, and the Tuesday morning end time can run to 6:30 a.m.</p>
+            <p class="text-body-secondary mb-0">This board now follows your repeating rotation automatically: 1 week of days starting Wednesday, 1 week off, 1 week of nights starting the following Tuesday evening, 1 week off, then repeat.</p>
           </div>
 
           <div class="schedule-spotlight panel mb-4">
@@ -196,14 +196,10 @@
                 <button class="btn btn-outline-light" type="submit">Add bill</button>
               </form>
             </div>
-            <div class="col-12 col-xl-4">
-              <form id="shiftForm" class="panel d-grid gap-3 h-100">
-                <h3 class="h5 mb-0">Alamos shift preset</h3>
-                <select id="shiftRunType" class="form-select">
-                  <option value="days">Day run</option>
-                  <option value="nights">Night run</option>
-                </select>
-                <input id="shiftStart" type="date" class="form-control">
+              <div class="col-12 col-xl-4">
+                <form id="shiftForm" class="panel d-grid gap-3 h-100">
+                  <h3 class="h5 mb-0">Alamos shift preset</h3>
+                  <input id="shiftStart" type="date" class="form-control">
                 <div class="row g-2">
                   <div class="col-6"><input id="dayStartTime" type="time" class="form-control"></div>
                   <div class="col-6"><input id="dayEndTime" type="time" class="form-control"></div>
