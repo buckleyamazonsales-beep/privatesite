@@ -44,6 +44,7 @@ const runtime = {
   weather: null,
   nhlGames: [],
   fmhy: null,
+  fmhySections: [],
   chatBusy: false,
   calendar: null,
   nhlRefreshTimer: null
@@ -1335,6 +1336,7 @@ function renderFmhy() {
 
   if (!runtime.fmhy) {
     els.fmhyCategories.innerHTML = "";
+    runtime.fmhySections = [];
     return;
   }
 
@@ -1367,6 +1369,7 @@ function renderFmhy() {
       })
     }))
     .filter((section) => section.items.length);
+  runtime.fmhySections = sections;
 
   const totalLinks = sections.reduce((sum, section) => sum + section.items.length, 0);
   els.fmhyMeta.innerHTML = `
@@ -1380,21 +1383,45 @@ function renderFmhy() {
     return;
   }
 
-  els.fmhyResults.innerHTML = sections.map((section) => `
-    <details class="fmhy-section" open>
+  els.fmhyResults.innerHTML = sections.map((section, index) => `
+    <details class="fmhy-section" ${index === 0 ? "open" : ""} data-fmhy-section-index="${index}">
       <summary>
         <span>${escapeHtml(section.title)}</span>
         <span class="status-text">${section.items.length} links</span>
       </summary>
-      <div class="fmhy-grid">
-        ${section.items.map((item) => `
-          <div class="fmhy-item">
-            <a href="${escapeAttribute(item.url)}" target="_blank" rel="noreferrer noopener">${escapeHtml(item.label)}</a>
-            <div class="status-text">${escapeHtml(item.description || "")}</div>
-          </div>
-        `).join("")}
+      <div class="fmhy-grid" data-fmhy-grid>
+        ${index === 0 ? renderFmhyItems(section.items) : `<div class="status-text">Open to load links.</div>`}
       </div>
     </details>
+  `).join("");
+
+  els.fmhyResults.querySelectorAll("[data-fmhy-section-index]").forEach((sectionEl) => {
+    const index = Number.parseInt(sectionEl.dataset.fmhySectionIndex || "", 10);
+    const grid = sectionEl.querySelector("[data-fmhy-grid]");
+    if (!grid || Number.isNaN(index)) {
+      return;
+    }
+
+    sectionEl.addEventListener("toggle", () => {
+      if (!sectionEl.open || grid.dataset.loaded === "true") {
+        return;
+      }
+      const section = runtime.fmhySections[index];
+      if (!section) {
+        return;
+      }
+      grid.innerHTML = renderFmhyItems(section.items);
+      grid.dataset.loaded = "true";
+    });
+  });
+}
+
+function renderFmhyItems(items) {
+  return items.map((item) => `
+    <div class="fmhy-item">
+      <a href="${escapeAttribute(item.url)}" target="_blank" rel="noreferrer noopener">${escapeHtml(item.label)}</a>
+      <div class="status-text">${escapeHtml(item.description || "")}</div>
+    </div>
   `).join("");
 }
 
