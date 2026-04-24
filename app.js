@@ -1,4 +1,4 @@
-const STORAGE_KEY = "imbuckleyy-dashboard-v6";
+const STORAGE_KEY = "imbuckleyy-dashboard-v7";
 const DEFAULT_SHIFT_CONFIG = {
   startDate: "2026-04-29",
   dayStart: "05:30",
@@ -6,6 +6,261 @@ const DEFAULT_SHIFT_CONFIG = {
   nightStart: "17:30",
   nightEnd: "06:00"
 };
+
+const COLLECTION_LOG_DATA = {
+  bosses: [
+    {
+      id: "general-graardor",
+      name: "General Graardor",
+      subtitle: "God Wars Dungeon",
+      location: "Bandos stronghold",
+      items: [
+        { name: "Bandos chestplate", rarity: "Unique" },
+        { name: "Bandos tassets", rarity: "Unique" },
+        { name: "Bandos boots", rarity: "Unique" },
+        { name: "Bandos hilt", rarity: "Rare" },
+        { name: "Godsword shard 1", rarity: "Shard" },
+        { name: "Godsword shard 2", rarity: "Shard" },
+        { name: "Godsword shard 3", rarity: "Shard" },
+        { name: "Pet general graardor", rarity: "Pet" }
+      ]
+    },
+    {
+      id: "commander-zilyana",
+      name: "Commander Zilyana",
+      subtitle: "God Wars Dungeon",
+      location: "Saradomin encampment",
+      items: [
+        { name: "Armadyl crossbow", rarity: "Unique" },
+        { name: "Saradomin sword", rarity: "Unique" },
+        { name: "Saradomin's light", rarity: "Rare" },
+        { name: "Saradomin hilt", rarity: "Rare" },
+        { name: "Godsword shard 1", rarity: "Shard" },
+        { name: "Godsword shard 2", rarity: "Shard" },
+        { name: "Godsword shard 3", rarity: "Shard" },
+        { name: "Pet zilyana", rarity: "Pet" }
+      ]
+    },
+    {
+      id: "corporeal-beast",
+      name: "Corporeal Beast",
+      subtitle: "Wilderness spirit beast",
+      location: "Corp cave",
+      items: [
+        { name: "Spectral sigil", rarity: "Sigil" },
+        { name: "Arcane sigil", rarity: "Sigil" },
+        { name: "Elysian sigil", rarity: "Sigil" },
+        { name: "Holy elixir", rarity: "Rare" },
+        { name: "Spirit shield", rarity: "Base" },
+        { name: "Onyx bolts (e)", rarity: "Rare" },
+        { name: "Jar of spirits", rarity: "Jar" },
+        { name: "Pet dark core", rarity: "Pet" }
+      ]
+    },
+    {
+      id: "king-black-dragon",
+      name: "King Black Dragon",
+      subtitle: "Deep Wilderness boss",
+      location: "KBD lair",
+      items: [
+        { name: "Dragon pickaxe", rarity: "Unique" },
+        { name: "Dragon axe", rarity: "Unique" },
+        { name: "Draconic visage", rarity: "Rare" },
+        { name: "Kbd heads", rarity: "Rare" },
+        { name: "Prince black dragon", rarity: "Pet" },
+        { name: "Dragon bones", rarity: "Common" }
+      ]
+    },
+    {
+      id: "kraken",
+      name: "Kraken",
+      subtitle: "Slayer boss",
+      location: "Kraken cave",
+      items: [
+        { name: "Kraken tentacle", rarity: "Unique" },
+        { name: "Trident of the seas", rarity: "Unique" },
+        { name: "Jar of dirt", rarity: "Jar" },
+        { name: "Pet kraken", rarity: "Pet" },
+        { name: "Mystic robe top", rarity: "Rare" },
+        { name: "Mystic robe bottom", rarity: "Rare" }
+      ]
+    },
+    {
+      id: "duke-sucellus",
+      name: "Duke Sucellus",
+      subtitle: "Desert Treasure II",
+      location: "The Lassar Undercity",
+      items: [
+        { name: "Magus vestige", rarity: "Vestige" },
+        { name: "Chromium ingot", rarity: "Rare" },
+        { name: "Virtus mask", rarity: "Virtus" },
+        { name: "Virtus robe top", rarity: "Virtus" },
+        { name: "Virtus robe bottom", rarity: "Virtus" },
+        { name: "Eye of the duke", rarity: "Pet" }
+      ]
+    },
+    {
+      id: "dagannoth-kings",
+      name: "Dagannoth Kings",
+      subtitle: "Multi-boss set",
+      location: "Waterbirth dungeon",
+      items: [
+        { name: "Berserker ring", rarity: "Ring" },
+        { name: "Seers ring", rarity: "Ring" },
+        { name: "Warrior ring", rarity: "Ring" },
+        { name: "Archers ring", rarity: "Ring" },
+        { name: "Dragon axe", rarity: "Unique" },
+        { name: "Mud battlestaff", rarity: "Rare" },
+        { name: "Pet dagannoth rex", rarity: "Pet" }
+      ]
+    },
+    {
+      id: "crazy-archaeologist",
+      name: "Crazy Archaeologist",
+      subtitle: "Wilderness demi-boss",
+      location: "Forgotten Cemetery",
+      items: [
+        { name: "Fedora", rarity: "Unique" },
+        { name: "Odium shard 2", rarity: "Shard" },
+        { name: "Malediction shard 2", rarity: "Shard" },
+        { name: "Dragon pickaxe", rarity: "Rare" }
+      ]
+    },
+    {
+      id: "demonic-gorillas",
+      name: "Demonic Gorillas",
+      subtitle: "High-value slayer grind",
+      location: "Crash Site Cavern",
+      items: [
+        { name: "Zenyte shard", rarity: "Unique" },
+        { name: "Ballista spring", rarity: "Rare" },
+        { name: "Ballista limbs", rarity: "Rare" },
+        { name: "Monkey tail", rarity: "Rare" },
+        { name: "Light frame", rarity: "Rare" },
+        { name: "Heavy frame", rarity: "Rare" }
+      ]
+    }
+  ],
+  raids: [
+    {
+      id: "chambers-of-xeric",
+      name: "Chambers of Xeric",
+      subtitle: "Raid",
+      location: "Mount Quidamortem",
+      items: [
+        { name: "Twisted bow", rarity: "Mega-rare" },
+        { name: "Kodai insignia", rarity: "Unique" },
+        { name: "Dragon hunter crossbow", rarity: "Unique" },
+        { name: "Ancestral hat", rarity: "Ancestral" },
+        { name: "Dexterous prayer scroll", rarity: "Scroll" },
+        { name: "Arcane prayer scroll", rarity: "Scroll" },
+        { name: "Olmlet", rarity: "Pet" }
+      ]
+    },
+    {
+      id: "theatre-of-blood",
+      name: "Theatre of Blood",
+      subtitle: "Raid",
+      location: "Ver Sinhaza",
+      items: [
+        { name: "Scythe of vitur", rarity: "Mega-rare" },
+        { name: "Ghrazi rapier", rarity: "Unique" },
+        { name: "Sanguinesti staff", rarity: "Unique" },
+        { name: "Justiciar faceguard", rarity: "Justiciar" },
+        { name: "Avernic defender hilt", rarity: "Unique" },
+        { name: "Lil' zik", rarity: "Pet" }
+      ]
+    },
+    {
+      id: "tombs-of-amascut",
+      name: "Tombs of Amascut",
+      subtitle: "Raid",
+      location: "Necropolis",
+      items: [
+        { name: "Tumeken's shadow", rarity: "Mega-rare" },
+        { name: "Masori mask", rarity: "Masori" },
+        { name: "Lightbearer", rarity: "Unique" },
+        { name: "Osmumten's fang", rarity: "Unique" },
+        { name: "Elidinis' ward", rarity: "Unique" },
+        { name: "Tumeken's guardian", rarity: "Pet" }
+      ]
+    }
+  ],
+  other: [
+    {
+      id: "barrows",
+      name: "Barrows",
+      subtitle: "Brother sets",
+      location: "Morytania crypts",
+      items: [
+        { name: "Dharok's greataxe", rarity: "Set item" },
+        { name: "Ahrim's robetop", rarity: "Set item" },
+        { name: "Karil's leathertop", rarity: "Set item" },
+        { name: "Verac's flail", rarity: "Set item" },
+        { name: "Torag's hammers", rarity: "Set item" },
+        { name: "Guthan's warspear", rarity: "Set item" }
+      ]
+    },
+    {
+      id: "clue-scrolls",
+      name: "Clue Scrolls",
+      subtitle: "Treasure trails",
+      location: "All tiers",
+      items: [
+        { name: "Ranger boots", rarity: "Rare" },
+        { name: "Robin hood hat", rarity: "Rare" },
+        { name: "3rd age platebody", rarity: "Ultra rare" },
+        { name: "Holy sandals", rarity: "Rare" },
+        { name: "Gilded full helm", rarity: "Rare" },
+        { name: "Bloodhound", rarity: "Pet" }
+      ]
+    },
+    {
+      id: "revenants",
+      name: "Revenants",
+      subtitle: "Wilderness cave",
+      location: "Revenant caves",
+      items: [
+        { name: "Ancient emblem", rarity: "Unique" },
+        { name: "Ancient totem", rarity: "Unique" },
+        { name: "Ancient statuette", rarity: "Unique" },
+        { name: "Craw's bow", rarity: "Weapon" },
+        { name: "Viggora's chainmace", rarity: "Weapon" },
+        { name: "Thammaron's sceptre", rarity: "Weapon" }
+      ]
+    },
+    {
+      id: "slayer",
+      name: "Slayer",
+      subtitle: "Task-only milestones",
+      location: "Across the world",
+      items: [
+        { name: "Imbued heart", rarity: "Rare" },
+        { name: "Eternal gem", rarity: "Rare" },
+        { name: "Dust battlestaff", rarity: "Rare" },
+        { name: "Abyssal whip", rarity: "Unique" },
+        { name: "Dark totem base", rarity: "Totem" },
+        { name: "Dark totem middle", rarity: "Totem" },
+        { name: "Dark totem top", rarity: "Totem" }
+      ]
+    }
+  ]
+};
+
+const COLLECTION_CATEGORY_LABELS = {
+  bosses: "Bosses",
+  raids: "Raids",
+  other: "Other"
+};
+
+const COLLECTION_CATEGORY_ORDER = Object.keys(COLLECTION_LOG_DATA);
+const COLLECTION_ENCOUNTERS = COLLECTION_CATEGORY_ORDER.flatMap((category) =>
+  COLLECTION_LOG_DATA[category].map((encounter) => ({ ...encounter, category }))
+);
+const COLLECTION_ENCOUNTER_INDEX = Object.fromEntries(
+  COLLECTION_ENCOUNTERS.map((encounter) => [encounter.id, encounter])
+);
+const DEFAULT_COLLECTION_ENCOUNTER_ID = COLLECTION_LOG_DATA.bosses[0].id;
 
 const defaultState = {
   events: [],
@@ -35,7 +290,15 @@ const defaultState = {
   lolPlayers: "",
   lolRegion: "na",
   fmhyPage: "video",
-  fmhySearch: ""
+  fmhySearch: "",
+  collectionLog: {
+    selectedCategory: "bosses",
+    selectedEncounterId: DEFAULT_COLLECTION_ENCOUNTER_ID,
+    search: "",
+    hideCompleted: false,
+    lastUnlock: null,
+    entries: {}
+  }
 };
 
 let state = loadState();
@@ -118,6 +381,12 @@ const els = {
   fmhyCategories: document.getElementById("fmhyCategories"),
   fmhyMeta: document.getElementById("fmhyMeta"),
   fmhyResults: document.getElementById("fmhyResults"),
+  collectionSummary: document.getElementById("collectionSummary"),
+  collectionTabs: document.getElementById("collectionTabs"),
+  collectionSearch: document.getElementById("collectionSearch"),
+  collectionHideCompleted: document.getElementById("collectionHideCompleted"),
+  collectionEncounterList: document.getElementById("collectionEncounterList"),
+  collectionDetail: document.getElementById("collectionDetail"),
   fileForm: document.getElementById("fileForm"),
   fileName: document.getElementById("fileName"),
   fileList: document.getElementById("fileList"),
@@ -148,6 +417,25 @@ function init() {
   }
 }
 
+function normalizeCollectionState(raw = {}) {
+  const category = COLLECTION_LOG_DATA[raw.selectedCategory] ? raw.selectedCategory : defaultState.collectionLog.selectedCategory;
+  const encounters = COLLECTION_LOG_DATA[category];
+  const selectedEncounterId = encounters.some((encounter) => encounter.id === raw.selectedEncounterId)
+    ? raw.selectedEncounterId
+    : encounters[0].id;
+
+  return {
+    ...defaultState.collectionLog,
+    ...raw,
+    selectedCategory: category,
+    selectedEncounterId,
+    search: String(raw.search || ""),
+    hideCompleted: Boolean(raw.hideCompleted),
+    lastUnlock: raw.lastUnlock && raw.lastUnlock.name ? raw.lastUnlock : null,
+    entries: sanitizeCollectionEntries(raw.entries)
+  };
+}
+
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -167,12 +455,32 @@ function loadState() {
         ...DEFAULT_SHIFT_CONFIG,
         ...(parsed.shiftConfig || {})
       },
-      fmhyPage: sanitizeFmhyPage(parsed.fmhyPage || defaultState.fmhyPage)
+      fmhyPage: sanitizeFmhyPage(parsed.fmhyPage || defaultState.fmhyPage),
+      collectionLog: normalizeCollectionState(parsed.collectionLog)
     };
   } catch (error) {
     console.error("Failed to load saved state", error);
     return structuredClone(defaultState);
   }
+}
+
+function sanitizeCollectionEntries(entries) {
+  if (!entries || typeof entries !== "object") {
+    return {};
+  }
+
+  return Object.fromEntries(
+    Object.entries(entries).map(([encounterId, entry]) => [
+      encounterId,
+      {
+        killCount: Number(entry?.killCount) > 0 ? Number(entry.killCount) : 0,
+        notes: String(entry?.notes || ""),
+        quantities: Object.fromEntries(
+          Object.entries(entry?.quantities || {}).map(([itemName, quantity]) => [itemName, Math.max(Number(quantity) || 0, 0)])
+        )
+      }
+    ])
+  );
 }
 
 function saveState() {
@@ -187,6 +495,8 @@ function primeInputs() {
   els.flexSpendInput.value = state.finance.flexSpend;
   els.goalInput.value = state.finance.goal;
   els.fmhySearch.value = state.fmhySearch;
+  els.collectionSearch.value = state.collectionLog.search;
+  els.collectionHideCompleted.checked = Boolean(state.collectionLog.hideCompleted);
   els.shiftStart.value = state.shiftConfig.startDate;
   els.dayStartTime.value = state.shiftConfig.dayStart;
   els.dayEndTime.value = state.shiftConfig.dayEnd;
@@ -222,6 +532,8 @@ function bindEvents() {
   });
   els.fmhySearch.addEventListener("input", handleFmhySearchInput);
   els.refreshFmhy.addEventListener("click", loadFmhyPage);
+  els.collectionSearch.addEventListener("input", handleCollectionSearchInput);
+  els.collectionHideCompleted.addEventListener("change", handleCollectionHideCompletedChange);
   els.fileForm.addEventListener("submit", handleFileCreate);
   els.saveFile.addEventListener("click", handleFileSave);
   els.deleteFile.addEventListener("click", handleFileDelete);
@@ -246,6 +558,7 @@ function renderAll() {
   renderChat();
   renderFiles();
   renderFmhy();
+  renderCollectionLog();
   renderChatSummary();
 }
 
@@ -1392,6 +1705,334 @@ function renderFmhy() {
   `).join("");
 }
 
+function handleCollectionSearchInput() {
+  state.collectionLog.search = els.collectionSearch.value;
+  saveState();
+  renderCollectionLog();
+}
+
+function handleCollectionHideCompletedChange() {
+  state.collectionLog.hideCompleted = els.collectionHideCompleted.checked;
+  saveState();
+  renderCollectionLog();
+}
+
+function renderCollectionLog() {
+  els.collectionSearch.value = state.collectionLog.search;
+  els.collectionHideCompleted.checked = Boolean(state.collectionLog.hideCompleted);
+
+  const visibleEncounters = getVisibleCollectionEncounters(state.collectionLog.selectedCategory);
+  const currentEncounter = getCurrentCollectionEncounter(visibleEncounters);
+
+  renderCollectionSummary();
+  renderCollectionTabs();
+  renderCollectionEncounterList(visibleEncounters, currentEncounter?.id);
+  renderCollectionDetail(currentEncounter);
+}
+
+function renderCollectionSummary() {
+  const summary = getCollectionSummary();
+  const cards = [
+    {
+      label: "Tracked items",
+      value: `${summary.obtainedItems}/${summary.totalItems}`,
+      meta: `${summary.percentComplete}% unlocked`
+    },
+    {
+      label: "Completed logs",
+      value: `${summary.completedLogs}/${COLLECTION_ENCOUNTERS.length}`,
+      meta: summary.completedLogs ? "Fully green logs are finished." : "No completed logs yet."
+    },
+    {
+      label: "Total KC",
+      value: summary.totalKills.toLocaleString(),
+      meta: "Combined kill count across every tracked log."
+    },
+    {
+      label: "Last unlock",
+      value: summary.lastUnlock?.name || "None yet",
+      meta: summary.lastUnlock ? `${summary.lastUnlock.encounter} • ${formatCollectionTimestamp(summary.lastUnlock.at)}` : "Your latest unique will land here."
+    }
+  ];
+
+  els.collectionSummary.innerHTML = cards.map((card) => `
+    <div class="panel collection-summary-card">
+      <div class="section-kicker">${escapeHtml(card.label)}</div>
+      <div class="summary-value">${escapeHtml(card.value)}</div>
+      <div class="summary-meta">${escapeHtml(card.meta)}</div>
+    </div>
+  `).join("");
+}
+
+function renderCollectionTabs() {
+  els.collectionTabs.innerHTML = COLLECTION_CATEGORY_ORDER.map((category) => {
+    const encounters = COLLECTION_LOG_DATA[category];
+    const completed = encounters.filter((encounter) => getCollectionEncounterProgress(encounter).complete).length;
+    return `
+      <button type="button" class="collection-tab ${category === state.collectionLog.selectedCategory ? "active" : ""}" data-collection-tab="${category}">
+        <span>${escapeHtml(COLLECTION_CATEGORY_LABELS[category])}</span>
+        <span class="collection-tab-meta">${completed}/${encounters.length}</span>
+      </button>
+    `;
+  }).join("");
+
+  els.collectionTabs.querySelectorAll("[data-collection-tab]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const category = button.dataset.collectionTab;
+      const encounters = getVisibleCollectionEncounters(category);
+      state.collectionLog.selectedCategory = category;
+      state.collectionLog.selectedEncounterId = encounters[0]?.id || COLLECTION_LOG_DATA[category][0].id;
+      saveState();
+      renderCollectionLog();
+    });
+  });
+}
+
+function renderCollectionEncounterList(encounters, activeEncounterId) {
+  if (!encounters.length) {
+    els.collectionEncounterList.innerHTML = `
+      <div class="panel h-100 d-flex align-items-center justify-content-center">
+        <p class="status-text mb-0">No logs match the current filter.</p>
+      </div>
+    `;
+    return;
+  }
+
+  els.collectionEncounterList.innerHTML = encounters.map((encounter) => {
+    const progress = getCollectionEncounterProgress(encounter);
+    const percent = Math.round((progress.obtained / Math.max(progress.total, 1)) * 100);
+    return `
+      <button type="button" class="collection-encounter ${encounter.id === activeEncounterId ? "active" : ""}" data-collection-encounter="${encounter.id}">
+        <div class="d-flex justify-content-between align-items-start gap-3">
+          <div>
+            <div class="collection-encounter-name">${escapeHtml(encounter.name)}</div>
+            <div class="collection-encounter-meta">${escapeHtml(encounter.subtitle)}</div>
+          </div>
+          <div class="collection-progress-pill">${progress.obtained}/${progress.total}</div>
+        </div>
+        <div class="collection-progress-track">
+          <span style="width:${percent}%;"></span>
+        </div>
+        <div class="collection-encounter-footer">
+          <span>${progress.killCount.toLocaleString()} KC</span>
+          <span>${percent}% complete</span>
+        </div>
+      </button>
+    `;
+  }).join("");
+
+  els.collectionEncounterList.querySelectorAll("[data-collection-encounter]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.collectionLog.selectedEncounterId = button.dataset.collectionEncounter;
+      saveState();
+      renderCollectionLog();
+    });
+  });
+}
+
+function renderCollectionDetail(encounter) {
+  if (!encounter) {
+    els.collectionDetail.innerHTML = `
+      <div class="panel h-100 d-flex align-items-center justify-content-center">
+        <p class="status-text mb-0">Pick a log to start tracking it.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const entry = getCollectionEntry(encounter.id);
+  const progress = getCollectionEncounterProgress(encounter);
+
+  els.collectionDetail.innerHTML = `
+    <div class="collection-detail-hero">
+      <div>
+        <div class="section-kicker">${escapeHtml(COLLECTION_CATEGORY_LABELS[encounter.category])}</div>
+        <h3 class="collection-detail-title">${escapeHtml(encounter.name)}</h3>
+        <p class="text-body-secondary mb-0">${escapeHtml(encounter.subtitle)} • ${escapeHtml(encounter.location)}</p>
+      </div>
+      <div class="collection-detail-stat">
+        <span>${progress.obtained}/${progress.total}</span>
+        <small>items obtained</small>
+      </div>
+    </div>
+
+    <div class="collection-detail-metrics">
+      <div class="panel collection-metric-card">
+        <div class="section-kicker">Kill count</div>
+        <input id="collectionKillCount" type="number" min="0" step="1" class="form-control form-control-lg" value="${escapeAttribute(entry.killCount || "")}" placeholder="0">
+      </div>
+      <div class="panel collection-metric-card">
+        <div class="section-kicker">Encounter notes</div>
+        <textarea id="collectionEncounterNotes" rows="3" class="form-control" placeholder="Drop spots, teammates, dry streaks, or anything you want to remember.">${escapeHtml(entry.notes || "")}</textarea>
+      </div>
+    </div>
+
+    <div class="collection-item-grid">
+      ${encounter.items.map((item) => {
+        const quantity = entry.quantities[item.name] || 0;
+        return `
+          <article class="collection-item-card ${quantity > 0 ? "obtained" : ""}">
+            <div class="collection-item-topline">
+              <div>
+                <div class="collection-item-name">${escapeHtml(item.name)}</div>
+                <div class="collection-item-rarity">${escapeHtml(item.rarity)}</div>
+              </div>
+              <div class="collection-item-count">${quantity}</div>
+            </div>
+            <div class="collection-item-actions">
+              <button type="button" class="btn btn-sm btn-outline-light" data-collection-adjust="${escapeAttribute(encounter.id)}" data-item-name="${escapeAttribute(item.name)}" data-amount="-1">-1</button>
+              <button type="button" class="btn btn-sm btn-warning" data-collection-adjust="${escapeAttribute(encounter.id)}" data-item-name="${escapeAttribute(item.name)}" data-amount="1">+1 drop</button>
+              <button type="button" class="btn btn-sm btn-outline-light" data-collection-clear="${escapeAttribute(encounter.id)}" data-item-name="${escapeAttribute(item.name)}">Clear</button>
+            </div>
+          </article>
+        `;
+      }).join("")}
+    </div>
+  `;
+
+  const killInput = document.getElementById("collectionKillCount");
+  const notesInput = document.getElementById("collectionEncounterNotes");
+
+  killInput.addEventListener("input", () => {
+    const entryRef = ensureCollectionEntry(encounter.id);
+    entryRef.killCount = Math.max(Number(killInput.value) || 0, 0);
+    saveState();
+    renderCollectionSummary();
+    renderCollectionEncounterList(getVisibleCollectionEncounters(state.collectionLog.selectedCategory), encounter.id);
+  });
+
+  notesInput.addEventListener("input", () => {
+    const entryRef = ensureCollectionEntry(encounter.id);
+    entryRef.notes = notesInput.value;
+    saveState();
+  });
+
+  els.collectionDetail.querySelectorAll("[data-collection-adjust]").forEach((button) => {
+    button.addEventListener("click", () => {
+      updateCollectionItemQuantity(
+        button.dataset.collectionAdjust,
+        button.dataset.itemName,
+        Number(button.dataset.amount) || 0
+      );
+    });
+  });
+
+  els.collectionDetail.querySelectorAll("[data-collection-clear]").forEach((button) => {
+    button.addEventListener("click", () => {
+      setCollectionItemQuantity(button.dataset.collectionClear, button.dataset.itemName, 0);
+    });
+  });
+}
+
+function getVisibleCollectionEncounters(category) {
+  const search = state.collectionLog.search.trim().toLowerCase();
+  return COLLECTION_LOG_DATA[category].filter((encounter) => {
+    const progress = getCollectionEncounterProgress(encounter);
+    if (state.collectionLog.hideCompleted && progress.complete) {
+      return false;
+    }
+
+    if (!search) {
+      return true;
+    }
+
+    return [
+      encounter.name,
+      encounter.subtitle,
+      encounter.location,
+      ...encounter.items.map((item) => item.name)
+    ].some((value) => value.toLowerCase().includes(search));
+  });
+}
+
+function getCurrentCollectionEncounter(visibleEncounters) {
+  const selectedEncounter = visibleEncounters.find((encounter) => encounter.id === state.collectionLog.selectedEncounterId);
+  if (selectedEncounter) {
+    return selectedEncounter;
+  }
+
+  const fallback = visibleEncounters[0] || null;
+  if (fallback) {
+    state.collectionLog.selectedEncounterId = fallback.id;
+    saveState();
+  }
+  return fallback;
+}
+
+function getCollectionEntry(encounterId) {
+  return state.collectionLog.entries[encounterId] || { killCount: 0, notes: "", quantities: {} };
+}
+
+function ensureCollectionEntry(encounterId) {
+  if (!state.collectionLog.entries[encounterId]) {
+    state.collectionLog.entries[encounterId] = { killCount: 0, notes: "", quantities: {} };
+  }
+  return state.collectionLog.entries[encounterId];
+}
+
+function getCollectionEncounterProgress(encounter) {
+  const entry = getCollectionEntry(encounter.id);
+  const obtained = encounter.items.filter((item) => (entry.quantities[item.name] || 0) > 0).length;
+  return {
+    obtained,
+    total: encounter.items.length,
+    killCount: entry.killCount || 0,
+    complete: obtained === encounter.items.length && encounter.items.length > 0
+  };
+}
+
+function getCollectionSummary() {
+  const totals = COLLECTION_ENCOUNTERS.reduce((accumulator, encounter) => {
+    const progress = getCollectionEncounterProgress(encounter);
+    accumulator.obtainedItems += progress.obtained;
+    accumulator.totalItems += progress.total;
+    accumulator.totalKills += progress.killCount;
+    accumulator.completedLogs += progress.complete ? 1 : 0;
+    return accumulator;
+  }, {
+    obtainedItems: 0,
+    totalItems: 0,
+    totalKills: 0,
+    completedLogs: 0
+  });
+
+  return {
+    ...totals,
+    percentComplete: Math.round((totals.obtainedItems / Math.max(totals.totalItems, 1)) * 100),
+    lastUnlock: state.collectionLog.lastUnlock
+  };
+}
+
+function updateCollectionItemQuantity(encounterId, itemName, change) {
+  const encounter = COLLECTION_ENCOUNTER_INDEX[encounterId];
+  if (!encounter) {
+    return;
+  }
+
+  const entry = ensureCollectionEntry(encounterId);
+  const previous = entry.quantities[itemName] || 0;
+  const next = Math.max(previous + change, 0);
+  entry.quantities[itemName] = next;
+
+  if (previous === 0 && next > 0) {
+    state.collectionLog.lastUnlock = {
+      name: itemName,
+      encounter: encounter.name,
+      at: Date.now()
+    };
+  }
+
+  saveState();
+  renderCollectionLog();
+}
+
+function setCollectionItemQuantity(encounterId, itemName, quantity) {
+  const entry = ensureCollectionEntry(encounterId);
+  entry.quantities[itemName] = Math.max(quantity, 0);
+  saveState();
+  renderCollectionLog();
+}
+
 function handleFileCreate(event) {
   event.preventDefault();
   const name = els.fileName.value.trim();
@@ -1581,6 +2222,19 @@ function sanitizeFmhyPage(value) {
     .replace(/[^a-z0-9-]/g, "");
 
   return normalized || "video";
+}
+
+function formatCollectionTimestamp(value) {
+  if (!value) {
+    return "Just now";
+  }
+
+  return new Date(value).toLocaleString([], {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  });
 }
 
 function todayIso() {
