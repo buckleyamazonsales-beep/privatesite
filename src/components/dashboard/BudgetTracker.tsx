@@ -27,6 +27,7 @@ interface BudgetCategory {
   spent: number
   limit: number
   schedule: 'Daily' | 'Weekly' | 'Bi-Weekly' | 'Monthly'
+  dueDate?: string
   transactions: Transaction[]
 }
 
@@ -39,7 +40,7 @@ export function BudgetTracker({ profile }: BudgetTrackerProps) {
   const [incomeStreams, setIncomeStreams] = useState<IncomeStream[]>([])
   const [isAdding, setIsAdding] = useState(false)
   const [isAddingIncome, setIsAddingIncome] = useState(false)
-  const [newCat, setNewCat] = useState({ name: '', limit: '', schedule: 'Monthly' as BudgetCategory['schedule'] })
+  const [newCat, setNewCat] = useState({ name: '', limit: '', schedule: 'Monthly' as BudgetCategory['schedule'], dueDate: '' })
   const [newIncome, setNewIncome] = useState({ source: '', amount: '', date: new Date().toISOString().split('T')[0] })
 
   useEffect(() => {
@@ -81,10 +82,11 @@ export function BudgetTracker({ profile }: BudgetTrackerProps) {
       spent: 0,
       limit: parseFloat(newCat.limit) || 0,
       schedule: newCat.schedule,
+      dueDate: newCat.dueDate,
       transactions: []
     }
     save([...categories, cat])
-    setNewCat({ name: '', limit: '', schedule: 'Monthly' })
+    setNewCat({ name: '', limit: '', schedule: 'Monthly', dueDate: '' })
     setIsAdding(false)
   }
 
@@ -230,6 +232,11 @@ export function BudgetTracker({ profile }: BudgetTrackerProps) {
                       <div className="flex items-center gap-2">
                         <span className="text-[8px] bg-white/5 text-zinc-500 px-1.5 py-0.5 rounded font-mono uppercase tracking-widest">{cat.schedule}</span>
                         <p className="text-[10px] text-zinc-600 font-mono">${cat.limit} Limit</p>
+                        {cat.dueDate && (
+                          <p className="text-[10px] text-zinc-400 font-mono flex items-center gap-1">
+                            <Plus className="w-2 h-2 rotate-45" /> Due: {cat.dueDate}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <button onClick={() => removeCategory(cat.id)} className="opacity-0 group-hover:opacity-100 p-1 text-zinc-700 hover:text-red-400 transition-all">
@@ -295,8 +302,19 @@ export function BudgetTracker({ profile }: BudgetTrackerProps) {
                 <Input placeholder="Stream Name" className="h-12 bg-black/40 border-white/10 rounded-xl" value={newCat.name} onChange={e => setNewCat({...newCat, name: e.target.value})} />
                 <div className="grid grid-cols-2 gap-4">
                   <Input placeholder="Limit" type="number" className="h-12 bg-black/40 border-white/10 rounded-xl" value={newCat.limit} onChange={e => setNewCat({...newCat, limit: e.target.value})} />
-                  <select className="h-12 bg-black/40 border border-white/10 rounded-xl px-4 text-zinc-400" value={newCat.schedule} onChange={e => setNewCat({...newCat, schedule: e.target.value as any})}>
-                    <option value="Daily">Daily</option><option value="Weekly">Weekly</option><option value="Bi-Weekly">Bi-Weekly</option><option value="Monthly">Monthly</option>
+                  <Input type="date" className="h-12 bg-black/40 border border-white/10 rounded-xl px-4 text-zinc-400" value={newCat.dueDate} onChange={e => setNewCat({...newCat, dueDate: e.target.value})} />
+                </div>
+                <div className="space-y-1.5">
+                  <p className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest pl-1">Payment Schedule</p>
+                  <select 
+                    className="w-full h-12 bg-black/40 border border-white/10 rounded-xl px-4 text-white font-bold text-sm focus:outline-none focus:border-white/30" 
+                    value={newCat.schedule} 
+                    onChange={e => setNewCat({...newCat, schedule: e.target.value as any})}
+                  >
+                    <option value="Daily" className="bg-zinc-900">Daily</option>
+                    <option value="Weekly" className="bg-zinc-900">Weekly</option>
+                    <option value="Bi-Weekly" className="bg-zinc-900">Bi-Weekly</option>
+                    <option value="Monthly" className="bg-zinc-900">Monthly</option>
                   </select>
                 </div>
               </div>

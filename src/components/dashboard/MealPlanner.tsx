@@ -23,18 +23,8 @@ export function MealPlanner({ profile }: MealPlannerProps) {
   const [plannedMeals, setPlannedMeals] = useState<Meal[]>([])
   const [suggestions, setSuggestions] = useState<Meal[]>([])
   const [isSearching, setIsSearching] = useState(false)
+  const [mealCategory, setMealCategory] = useState('Beef')
   const [newDislike, setNewDislike] = useState('')
-
-  // Mock database of premium meals
-  const mealDatabase: Meal[] = [
-    { id: '1', name: 'Wagyu Steak with Asparagus', ingredients: ['beef', 'wagyu', 'asparagus', 'butter', 'garlic'], instructions: 'Sear wagyu 3 mins per side. Grill asparagus.' },
-    { id: '2', name: 'Lemon Butter Salmon', ingredients: ['salmon', 'lemon', 'butter', 'dill', 'broccoli'], instructions: 'Bake salmon with butter and lemon slices.' },
-    { id: '3', name: 'Mediterranean Chicken Bowl', ingredients: ['chicken', 'quinoa', 'cucumber', 'feta', 'olives'], instructions: 'Grill chicken. Combine with quinoa and fresh toppings.' },
-    { id: '4', name: 'Truffle Mushroom Pasta', ingredients: ['pasta', 'truffle oil', 'mushrooms', 'cream', 'parmesan'], instructions: 'Sauté mushrooms. Toss with cream and truffle oil.' },
-    { id: '5', name: 'Zesty Shrimp Tacos', ingredients: ['shrimp', 'tortilla', 'cabbage', 'lime', 'cilantro'], instructions: 'Sauté shrimp with lime. Top with slaw.' },
-    { id: '6', name: 'Ribeye with Rosemary Potatoes', ingredients: ['beef', 'ribeye', 'potatoes', 'rosemary', 'butter'], instructions: 'Pan sear ribeye. Roast potatoes with rosemary.' },
-    { id: '7', name: 'Pesto Caprese Salad', ingredients: ['mozzarella', 'tomato', 'basil', 'pesto', 'balsamic'], instructions: 'Slice mozzarella and tomatoes. Drizzle with pesto.' }
-  ]
 
   useEffect(() => {
     const savedDislikes = localStorage.getItem(`aether_dislikes_${profile}`)
@@ -66,15 +56,31 @@ export function MealPlanner({ profile }: MealPlannerProps) {
     saveDislikes(dislikes.filter(d => d !== item))
   }
 
-  const findMeals = () => {
+  const findMeals = async () => {
     setIsSearching(true)
-    setTimeout(() => {
-      const filtered = mealDatabase.filter(meal => 
-        !meal.ingredients.some(ing => dislikes.includes(ing.toLowerCase()))
-      )
-      setSuggestions(filtered)
+    try {
+      const resp = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${mealCategory}`)
+      const data = await resp.json()
+      
+      if (data.meals) {
+        // The filter endpoint only gives IDs and Names. We need to fetch details for ingredients if we want deep filtering,
+        // but for a "Massive" list, we'll start by filtering the Meal Names against dislikes.
+        const filtered = data.meals.filter((m: any) => 
+          !dislikes.some(d => m.strMeal.toLowerCase().includes(d))
+        ).map((m: any) => ({
+          id: m.idMeal,
+          name: m.strMeal,
+          ingredients: [mealCategory], // Simplification for now
+          instructions: 'Visit Aether Kitchen for full prep.',
+          image: m.strMealThumb
+        }))
+        setSuggestions(filtered)
+      }
+    } catch (err) {
+      console.error('Meal fetch failed:', err)
+    } finally {
       setIsSearching(false)
-    }, 800)
+    }
   }
 
   const planMeal = (meal: Meal) => {
@@ -98,25 +104,48 @@ export function MealPlanner({ profile }: MealPlannerProps) {
         </div>
         
         <div className="flex flex-wrap justify-center gap-4">
-          <div className="relative group">
-            <Input 
-              placeholder="Add Dislike (e.g. Olives)" 
-              className="h-12 w-64 bg-black/40 border-white/10 rounded-xl pr-12 text-xs"
-              value={newDislike}
-              onChange={e => setNewDislike(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && addDislike()}
-            />
-            <button onClick={addDislike} className="absolute right-4 top-3.5 text-zinc-600 hover:text-white transition-colors">
-              <Plus className="w-5 h-5" />
-            </button>
+          <div className="space-y-1.5">
+            <p className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest pl-1">Target Category</p>
+            <select 
+              className="h-12 w-48 bg-black/40 border border-white/10 rounded-xl px-4 text-white font-bold text-sm focus:outline-none focus:border-white/30"
+              value={mealCategory}
+              onChange={e => setMealCategory(e.target.value)}
+            >
+              <option value="Beef" className="bg-zinc-900">Beef</option>
+              <option value="Chicken" className="bg-zinc-900">Chicken</option>
+              <option value="Seafood" className="bg-zinc-900">Seafood</option>
+              <option value="Pasta" className="bg-zinc-900">Pasta</option>
+              <option value="Vegetarian" className="bg-zinc-900">Vegetarian</option>
+              <option value="Vegan" className="bg-zinc-900">Vegan</option>
+              <option value="Dessert" className="bg-zinc-900">Dessert</option>
+            </select>
           </div>
-          <Button 
-            onClick={findMeals}
-            disabled={isSearching}
-            className="h-12 bg-white text-black hover:bg-zinc-200 rounded-xl px-8 font-black uppercase text-[10px] tracking-widest shadow-xl"
-          >
-            {isSearching ? <Sparkles className="w-4 h-4 animate-spin" /> : 'Find Intelligent Meals'}
-          </Button>
+
+          <div className="space-y-1.5">
+            <p className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest pl-1">Exclusion Rules</p>
+            <div className="relative group">
+              <Input 
+                placeholder="Add Dislike..." 
+                className="h-12 w-64 bg-black/40 border-white/10 rounded-xl pr-12 text-xs"
+                value={newDislike}
+                onChange={e => setNewDislike(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && addDislike()}
+              />
+              <button onClick={addDislike} className="absolute right-4 top-3.5 text-zinc-600 hover:text-white transition-colors">
+                <Plus className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+          
+          <div className="flex items-end pb-0.5">
+            <Button 
+              onClick={findMeals}
+              disabled={isSearching}
+              className="h-12 bg-white text-black hover:bg-zinc-200 rounded-xl px-8 font-black uppercase text-[10px] tracking-widest shadow-xl"
+            >
+              {isSearching ? <Sparkles className="w-4 h-4 animate-spin" /> : 'Find Intelligent Meals'}
+            </Button>
+          </div>
         </div>
       </div>
 

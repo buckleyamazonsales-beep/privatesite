@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Trophy, Plus, Trash2, Camera, MapPin, Calendar } from 'lucide-react'
+import { Trophy, Plus, Trash2, Camera, MapPin, Calendar, Heart, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 interface Milestone {
@@ -11,6 +11,7 @@ interface Milestone {
   date: string
   description: string
   image?: string
+  category?: 'Milestone' | 'Relationship'
 }
 
 interface TimelineProps {
@@ -20,15 +21,15 @@ interface TimelineProps {
 export function Timeline({ profile }: TimelineProps) {
   const [milestones, setMilestones] = useState<Milestone[]>([])
   const [isAdding, setIsAdding] = useState(false)
-  const [newMilestone, setNewMilestone] = useState({ title: '', date: '', description: '', image: '' })
+  const [newMilestone, setNewMilestone] = useState({ title: '', date: '', description: '', image: '', category: 'Milestone' as Milestone['category'] })
 
   useEffect(() => {
     const saved = localStorage.getItem('aether_timeline')
     if (saved) setMilestones(JSON.parse(saved))
     else {
       setMilestones([
-        { id: '1', title: 'The Dubai Investment', date: 'March 2026', description: 'Locked in our first international property venture.', image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2070&auto=format&fit=crop' },
-        { id: '2', title: 'Aether Genesis', date: 'April 2026', description: 'The official launch of our unified life hub.', image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop' }
+        { id: '1', title: 'The Dubai Investment', date: 'March 2026', description: 'Locked in our first international property venture.', image: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?q=80&w=2070&auto=format&fit=crop', category: 'Milestone' },
+        { id: '2', title: 'Aether Genesis', date: 'April 2026', description: 'The official launch of our unified life hub.', image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop', category: 'Milestone' }
       ])
     }
   }, [])
@@ -45,7 +46,7 @@ export function Timeline({ profile }: TimelineProps) {
       ...newMilestone
     }
     save([ms, ...milestones])
-    setNewMilestone({ title: '', date: '', description: '', image: '' })
+    setNewMilestone({ title: '', date: '', description: '', image: '', category: 'Milestone' })
     setIsAdding(false)
   }
 
@@ -54,7 +55,7 @@ export function Timeline({ profile }: TimelineProps) {
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-12">
+    <div className="w-full max-w-4xl mx-auto space-y-12 pb-24">
       <div className="flex items-center justify-between border-b border-white/5 pb-8 px-4">
         <div className="space-y-1">
           <h3 className="text-4xl font-black italic tracking-tighter uppercase">The Legacy</h3>
@@ -78,12 +79,14 @@ export function Timeline({ profile }: TimelineProps) {
               viewport={{ once: true }}
               className={`relative flex flex-col md:flex-row items-center gap-12 ${idx % 2 === 0 ? '' : 'md:flex-row-reverse text-right'}`}
             >
-              <div className="hidden md:block absolute left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-white border-4 border-black z-10 shadow-[0_0_20px_rgba(255,255,255,0.5)]" />
+              <div className={`hidden md:flex absolute left-1/2 -translate-x-1/2 w-8 h-8 rounded-full border-4 border-black z-10 shadow-2xl items-center justify-center ${ms.category === 'Relationship' ? 'bg-rose-500 shadow-rose-500/50' : 'bg-white shadow-white/50'}`}>
+                {ms.category === 'Relationship' ? <Heart className="w-3 h-3 text-white fill-current" /> : <Star className="w-3 h-3 text-black" />}
+              </div>
               
               <div className="w-full md:w-1/2 space-y-6">
                 <div className="space-y-2">
-                  <span className="text-xs font-mono text-zinc-600 uppercase tracking-widest">{ms.date}</span>
-                  <h4 className="text-4xl font-black italic tracking-tighter uppercase text-white">{ms.title}</h4>
+                  <span className={`text-xs font-mono uppercase tracking-widest ${ms.category === 'Relationship' ? 'text-rose-400' : 'text-zinc-600'}`}>{ms.date}</span>
+                  <h4 className="text-4xl font-black italic tracking-tighter uppercase text-white leading-tight">{ms.title}</h4>
                 </div>
                 <p className="text-lg font-light text-zinc-400 italic leading-relaxed">
                   "{ms.description}"
@@ -94,7 +97,7 @@ export function Timeline({ profile }: TimelineProps) {
               </div>
 
               <div className="w-full md:w-1/2 group">
-                <div className="relative aspect-[16/9] rounded-[2rem] overflow-hidden border border-white/5 shadow-2xl">
+                <div className={`relative aspect-[16/9] rounded-[2rem] overflow-hidden border shadow-2xl ${ms.category === 'Relationship' ? 'border-rose-500/20' : 'border-white/5'}`}>
                   {ms.image ? (
                     <img src={ms.image} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-110 group-hover:scale-100" />
                   ) : (
@@ -116,12 +119,22 @@ export function Timeline({ profile }: TimelineProps) {
             <div className="bg-zinc-900 border border-white/10 p-10 rounded-[3rem] w-full max-w-lg space-y-6">
               <h3 className="text-2xl font-black italic tracking-tighter uppercase text-center">Capture Milestone</h3>
               <div className="space-y-4">
-                <input 
-                  placeholder="Event Title..." 
-                  className="w-full bg-black/50 border border-white/10 rounded-xl h-12 px-6 text-sm text-white focus:outline-none"
-                  value={newMilestone.title}
-                  onChange={e => setNewMilestone({...newMilestone, title: e.target.value})}
-                />
+                <div className="grid grid-cols-2 gap-4">
+                  <input 
+                    placeholder="Event Title..." 
+                    className="w-full bg-black/50 border border-white/10 rounded-xl h-12 px-6 text-sm text-white focus:outline-none"
+                    value={newMilestone.title}
+                    onChange={e => setNewMilestone({...newMilestone, title: e.target.value})}
+                  />
+                  <select 
+                    className="w-full bg-black/50 border border-white/10 rounded-xl h-12 px-4 text-xs text-zinc-400 font-bold uppercase tracking-widest focus:outline-none"
+                    value={newMilestone.category}
+                    onChange={e => setNewMilestone({...newMilestone, category: e.target.value as any})}
+                  >
+                    <option value="Milestone" className="bg-zinc-900">Victory</option>
+                    <option value="Relationship" className="bg-zinc-900">Relationship</option>
+                  </select>
+                </div>
                 <input 
                   placeholder="Date (e.g. June 2026)..." 
                   className="w-full bg-black/50 border border-white/10 rounded-xl h-12 px-6 text-sm text-white focus:outline-none"
