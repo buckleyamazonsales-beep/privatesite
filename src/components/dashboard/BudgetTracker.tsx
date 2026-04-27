@@ -40,7 +40,7 @@ export function BudgetTracker({ profile }: BudgetTrackerProps) {
   const [isAdding, setIsAdding] = useState(false)
   const [isAddingIncome, setIsAddingIncome] = useState(false)
   const [newCat, setNewCat] = useState({ name: '', limit: '', schedule: 'Monthly' as BudgetCategory['schedule'] })
-  const [newIncome, setNewIncome] = useState({ source: '', amount: '' })
+  const [newIncome, setNewIncome] = useState({ source: '', amount: '', date: new Date().toISOString().split('T')[0] })
 
   useEffect(() => {
     const saved = localStorage.getItem(`aether_budget_${profile}`)
@@ -66,10 +66,10 @@ export function BudgetTracker({ profile }: BudgetTrackerProps) {
       id: Math.random().toString(36).substr(2, 9),
       source: newIncome.source,
       amount: parseFloat(newIncome.amount) || 0,
-      date: new Date().toLocaleDateString()
+      date: newIncome.date
     }
     saveIncome([...incomeStreams, inc])
-    setNewIncome({ source: '', amount: '' })
+    setNewIncome({ source: '', amount: '', date: new Date().toISOString().split('T')[0] })
     setIsAddingIncome(false)
   }
 
@@ -99,8 +99,8 @@ export function BudgetTracker({ profile }: BudgetTrackerProps) {
         }
         return { 
           ...c, 
-          spent: c.spent + amount, 
-          transactions: [trans, ...c.transactions].slice(0, 5) // Keep last 5
+          spent: Number((c.spent + amount).toFixed(2)), 
+          transactions: [trans, ...c.transactions].slice(0, 5)
         }
       }
       return c
@@ -112,7 +112,13 @@ export function BudgetTracker({ profile }: BudgetTrackerProps) {
   }
 
   const totalSpent = categories.reduce((acc, c) => acc + c.spent, 0)
-  const totalLimit = categories.reduce((acc, c) => acc + c.limit, 0)
+  
+  // Normalize everything to Monthly for the "Pulse"
+  const totalLimit = categories.reduce((acc, c) => {
+    const factor = c.schedule === 'Daily' ? 30 : c.schedule === 'Weekly' ? 4 : c.schedule === 'Bi-Weekly' ? 2 : 1
+    return acc + (c.limit * factor)
+  }, 0)
+
   const totalIncome = incomeStreams.reduce((acc, i) => acc + i.amount, 0)
   const percent = totalLimit > 0 ? (totalSpent / totalLimit) * 100 : 0
   const netFlow = totalIncome - totalSpent
@@ -305,7 +311,10 @@ export function BudgetTracker({ profile }: BudgetTrackerProps) {
               <h3 className="text-2xl font-black italic tracking-tighter uppercase text-center">Log Paycheque</h3>
               <div className="space-y-4">
                 <Input placeholder="Income Source (e.g. Salary)" className="h-12 bg-black/40 border-white/10 rounded-xl" value={newIncome.source} onChange={e => setNewIncome({...newIncome, source: e.target.value})} />
-                <Input placeholder="Amount" type="number" className="h-12 bg-black/40 border-white/10 rounded-xl" value={newIncome.amount} onChange={e => setNewIncome({...newIncome, amount: e.target.value})} />
+                <div className="grid grid-cols-2 gap-4">
+                  <Input placeholder="Amount" type="number" className="h-12 bg-black/40 border-white/10 rounded-xl" value={newIncome.amount} onChange={e => setNewIncome({...newIncome, amount: e.target.value})} />
+                  <Input type="date" className="h-12 bg-black/40 border border-white/10 rounded-xl px-4 text-zinc-400" value={newIncome.date} onChange={e => setNewIncome({...newIncome, date: e.target.value})} />
+                </div>
               </div>
               <div className="flex gap-3"><Button onClick={addIncome} className="flex-1 bg-white text-black h-12 rounded-xl font-bold uppercase">Log Income</Button><Button onClick={() => setIsAddingIncome(false)} variant="ghost" className="flex-1 h-12 rounded-xl uppercase font-bold text-zinc-500">Cancel</Button></div>
             </div>

@@ -30,12 +30,21 @@ export function InvestmentTracker({ profile }: InvestmentTrackerProps) {
     'BTC': 'bitcoin',
     'ETH': 'ethereum',
     'SOL': 'solana',
-    'ADA': 'cardano',
+    'XRP': 'ripple',
+    'BNB': 'binancecoin',
     'DOGE': 'dogecoin',
+    'ADA': 'cardano',
+    'TRX': 'tron',
     'DOT': 'polkadot',
+    'LINK': 'chainlink',
     'MATIC': 'polygon-hermez',
-    'LINK': 'chainlink'
+    'LTC': 'litecoin',
+    'BCH': 'bitcoin-cash',
+    'SHIB': 'shiba-inu',
+    'AVAX': 'avalanche-2'
   }
+
+  const top15 = Object.keys(coinMap)
 
   const fetchLivePrices = async (currentInvestments: Investment[]) => {
     const ids = currentInvestments
@@ -206,9 +215,24 @@ export function InvestmentTracker({ profile }: InvestmentTrackerProps) {
               layout
               className="bg-white/5 border-2 border-dashed border-white/10 rounded-2xl p-5 space-y-4"
             >
+              <div className="space-y-3">
+                <p className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest">Quick Select Top 15</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {top15.map(symbol => (
+                    <button
+                      key={symbol}
+                      onClick={() => setNewAsset({...newAsset, name: symbol})}
+                      className={`px-2 py-1 rounded-md text-[9px] font-bold border transition-all ${newAsset.name === symbol ? 'bg-white text-black border-white' : 'bg-black/40 text-zinc-500 border-white/5 hover:border-white/20'}`}
+                    >
+                      {symbol}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <Input 
-                placeholder="Asset Name (e.g. BTC)" 
-                className="h-9 bg-black/40 border-white/5 text-xs"
+                placeholder="Asset Symbol (e.g. BTC)" 
+                className="h-9 bg-black/40 border-white/5 text-xs uppercase"
                 value={newAsset.name}
                 onChange={e => setNewAsset({...newAsset, name: e.target.value})}
               />
