@@ -51,21 +51,6 @@ export function BudgetTracker({ profile }: BudgetTrackerProps) {
     if (savedIncome) setIncomeStreams(JSON.parse(savedIncome))
   }, [profile])
 
-  const syncMattBaseline = () => {
-    const mattSeed: BudgetCategory[] = [
-      { id: 'rbc-loan', name: 'RBC LOAN', spent: 0, limit: 646.16, schedule: 'Bi-Weekly', dueDate: '2026-04-20', transactions: [] },
-      { id: 'belair-ins', name: 'BELAIR INS', spent: 0, limit: 363.74, schedule: 'Monthly', dueDate: '2026-05-12', transactions: [] },
-      { id: 'bell-canada', name: 'BELL CANADA', spent: 0, limit: 101.70, schedule: 'Monthly', dueDate: '2026-05-07', transactions: [] },
-      { id: 'rent', name: 'RENT', spent: 0, limit: 910.00, schedule: 'Monthly', dueDate: '2026-04-30', transactions: [] },
-      { id: 'triangle', name: 'TRIANGLE', spent: 0, limit: 50.00, schedule: 'Bi-Weekly', dueDate: '2026-04-20', transactions: [] },
-      { id: 'cap-one', name: 'CAPITAL ONE', spent: 0, limit: 20.00, schedule: 'Bi-Weekly', dueDate: '2026-04-20', transactions: [] }
-    ]
-    // Filter out duplicates if they already exist
-    const currentIds = categories.map(c => c.id)
-    const uniqueSeeds = mattSeed.filter(s => !currentIds.includes(s.id))
-    save([...categories, ...uniqueSeeds])
-  }
-
   const save = (updated: BudgetCategory[]) => {
     setCategories(updated)
     localStorage.setItem(`aether_budget_${profile}`, JSON.stringify(updated))
@@ -200,15 +185,9 @@ export function BudgetTracker({ profile }: BudgetTrackerProps) {
             <Progress value={percent} className="h-1.5 bg-zinc-800" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 relative z-10">
+          <div className="grid grid-cols-2 gap-4 pt-4 relative z-10">
             <Button onClick={() => setIsAdding(true)} className="bg-white text-black hover:bg-zinc-200 h-12 rounded-2xl font-bold uppercase tracking-widest text-[10px]">Add Stream</Button>
             <Button onClick={() => setIsAddingIncome(true)} variant="ghost" className="h-12 border border-white/5 rounded-2xl font-bold uppercase tracking-widest text-[10px] hover:bg-white/5">Log Paycheque</Button>
-            {profile === 'matt' && (
-              <Button onClick={syncMattBaseline} variant="ghost" className="h-12 border border-blue-500/20 text-blue-400 rounded-2xl font-bold uppercase tracking-widest text-[10px] hover:bg-blue-500/5 gap-2 group">
-                <Sparkles className="w-3 h-3 group-hover:animate-spin" />
-                Sync Baseline
-              </Button>
-            )}
           </div>
         </div>
 
