@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tokenator Dashboard Replica
+
+A modern, high-performance replica of the Tokenator dashboard built with Next.js 15, TypeScript, Tailwind CSS, and shadcn/ui.
+
+## Features
+
+- **Technical Dark Theme**: Deep black aesthetics with subtle borders and glassmorphism.
+- **API Key Management**: Secure-looking fields for Anthropic, OpenAI, and internal keys.
+- **Usage Metrics**: Animated stat cards for Used, Limit, and Remaining usage.
+- **Available Models**: Interactive model selection cards with status badges.
+- **Setup Guide**: Detailed 4-step accordion guide for installing and configuring Claude Code.
+- **Gmail Account Generator**: A custom tool to bulk-generate Gmail account placeholders with recovery options and data export (CSV/JSON).
+- **Responsive Design**: Fully optimized for mobile, tablet, and desktop.
+- **Fluid Animations**: Smooth transitions and loading states using Framer Motion.
+
+## Tech Stack
+
+- **Framework**: [Next.js 15 (App Router)](https://nextjs.org/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **Components**: [shadcn/ui](https://ui.shadcn.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
 
 ## Getting Started
 
-First, run the development server:
+### 1. Installation
+
+```bash
+# Clone the repository (if applicable)
+# Navigate to the project directory
+cd tokenator
+
+# Install dependencies
+npm install
+```
+
+### 2. Development Mode
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application will be available at `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Build for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+## Dashboard Usage
 
-To learn more about Next.js, take a look at the following resources:
+1. **Authentication**: Enter any string into the "Sign in with your API key" field in the header to access the dashboard.
+2. **Gmail Generator**:
+   - Set the number of accounts (1-50).
+   - Click "Generate New Gmail Accounts".
+   - View the results in the table.
+   - Use "Copy All" or "Download CSV" to export the data.
+3. **Setup Guide**: Follow the numbered steps to configure your environment for Tokenator.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Disclaimer
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The Gmail Account Generator is for demonstration and educational purposes only. Generating real Gmail accounts in bulk may violate Google's Terms of Service and typically requires sophisticated proxy and captcha-solving systems.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built with precision by Antigravity.
