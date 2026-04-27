@@ -2,13 +2,8 @@
 
 import React, { useState, useEffect } from 'react'
 import { Header } from '@/components/layout/Header'
-import { UsageMetrics } from '@/components/dashboard/UsageMetrics'
-import { ApiKeyManagement } from '@/components/dashboard/ApiKeyManagement'
-import { ModelCards } from '@/components/dashboard/ModelCards'
-import { SetupGuide } from '@/components/dashboard/SetupGuide'
-import { GmailGenerator } from '@/components/dashboard/GmailGenerator'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, ArrowRight } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 export default function AetherDashboard() {
@@ -44,19 +39,12 @@ export default function AetherDashboard() {
     const randomIdx = Math.floor(Math.random() * selectedQuotes.length)
     setDailyQuote(selectedQuotes[randomIdx])
 
-    // Simulate initial load
     const timer = setTimeout(() => setLoading(false), 1000)
     return () => clearTimeout(timer)
   }, [profile])
 
   const handleSignIn = (key: string) => {
-    if (key.trim()) {
-      setLoading(true)
-      setTimeout(() => {
-        setIsLoggedIn(true)
-        setLoading(false)
-      }, 800)
-    }
+    setIsLoggedIn(true)
   }
 
   const handleSignOut = () => {
@@ -72,21 +60,21 @@ export default function AetherDashboard() {
           className="flex flex-col items-center gap-4 z-20"
         >
           <Sparkles className="w-12 h-12 text-white" />
-          <div className="text-zinc-500 font-mono text-sm tracking-widest">INITIALIZING AETHER...</div>
+          <div className="text-zinc-500 font-mono text-sm tracking-widest uppercase">Initializing...</div>
         </motion.div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-black relative overflow-hidden">
+    <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-black relative overflow-hidden flex flex-col">
       <Header 
         isLoggedIn={isLoggedIn} 
         onSignIn={handleSignIn} 
         onSignOut={handleSignOut} 
       />
 
-      <main className="container mx-auto px-4 py-8 space-y-12">
+      <main className="flex-1 flex flex-col items-center justify-center container mx-auto px-4">
         <AnimatePresence mode="wait">
           {!isLoggedIn ? (
             <motion.div 
@@ -94,123 +82,81 @@ export default function AetherDashboard() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="max-w-3xl mx-auto text-center py-16 space-y-8"
+              className="max-w-4xl mx-auto text-center space-y-16"
             >
-              <div className="space-y-6">
+              <div className="space-y-12">
                 <div className="flex justify-center gap-4">
                   <Button 
                     variant="ghost" 
                     onClick={() => setProfile('matt')}
-                    className={`h-10 px-6 rounded-full border transition-all ${profile === 'matt' ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.3)]' : 'bg-black text-white border-white/10 hover:border-white/20'}`}
+                    className={`h-10 px-8 rounded-full border transition-all duration-300 uppercase text-[10px] tracking-widest ${profile === 'matt' ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.2)]' : 'bg-black text-white border-white/10 hover:border-white/20'}`}
                   >
                     Matt
                   </Button>
                   <Button 
                     variant="ghost" 
                     onClick={() => setProfile('meighan')}
-                    className={`h-10 px-6 rounded-full border transition-all ${profile === 'meighan' ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.3)]' : 'bg-black text-white border-white/10 hover:border-white/20'}`}
+                    className={`h-10 px-8 rounded-full border transition-all duration-300 uppercase text-[10px] tracking-widest ${profile === 'meighan' ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.2)]' : 'bg-black text-white border-white/10 hover:border-white/20'}`}
                   >
                     Meighan
                   </Button>
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-4">
                   <motion.h1 
                     key={profile}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-7xl md:text-8xl font-black tracking-tighter bg-gradient-to-r from-white via-zinc-400 to-white bg-clip-text text-transparent italic leading-[0.8]"
+                    className="text-8xl md:text-[10rem] font-black tracking-tighter bg-gradient-to-b from-white to-zinc-600 bg-clip-text text-transparent italic leading-[0.8]"
                   >
-                    Welcome {profile === 'matt' ? 'Matt' : 'Meighan'}
+                    Welcome<br />{profile === 'matt' ? 'Matt' : 'Meighan'}
                   </motion.h1>
-                  
-                  <div className="max-w-xl mx-auto space-y-2">
-                    <p className="text-zinc-500 font-mono text-[10px] tracking-[0.4em] uppercase">Private Session Authorized</p>
-                    <div className="h-px w-8 bg-zinc-800 mx-auto" />
-                  </div>
                 </div>
 
                 <motion.div 
                   key={dailyQuote.text}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="space-y-2 pt-4"
+                  transition={{ delay: 0.3 }}
+                  className="space-y-2"
                 >
-                  <p className="text-lg md:text-xl font-light text-zinc-400 italic">"{dailyQuote.text}"</p>
-                  <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">— {dailyQuote.author}</p>
+                  <p className="text-xl md:text-2xl font-light text-zinc-400 italic">"{dailyQuote.text}"</p>
+                  <p className="text-[10px] font-bold text-zinc-700 uppercase tracking-[0.4em]">— {dailyQuote.author}</p>
                 </motion.div>
               </div>
 
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 1 }}
-                className="flex flex-col items-center gap-6"
+                transition={{ delay: 0.6 }}
               >
                 <Button 
-                  size="lg" 
-                  className="rounded-full bg-white text-black hover:bg-zinc-200 px-12 h-14 text-xl font-black group shadow-[0_0_30px_rgba(255,255,255,0.1)] tracking-widest uppercase italic"
-                  onClick={() => handleSignIn('auto-init')}
+                  onClick={() => setIsLoggedIn(true)}
+                  className="h-14 px-10 rounded-full bg-white text-black hover:bg-zinc-200 font-black text-xs uppercase tracking-[0.3em] transition-all"
                 >
-                  Press Start
-                  <Sparkles className="ml-2 w-5 h-5 group-hover:rotate-12 transition-transform" />
+                  Enter
                 </Button>
-                
-                <div className="text-[10px] uppercase tracking-widest text-zinc-700 font-bold">
-                  LOCAL EXECUTION • SECURE SESSION
-                </div>
               </motion.div>
             </motion.div>
           ) : (
             <motion.div 
-              key="dashboard"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="space-y-10"
+              key="active"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center space-y-8"
             >
-              {/* Top Section: Metrics & Keys */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 space-y-8">
-                  <UsageMetrics />
-                  <ModelCards />
-                </div>
-                <div className="space-y-8">
-                  <ApiKeyManagement />
-                </div>
-              </div>
-
-              {/* Middle Section: Gmail Generator (New Feature) */}
-              <div className="max-w-4xl mx-auto">
-                <GmailGenerator />
-              </div>
-
-              {/* Bottom Section: Setup Guide */}
-              <div className="max-w-4xl mx-auto">
-                <SetupGuide />
-              </div>
+              <h2 className="text-4xl font-black italic uppercase tracking-tighter">Session Active</h2>
+              <Button 
+                variant="ghost" 
+                onClick={() => setIsLoggedIn(false)}
+                className="text-zinc-600 hover:text-white uppercase text-[10px] tracking-widest"
+              >
+                End Session
+              </Button>
             </motion.div>
           )}
         </AnimatePresence>
       </main>
-
-      <footer className="border-t border-white/5 py-12 bg-zinc-950/50">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex items-center gap-2 grayscale opacity-50">
-            <Sparkles className="w-5 h-5" />
-            <span className="font-bold tracking-tighter">Aether</span>
-          </div>
-          <div className="flex gap-8 text-xs text-zinc-600 font-medium">
-            <a href="#" className="hover:text-white transition-colors">Documentation</a>
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-white transition-colors">Support</a>
-          </div>
-          <div className="text-[10px] text-zinc-700 font-mono">
-            © 2026 AETHER LIFE SYSTEMS. ALL RIGHTS RESERVED.
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }
