@@ -88,33 +88,33 @@ export default function AetherDashboard() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="max-w-5xl mx-auto text-center space-y-20 py-20"
+              className="max-w-5xl mx-auto text-center space-y-12 py-8"
             >
-              <div className="space-y-16">
+              <div className="space-y-8">
                 <div className="flex justify-center gap-6">
                   <Button 
                     variant="ghost" 
                     onClick={() => setProfile('matt')}
-                    className={`h-12 px-10 rounded-full border transition-all duration-500 uppercase text-[10px] tracking-[0.4em] font-bold ${profile === 'matt' ? 'bg-white text-black border-white shadow-[0_0_40px_rgba(255,255,255,0.2)]' : 'bg-black text-white border-white/10 hover:border-white/30'}`}
+                    className={`h-10 px-8 rounded-full border transition-all duration-500 uppercase text-[10px] tracking-[0.4em] font-bold ${profile === 'matt' ? 'bg-white text-black border-white shadow-[0_0_40px_rgba(255,255,255,0.2)]' : 'bg-black text-white border-white/10 hover:border-white/30'}`}
                   >
                     Matt
                   </Button>
                   <Button 
                     variant="ghost" 
                     onClick={() => setProfile('meighan')}
-                    className={`h-12 px-10 rounded-full border transition-all duration-500 uppercase text-[10px] tracking-[0.4em] font-bold ${profile === 'meighan' ? 'bg-white text-black border-white shadow-[0_0_40px_rgba(255,255,255,0.2)]' : 'bg-black text-white border-white/10 hover:border-white/30'}`}
+                    className={`h-10 px-8 rounded-full border transition-all duration-500 uppercase text-[10px] tracking-[0.4em] font-bold ${profile === 'meighan' ? 'bg-white text-black border-white shadow-[0_0_40px_rgba(255,255,255,0.2)]' : 'bg-black text-white border-white/10 hover:border-white/30'}`}
                   >
                     Meighan
                   </Button>
                 </div>
 
-                <div className="space-y-4 pb-12">
+                <div className="space-y-2 pb-6">
                   <motion.h1 
                     key={profile}
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ type: 'spring', stiffness: 40 }}
-                    className="text-8xl md:text-[11rem] font-black tracking-tighter bg-gradient-to-b from-white via-white to-zinc-700 bg-clip-text text-transparent italic leading-[0.9] pb-10 block"
+                    className="text-7xl md:text-9xl font-black tracking-tighter bg-gradient-to-b from-white via-white to-zinc-700 bg-clip-text text-transparent italic leading-[0.9] pb-4 block"
                   >
                     Welcome<br />{profile === 'matt' ? 'Matt' : 'Meighan'}
                   </motion.h1>
@@ -125,9 +125,9 @@ export default function AetherDashboard() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
-                  className="space-y-4"
+                  className="space-y-2"
                 >
-                  <p className="text-xl md:text-3xl font-extralight text-zinc-400 italic max-w-3xl mx-auto leading-relaxed">"{dailyQuote.text}"</p>
+                  <p className="text-lg md:text-2xl font-extralight text-zinc-400 italic max-w-2xl mx-auto leading-relaxed">"{dailyQuote.text}"</p>
                   <p className="text-[10px] font-bold text-zinc-800 uppercase tracking-[0.6em]">— {dailyQuote.author}</p>
                 </motion.div>
               </div>
@@ -139,7 +139,7 @@ export default function AetherDashboard() {
               >
                 <Button 
                   onClick={() => setIsLoggedIn(true)}
-                  className="h-16 px-16 rounded-full bg-white text-black hover:bg-zinc-200 font-black text-xs uppercase tracking-[0.4em] transition-all hover:scale-105 active:scale-95 shadow-[0_0_50px_rgba(255,255,255,0.1)]"
+                  className="h-14 px-12 rounded-full bg-white text-black hover:bg-zinc-200 font-black text-xs uppercase tracking-[0.4em] transition-all hover:scale-105 active:scale-95 shadow-[0_0_50px_rgba(255,255,255,0.1)]"
                 >
                   Initialize
                 </Button>
