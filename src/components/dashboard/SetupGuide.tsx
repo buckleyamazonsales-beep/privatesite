@@ -35,7 +35,7 @@ export function SetupGuide() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Accordion type="single" collapsible className="w-full">
+          <Accordion className="w-full">
             {/* Step 1 */}
             <AccordionItem value="step-1" className="border-white/5">
               <AccordionTrigger className="hover:no-underline py-4">

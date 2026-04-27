@@ -109,6 +109,18 @@ export function SpotifyPlayer() {
     setShowSetup(false)
   }
 
+  const spotifyControl = async (endpoint: string, method: string = 'POST') => {
+    if (!accessToken) return
+    try {
+      await fetch(`https://api.spotify.com/v1/me/player/${endpoint}`, {
+        method,
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+      })
+    } catch (err) {
+      console.error('Spotify control error:', err)
+    }
+  }
+
   const setVolume = async (val: number) => {
     try {
       await fetch(`https://api.spotify.com/v1/me/player/volume?volume_percent=${val}`, {
