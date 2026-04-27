@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { Header } from '@/components/layout/Header'
 import { motion, AnimatePresence } from 'framer-motion'
-import { TrendingUp, PieChart, Heart, Flame, MessageSquare, History, LogOut } from 'lucide-react'
+import { TrendingUp, PieChart, Heart, Flame, MessageSquare, History, Utensils, Calendar, LogOut, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InvestmentTracker } from '@/components/dashboard/InvestmentTracker'
 import { Wishlist } from '@/components/dashboard/Wishlist'
@@ -12,9 +12,11 @@ import { HabitTracker } from '@/components/dashboard/HabitTracker'
 import { SharedNotes } from '@/components/dashboard/SharedNotes'
 import { Timeline } from '@/components/dashboard/Timeline'
 import { GlobalIdentity } from '@/components/dashboard/GlobalIdentity'
+import { MealPlanner } from '@/components/dashboard/MealPlanner'
+import { SharedCalendar } from '@/components/dashboard/SharedCalendar'
 import { Starfield } from '@/components/layout/Starfield'
 
-type Tab = 'investments' | 'budgeting' | 'wishlist' | 'habits' | 'notes' | 'legacy'
+type Tab = 'investments' | 'budgeting' | 'wishlist' | 'habits' | 'notes' | 'legacy' | 'provisions' | 'calendar'
 
 export default function AetherDashboard() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -31,6 +33,8 @@ export default function AetherDashboard() {
       case 'habits': return <HabitTracker profile={profile} />
       case 'notes': return <SharedNotes activeProfile={profile} />
       case 'legacy': return <Timeline profile={profile} />
+      case 'provisions': return <MealPlanner profile={profile} />
+      case 'calendar': return <SharedCalendar profile={profile} />
       default: return <InvestmentTracker profile={profile} />
     }
   }
@@ -185,6 +189,8 @@ export default function AetherDashboard() {
                     { id: 'budgeting', label: 'Budget', icon: PieChart },
                     { id: 'habits', label: 'Pulse', icon: Flame },
                     { id: 'notes', label: 'Briefs', icon: MessageSquare },
+                    { id: 'provisions', label: 'Kitchen', icon: Utensils },
+                    { id: 'calendar', label: 'Operations', icon: Calendar },
                     { id: 'wishlist', label: 'Goals', icon: Heart },
                     { id: 'legacy', label: 'Legacy', icon: History }
                   ].map((tab) => (
