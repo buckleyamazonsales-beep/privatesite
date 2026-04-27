@@ -89,33 +89,33 @@ export default function AetherDashboard() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="max-w-5xl mx-auto text-center space-y-12 py-8"
+              className="w-full max-w-5xl mx-auto text-center space-y-6 md:space-y-12 py-4 md:py-8 px-4"
             >
-              <div className="space-y-8">
-                <div className="flex justify-center gap-6">
+              <div className="space-y-6 md:space-y-8">
+                <div className="flex justify-center gap-3 md:gap-6">
                   <Button 
                     variant="ghost" 
                     onClick={() => setProfile('matt')}
-                    className={`h-10 px-8 rounded-full border transition-all duration-500 uppercase text-[10px] tracking-[0.4em] font-bold ${profile === 'matt' ? 'bg-white text-black border-white shadow-[0_0_40px_rgba(255,255,255,0.2)]' : 'bg-black text-white border-white/10 hover:border-white/30'}`}
+                    className={`h-9 md:h-10 px-6 md:px-8 rounded-full border transition-all duration-500 uppercase text-[9px] md:text-[10px] tracking-[0.4em] font-bold ${profile === 'matt' ? 'bg-white text-black border-white shadow-[0_0_40px_rgba(255,255,255,0.2)]' : 'bg-black text-white border-white/10 hover:border-white/30'}`}
                   >
                     Matt
                   </Button>
                   <Button 
                     variant="ghost" 
                     onClick={() => setProfile('meighan')}
-                    className={`h-10 px-8 rounded-full border transition-all duration-500 uppercase text-[10px] tracking-[0.4em] font-bold ${profile === 'meighan' ? 'bg-white text-black border-white shadow-[0_0_40px_rgba(255,255,255,0.2)]' : 'bg-black text-white border-white/10 hover:border-white/30'}`}
+                    className={`h-9 md:h-10 px-6 md:px-8 rounded-full border transition-all duration-500 uppercase text-[9px] md:text-[10px] tracking-[0.4em] font-bold ${profile === 'meighan' ? 'bg-white text-black border-white shadow-[0_0_40px_rgba(255,255,255,0.2)]' : 'bg-black text-white border-white/10 hover:border-white/30'}`}
                   >
                     Meighan
                   </Button>
                 </div>
 
-                <div className="space-y-2 pb-6">
+                <div className="space-y-2 pb-4 md:pb-6">
                   <motion.h1 
                     key={profile}
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ type: 'spring', stiffness: 40 }}
-                    className="text-7xl md:text-9xl font-black tracking-tighter bg-gradient-to-b from-white via-white to-zinc-700 bg-clip-text text-transparent italic leading-[0.9] pb-4 block"
+                    className="text-5xl sm:text-7xl md:text-9xl font-black tracking-tighter bg-gradient-to-b from-white via-white to-zinc-700 bg-clip-text text-transparent italic leading-[0.9] pb-2 md:pb-4 block break-words"
                   >
                     Welcome<br />{profile === 'matt' ? 'Matt' : 'Meighan'}
                   </motion.h1>
@@ -126,10 +126,10 @@ export default function AetherDashboard() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
-                  className="space-y-2"
+                  className="space-y-2 px-2"
                 >
-                  <p className="text-lg md:text-2xl font-extralight text-zinc-400 italic max-w-2xl mx-auto leading-relaxed">"{dailyQuote.text}"</p>
-                  <p className="text-[10px] font-bold text-zinc-800 uppercase tracking-[0.6em]">— {dailyQuote.author}</p>
+                  <p className="text-sm sm:text-lg md:text-2xl font-extralight text-zinc-400 italic max-w-2xl mx-auto leading-relaxed">"{dailyQuote.text}"</p>
+                  <p className="text-[8px] md:text-[10px] font-bold text-zinc-800 uppercase tracking-[0.4em] md:tracking-[0.6em]">— {dailyQuote.author}</p>
                 </motion.div>
               </div>
 
@@ -140,7 +140,7 @@ export default function AetherDashboard() {
               >
                 <Button 
                   onClick={() => setIsLoggedIn(true)}
-                  className="h-14 px-12 rounded-full bg-white text-black hover:bg-zinc-200 font-black text-xs uppercase tracking-[0.4em] transition-all hover:scale-105 active:scale-95 shadow-[0_0_50px_rgba(255,255,255,0.1)]"
+                  className="h-12 md:h-14 px-10 md:px-12 rounded-full bg-white text-black hover:bg-zinc-200 font-black text-[10px] md:text-xs uppercase tracking-[0.4em] transition-all hover:scale-105 active:scale-95 shadow-[0_0_50px_rgba(255,255,255,0.1)]"
                 >
                   Initialize
                 </Button>
@@ -151,32 +151,32 @@ export default function AetherDashboard() {
               key="active"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              className="w-full max-w-6xl mx-auto space-y-16 py-12"
+              className="space-y-6 md:space-y-12"
             >
-              <div className="flex flex-col items-center gap-8">
-                <div className="text-center space-y-2">
-                  <h2 className="text-4xl font-black italic uppercase tracking-tighter">Command Center</h2>
-                  <div className="h-px w-20 bg-gradient-to-r from-transparent via-zinc-800 to-transparent mx-auto" />
+              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="space-y-1 text-center md:text-left">
+                  <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase">Command Center</h2>
+                  <p className="text-[10px] text-zinc-600 font-mono tracking-[0.4em] uppercase">Unified Intelligence • {profile}</p>
                 </div>
-
-                <div className="flex bg-zinc-900/40 p-1 rounded-full border border-white/5 backdrop-blur-xl">
+                
+                <div className="flex flex-wrap justify-center bg-zinc-900/40 p-1 rounded-3xl md:rounded-full border border-white/5 backdrop-blur-xl gap-1">
                   <button 
                     onClick={() => setActiveTab('investments')}
-                    className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'investments' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
+                    className={`flex items-center gap-2 px-4 md:px-6 py-2 md:py-2.5 rounded-2xl md:rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'investments' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
                   >
                     <TrendingUp className="w-3 h-3" />
                     Investments
                   </button>
                   <button 
                     onClick={() => setActiveTab('budgeting')}
-                    className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'budgeting' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
+                    className={`flex items-center gap-2 px-4 md:px-6 py-2 md:py-2.5 rounded-2xl md:rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'budgeting' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
                   >
                     <PieChart className="w-3 h-3" />
                     Budget
                   </button>
                   <button 
                     onClick={() => setActiveTab('wishlist')}
-                    className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'wishlist' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
+                    className={`flex items-center gap-2 px-4 md:px-6 py-2 md:py-2.5 rounded-2xl md:rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'wishlist' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
                   >
                     <Heart className="w-3 h-3" />
                     Wishlist

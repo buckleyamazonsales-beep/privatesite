@@ -123,48 +123,49 @@ export function BudgetTracker({ profile }: BudgetTrackerProps) {
   const recSavings = totalIncome * 0.20
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-10">
+    <div className="w-full max-w-5xl mx-auto space-y-6 md:space-y-10 px-2 md:px-0">
       {/* Smart Advisor Section */}
-      <div className="bg-zinc-900/40 border border-white/5 rounded-[2.5rem] p-8 flex flex-col md:flex-row gap-8 items-center">
-        <div className="p-4 bg-white/5 rounded-3xl border border-white/10">
-          <Sparkles className="w-8 h-8 text-zinc-400 animate-pulse" />
+      <div className="bg-zinc-900/40 border border-white/5 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 items-center">
+        <div className="p-3 md:p-4 bg-white/5 rounded-2xl md:rounded-3xl border border-white/10">
+          <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-zinc-400 animate-pulse" />
         </div>
-        <div className="flex-1 space-y-2 text-center md:text-left">
-          <h4 className="text-sm font-bold uppercase tracking-widest text-zinc-400">Aether Smart Advisor</h4>
-          <p className="text-xl font-medium tracking-tight leading-relaxed">
-            Based on your <span className="text-green-400 font-bold">${totalIncome.toLocaleString()}</span> monthly inflow, you should aim for:
+        <div className="flex-1 space-y-1 md:space-y-2 text-center md:text-left">
+          <h4 className="text-[10px] md:text-sm font-bold uppercase tracking-widest text-zinc-400">Aether Smart Advisor</h4>
+          <p className="text-lg md:text-xl font-medium tracking-tight leading-snug">
+            Based on your <span className="text-green-400 font-bold">${totalIncome.toLocaleString()}</span> monthly inflow:
           </p>
         </div>
-        <div className="grid grid-cols-3 gap-6 text-center">
+        <div className="grid grid-cols-3 gap-3 md:gap-6 text-center w-full md:w-auto">
           <div className="space-y-1">
-            <p className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest">Needs (50%)</p>
-            <p className="text-lg font-black italic tracking-tighter text-white">${recNeeds.toLocaleString()}</p>
+            <p className="text-[7px] md:text-[8px] text-zinc-500 font-bold uppercase tracking-widest">Needs (50%)</p>
+            <p className="text-sm md:text-lg font-black italic tracking-tighter text-white">${recNeeds.toLocaleString()}</p>
           </div>
           <div className="space-y-1">
-            <p className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest">Wants (30%)</p>
-            <p className="text-lg font-black italic tracking-tighter text-white">${recWants.toLocaleString()}</p>
+            <p className="text-[7px] md:text-[8px] text-zinc-500 font-bold uppercase tracking-widest">Wants (30%)</p>
+            <p className="text-sm md:text-lg font-black italic tracking-tighter text-white">${recWants.toLocaleString()}</p>
           </div>
           <div className="space-y-1">
-            <p className="text-[8px] text-zinc-500 font-bold uppercase tracking-widest">Savings (20%)</p>
-            <p className="text-lg font-black italic tracking-tighter text-green-400">${recSavings.toLocaleString()}</p>
+            <p className="text-[7px] md:text-[8px] text-zinc-500 font-bold uppercase tracking-widest">Savings (20%)</p>
+            <p className="text-sm md:text-lg font-black italic tracking-tighter text-green-400">${recSavings.toLocaleString()}</p>
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {/* Main Budget Pulse */}
-        <div className="lg:col-span-2 bg-zinc-900/20 backdrop-blur-3xl border border-white/5 rounded-[2.5rem] p-10 space-y-8 relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-8 opacity-5">
+        <div className="md:col-span-2 bg-zinc-900/20 backdrop-blur-3xl border border-white/5 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 space-y-6 md:space-y-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 p-8 opacity-5 hidden md:block">
             <PieChart className="w-32 h-32" />
           </div>
           
-          <div className="flex items-center justify-between relative z-10">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
             <div className="space-y-1">
-              <h3 className="text-3xl font-black italic tracking-tighter uppercase">Budget Pulse</h3>
-              <p className="text-[10px] text-zinc-500 font-mono tracking-widest uppercase">Monthly Spend Velocity</p>
+              <h3 className="text-2xl md:text-3xl font-black italic tracking-tighter uppercase">Budget Pulse</h3>
+              <p className="text-[9px] md:text-[10px] text-zinc-500 font-mono tracking-widest uppercase">Monthly Spend Velocity</p>
             </div>
-            <div className="text-right">
-              <span className="text-4xl font-black italic tracking-tighter text-white">${totalSpent.toLocaleString()}</span>
-              <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">of ${totalLimit.toLocaleString()} limit</p>
+            <div className="text-left md:text-right">
+              <span className="text-3xl md:text-4xl font-black italic tracking-tighter text-white">${totalSpent.toLocaleString()}</span>
+              <p className="text-[9px] md:text-[10px] text-zinc-600 font-mono uppercase tracking-widest">of ${totalLimit.toLocaleString()} limit</p>
             </div>
           </div>
 
