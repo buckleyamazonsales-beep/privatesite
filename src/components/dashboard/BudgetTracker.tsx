@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Trash2, PieChart, ArrowUpCircle, ArrowDownCircle, DollarSign } from 'lucide-react'
+import { Plus, Trash2, PieChart, ArrowUpCircle, ArrowDownCircle, DollarSign, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Progress } from '@/components/ui/progress'

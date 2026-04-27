@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Trash2, Heart, ExternalLink, Camera } from 'lucide-react'
+import { Plus, Trash2, Heart, ExternalLink, Camera, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
@@ -63,7 +63,7 @@ export function Wishlist({ profile }: WishlistProps) {
       ...newItem
     }
     save([...items, item])
-    setNewItem({ title: '', price: '', link: '', category: 'General' })
+    setNewItem({ title: '', price: '', link: '', image: '', category: 'General' })
     setIsAdding(false)
   }
 
