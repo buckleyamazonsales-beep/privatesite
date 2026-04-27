@@ -5,6 +5,7 @@ import { Header } from '@/components/layout/Header'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { InvestmentTracker } from '@/components/dashboard/InvestmentTracker'
 
 export default function AetherDashboard() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -143,16 +144,24 @@ export default function AetherDashboard() {
               key="active"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="text-center space-y-8"
+              className="w-full space-y-12"
             >
-              <h2 className="text-4xl font-black italic uppercase tracking-tighter">Session Active</h2>
-              <Button 
-                variant="ghost" 
-                onClick={() => setIsLoggedIn(false)}
-                className="text-zinc-600 hover:text-white uppercase text-[10px] tracking-widest"
-              >
-                End Session
-              </Button>
+              <div className="text-center space-y-4">
+                <h2 className="text-4xl font-black italic uppercase tracking-tighter">Command Center</h2>
+                <div className="h-px w-12 bg-zinc-800 mx-auto" />
+              </div>
+
+              <InvestmentTracker profile={profile} />
+
+              <div className="flex justify-center pt-12">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => setIsLoggedIn(false)}
+                  className="text-zinc-700 hover:text-white uppercase text-[10px] tracking-widest font-bold"
+                >
+                  End Session
+                </Button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
