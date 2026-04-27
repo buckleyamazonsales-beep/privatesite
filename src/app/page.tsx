@@ -7,7 +7,6 @@ import { ApiKeyManagement } from '@/components/dashboard/ApiKeyManagement'
 import { ModelCards } from '@/components/dashboard/ModelCards'
 import { SetupGuide } from '@/components/dashboard/SetupGuide'
 import { GmailGenerator } from '@/components/dashboard/GmailGenerator'
-import { SpotifyPlayer } from '@/components/layout/SpotifyPlayer'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Sparkles, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -81,8 +80,6 @@ export default function AetherDashboard() {
 
   return (
     <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-black relative overflow-hidden">
-      <SpotifyPlayer />
-      
       <Header 
         isLoggedIn={isLoggedIn} 
         onSignIn={handleSignIn} 
@@ -97,39 +94,39 @@ export default function AetherDashboard() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="max-w-3xl mx-auto text-center py-32 space-y-12"
+              className="max-w-3xl mx-auto text-center py-16 space-y-8"
             >
-              <div className="space-y-8">
+              <div className="space-y-6">
                 <div className="flex justify-center gap-4">
                   <Button 
                     variant="ghost" 
                     onClick={() => setProfile('matt')}
-                    className={`h-12 px-8 rounded-full border ${profile === 'matt' ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.3)]' : 'bg-black text-white border-white/10 hover:border-white/20'}`}
+                    className={`h-10 px-6 rounded-full border transition-all ${profile === 'matt' ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.3)]' : 'bg-black text-white border-white/10 hover:border-white/20'}`}
                   >
                     Matt
                   </Button>
                   <Button 
                     variant="ghost" 
                     onClick={() => setProfile('meighan')}
-                    className={`h-12 px-8 rounded-full border ${profile === 'meighan' ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.3)]' : 'bg-black text-white border-white/10 hover:border-white/20'}`}
+                    className={`h-10 px-6 rounded-full border transition-all ${profile === 'meighan' ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.3)]' : 'bg-black text-white border-white/10 hover:border-white/20'}`}
                   >
                     Meighan
                   </Button>
                 </div>
 
-                <div className="space-y-6">
+                <div className="space-y-2">
                   <motion.h1 
                     key={profile}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-7xl md:text-8xl font-black tracking-tighter bg-gradient-to-r from-white via-zinc-400 to-white bg-clip-text text-transparent italic"
+                    className="text-7xl md:text-8xl font-black tracking-tighter bg-gradient-to-r from-white via-zinc-400 to-white bg-clip-text text-transparent italic leading-[0.8]"
                   >
                     Welcome {profile === 'matt' ? 'Matt' : 'Meighan'}
                   </motion.h1>
                   
                   <div className="max-w-xl mx-auto space-y-2">
-                    <p className="text-zinc-500 font-mono text-sm tracking-[0.2em] uppercase">Private Session Authorized</p>
-                    <div className="h-px w-12 bg-zinc-800 mx-auto" />
+                    <p className="text-zinc-500 font-mono text-[10px] tracking-[0.4em] uppercase">Private Session Authorized</p>
+                    <div className="h-px w-8 bg-zinc-800 mx-auto" />
                   </div>
                 </div>
 
@@ -137,10 +134,10 @@ export default function AetherDashboard() {
                   key={dailyQuote.text}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="space-y-2"
+                  className="space-y-2 pt-4"
                 >
-                  <p className="text-xl md:text-2xl font-light text-zinc-300 italic">"{dailyQuote.text}"</p>
-                  <p className="text-xs font-bold text-zinc-600 uppercase tracking-widest">— {dailyQuote.author}</p>
+                  <p className="text-lg md:text-xl font-light text-zinc-400 italic">"{dailyQuote.text}"</p>
+                  <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">— {dailyQuote.author}</p>
                 </motion.div>
               </div>
 
