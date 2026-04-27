@@ -15,32 +15,40 @@ import { Button } from '@/components/ui/button'
 export default function AetherDashboard() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [profile, setProfile] = useState<'matt' | 'meighan'>('matt')
   const [dailyQuote, setDailyQuote] = useState({ text: '', author: '' })
 
-  const quotes = [
-    { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
-    { text: "Life is what happens when you're busy making other plans.", author: "John Lennon" },
+  const mattQuotes = [
+    { text: "He who has a why to live can bear almost any how.", author: "Friedrich Nietzsche" },
+    { text: "Waste no more time arguing what a good man should be. Be one.", author: "Marcus Aurelius" },
+    { text: "The harder the conflict, the more glorious the triumph.", author: "Thomas Paine" },
+    { text: "A man is but the product of his thoughts. What he thinks, he becomes.", author: "Mahatma Gandhi" },
+    { text: "Strength does not come from winning. Your struggles develop your strengths.", author: "Arnold Schwarzenegger" },
+    { text: "It is not the critic who counts; not the man who points out how the strong man stumbles.", author: "Theodore Roosevelt" },
+    { text: "Discipline is doing what needs to be done, even if you don't want to do it.", author: "Unknown" },
+    { text: "The man who moves a mountain begins by carrying away small stones.", author: "Confucius" }
+  ]
+
+  const meighanQuotes = [
+    { text: "Grace is finding a waterfall when you were only looking for a stream.", author: "Unknown" },
     { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
-    { text: "It is during our darkest moments that we must focus to see the light.", author: "Aristotle" },
-    { text: "Do not go where the path may lead, go instead where there is no path.", author: "Ralph Waldo Emerson" },
-    { text: "In the middle of every difficulty lies opportunity.", author: "Albert Einstein" },
-    { text: "Success is not final, failure is not fatal: it is the courage to continue.", author: "Winston Churchill" },
-    { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
-    { text: "The only limit to our realization of tomorrow will be our doubts of today.", author: "Franklin D. Roosevelt" },
-    { text: "A journey of a thousand miles begins with a single step.", author: "Lao Tzu" },
-    { text: "What you get by achieving your goals is not as important as what you become.", author: "Henry David Thoreau" }
+    { text: "Kindness is the light that dissolves all walls between souls.", author: "Paramahansa Yogananda" },
+    { text: "Bloom where you are planted, and let your light shine through.", author: "Mary Engelbreit" },
+    { text: "Poetry is not a turning loose of emotion, but an escape from emotion.", author: "T.S. Eliot" },
+    { text: "The most beautiful things in the world cannot be seen or even touched.", author: "Helen Keller" },
+    { text: "Life is a journey, and if you fall in love with the journey, you will be in love forever.", author: "Peter Hagerty" },
+    { text: "Your soul knows the geography of your destiny.", author: "John O'Donohue" }
   ]
 
   useEffect(() => {
-    // Select random quote on refresh
-    const randomIdx = Math.floor(Math.random() * quotes.length)
-    const quote = quotes[randomIdx]
-    setDailyQuote(quote)
+    const selectedQuotes = profile === 'matt' ? mattQuotes : meighanQuotes
+    const randomIdx = Math.floor(Math.random() * selectedQuotes.length)
+    setDailyQuote(selectedQuotes[randomIdx])
 
     // Simulate initial load
     const timer = setTimeout(() => setLoading(false), 1000)
     return () => clearTimeout(timer)
-  }, [])
+  }, [profile])
 
   const handleSignIn = (key: string) => {
     if (key.trim()) {
@@ -91,24 +99,49 @@ export default function AetherDashboard() {
               exit={{ opacity: 0, scale: 0.95 }}
               className="max-w-3xl mx-auto text-center py-32 space-y-12"
             >
-              <div className="space-y-6">
-                <motion.h1 
-                  animate={{ 
-                    textShadow: ["0 0 20px rgba(255,255,255,0)", "0 0 20px rgba(255,255,255,0.5)", "0 0 20px rgba(255,255,255,0)"] 
-                  }}
-                  transition={{ duration: 4, repeat: Infinity }}
-                  className="text-7xl md:text-8xl font-black tracking-tighter bg-gradient-to-r from-white via-zinc-400 to-white bg-clip-text text-transparent italic"
-                >
-                  Welcome Matt
-                </motion.h1>
-                <div className="space-y-2">
-                  <p className="text-zinc-400 font-serif text-xl italic leading-relaxed max-w-lg mx-auto">
-                    "{dailyQuote.text}"
-                  </p>
-                  <p className="text-zinc-600 font-mono text-[10px] uppercase tracking-[0.4em]">
-                    — {dailyQuote.author}
-                  </p>
+              <div className="space-y-8">
+                <div className="flex justify-center gap-4">
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => setProfile('matt')}
+                    className={`h-12 px-8 rounded-full border ${profile === 'matt' ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.3)]' : 'bg-black text-white border-white/10 hover:border-white/20'}`}
+                  >
+                    Matt
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => setProfile('meighan')}
+                    className={`h-12 px-8 rounded-full border ${profile === 'meighan' ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.3)]' : 'bg-black text-white border-white/10 hover:border-white/20'}`}
+                  >
+                    Meighan
+                  </Button>
                 </div>
+
+                <div className="space-y-6">
+                  <motion.h1 
+                    key={profile}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-7xl md:text-8xl font-black tracking-tighter bg-gradient-to-r from-white via-zinc-400 to-white bg-clip-text text-transparent italic"
+                  >
+                    Welcome {profile === 'matt' ? 'Matt' : 'Meighan'}
+                  </motion.h1>
+                  
+                  <div className="max-w-xl mx-auto space-y-2">
+                    <p className="text-zinc-500 font-mono text-sm tracking-[0.2em] uppercase">Private Session Authorized</p>
+                    <div className="h-px w-12 bg-zinc-800 mx-auto" />
+                  </div>
+                </div>
+
+                <motion.div 
+                  key={dailyQuote.text}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="space-y-2"
+                >
+                  <p className="text-xl md:text-2xl font-light text-zinc-300 italic">"{dailyQuote.text}"</p>
+                  <p className="text-xs font-bold text-zinc-600 uppercase tracking-widest">— {dailyQuote.author}</p>
+                </motion.div>
               </div>
 
               <motion.div 

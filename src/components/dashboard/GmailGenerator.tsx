@@ -204,12 +204,6 @@ export function GmailGenerator() {
           )}
         </AnimatePresence>
 
-        <div className="p-4 bg-amber-500/5 border border-amber-500/20 rounded-xl flex gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0" />
-          <div className="text-xs text-amber-200/70 leading-relaxed">
-            <span className="font-bold text-amber-500">Legal Disclaimer:</span> This is for demonstration/educational purposes. Generating real Gmail accounts in bulk may violate Google's ToS and require proxies/captcha solving in production. Use responsibly.
-          </div>
-        </div>
       </CardContent>
     </Card>
   )

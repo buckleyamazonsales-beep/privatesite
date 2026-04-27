@@ -55,12 +55,13 @@ export function SpotifyPlayer() {
 
     localStorage.setItem('spotify_code_verifier', codeVerifier)
 
-    const redirectUri = window.location.origin
+    const redirectUri = typeof window !== 'undefined' ? window.location.origin : 'https://imbuckleyy.xyz'
     const scopes = [
       'user-modify-playback-state',
       'user-read-playback-state',
       'playlist-modify-public',
-      'playlist-modify-private'
+      'playlist-modify-private',
+      'user-library-modify'
     ].join(' ')
 
     const params = new URLSearchParams({
