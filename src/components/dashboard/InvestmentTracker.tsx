@@ -22,12 +22,58 @@ export function InvestmentTracker({ profile }: InvestmentTrackerProps) {
   const [investments, setInvestments] = useState<Investment[]>([])
   const [isAdding, setIsAdding] = useState(false)
   const [newAsset, setNewAsset] = useState({ name: '', amount: '', value: '' })
+  const [isUpdating, setIsUpdating] = useState(false)
+
+  // Asset mapping for CoinGecko
+  const coinMap: Record<string, string> = {
+    'BTC': 'bitcoin',
+    'ETH': 'ethereum',
+    'SOL': 'solana',
+    'ADA': 'cardano',
+    'DOGE': 'dogecoin',
+    'DOT': 'polkadot',
+    'MATIC': 'polygon-hermez',
+    'LINK': 'chainlink'
+  }
+
+  const fetchLivePrices = async (currentInvestments: Investment[]) => {
+    const ids = currentInvestments
+      .map(a => coinMap[a.name.toUpperCase()])
+      .filter(id => !!id)
+      .join(',')
+    
+    if (!ids) return
+
+    setIsUpdating(true)
+    try {
+      const resp = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`)
+      const prices = await resp.json()
+      
+      const updated = currentInvestments.map(asset => {
+        const coinId = coinMap[asset.name.toUpperCase()]
+        if (coinId && prices[coinId]) {
+          return { ...asset, value: prices[coinId].usd }
+        }
+        return asset
+      })
+      save(updated)
+    } catch (err) {
+      console.error('Price fetch failed:', err)
+    } finally {
+      setIsUpdating(false)
+    }
+  }
 
   // Load from localStorage
   useEffect(() => {
     const saved = localStorage.getItem(`aether_investments_${profile}`)
-    if (saved) setInvestments(JSON.parse(saved))
-    else setInvestments([])
+    if (saved) {
+      const parsed = JSON.parse(saved)
+      setInvestments(parsed)
+      fetchLivePrices(parsed)
+    } else {
+      setInvestments([])
+    }
   }, [profile])
 
   // Save to localStorage
@@ -60,18 +106,32 @@ export function InvestmentTracker({ profile }: InvestmentTrackerProps) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-white/5 rounded-lg border border-white/10">
-            <TrendingUp className="w-5 h-5 text-white" />
+            <TrendingUp className={`w-5 h-5 text-white ${isUpdating ? 'animate-pulse' : ''}`} />
           </div>
           <div>
-            <h3 className="text-xl font-bold tracking-tight uppercase italic">Portfolio Overview</h3>
-            <p className="text-[10px] text-zinc-500 font-mono tracking-widest uppercase">Live Tracking • {profile}</p>
+            <div className="flex items-center gap-2">
+              <h3 className="text-xl font-bold tracking-tight uppercase italic">Portfolio Overview</h3>
+              {isUpdating && <span className="text-[8px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full font-bold animate-pulse">LIVE UPDATE</span>}
+            </div>
+            <p className="text-[10px] text-zinc-500 font-mono tracking-widest uppercase">Global Markets • {profile}</p>
           </div>
         </div>
-        <div className="text-right">
-          <div className="text-2xl font-black italic tracking-tighter text-white">
-            ${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+        <div className="flex items-center gap-6">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => fetchLivePrices(investments)}
+            disabled={isUpdating}
+            className="text-zinc-600 hover:text-white"
+          >
+            <DollarSign className={`w-4 h-4 ${isUpdating ? 'animate-spin' : ''}`} />
+          </Button>
+          <div className="text-right">
+            <div className="text-2xl font-black italic tracking-tighter text-white">
+              ${totalValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </div>
+            <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">Total Assets</p>
           </div>
-          <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">Total Assets</p>
         </div>
       </div>
 
