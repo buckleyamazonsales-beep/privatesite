@@ -184,14 +184,18 @@ export function InvestmentTracker({ profile }: InvestmentTrackerProps) {
                 </div>
                 
                 <div className="flex justify-between items-end border-t border-white/5 pt-3">
-                  <div>
+                  <div className="space-y-1">
+                    <p className="text-[8px] text-zinc-500 uppercase tracking-widest font-mono">Holding</p>
+                    <p className="text-xs font-bold text-white">{asset.amount.toLocaleString()} <span className="text-[10px] text-zinc-600">{asset.name}</span></p>
+                  </div>
+                  <div className="text-right space-y-1">
                     <p className="text-[8px] text-zinc-500 uppercase tracking-widest font-mono">Cost Basis</p>
                     <p className="text-xs font-medium text-zinc-400">${asset.costBasis.toLocaleString()}</p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-[8px] text-zinc-500 uppercase tracking-widest font-mono">Market Value</p>
-                    <p className="text-xs font-bold text-white">${(asset.amount * asset.value).toLocaleString()}</p>
-                  </div>
+                </div>
+                <div className="flex justify-between items-center pt-1">
+                  <p className="text-[8px] text-zinc-500 uppercase tracking-widest font-mono">Market Total</p>
+                  <p className="text-sm font-black text-white tracking-tighter">${(asset.amount * asset.value).toLocaleString()}</p>
                 </div>
               </div>
             </motion.div>

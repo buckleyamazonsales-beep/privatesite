@@ -3,17 +3,18 @@
 import React, { useState, useEffect } from 'react'
 import { Header } from '@/components/layout/Header'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, TrendingUp, Heart } from 'lucide-react'
+import { Sparkles, TrendingUp, Heart, PieChart } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InvestmentTracker } from '@/components/dashboard/InvestmentTracker'
 import { Wishlist } from '@/components/dashboard/Wishlist'
+import { BudgetTracker } from '@/components/dashboard/BudgetTracker'
 import { Starfield } from '@/components/layout/Starfield'
 
 export default function AetherDashboard() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [loading, setLoading] = useState(true)
   const [profile, setProfile] = useState<'matt' | 'meighan'>('matt')
-  const [activeTab, setActiveTab] = useState<'investments' | 'wishlist'>('investments')
+  const [activeTab, setActiveTab] = useState<'investments' | 'wishlist' | 'budgeting'>('investments')
   const [dailyQuote, setDailyQuote] = useState({ text: '', author: '' })
 
   const mattQuotes = [
@@ -161,14 +162,21 @@ export default function AetherDashboard() {
                 <div className="flex bg-zinc-900/40 p-1 rounded-full border border-white/5 backdrop-blur-xl">
                   <button 
                     onClick={() => setActiveTab('investments')}
-                    className={`flex items-center gap-2 px-8 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'investments' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
+                    className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'investments' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
                   >
                     <TrendingUp className="w-3 h-3" />
                     Investments
                   </button>
                   <button 
+                    onClick={() => setActiveTab('budgeting')}
+                    className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'budgeting' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
+                  >
+                    <PieChart className="w-3 h-3" />
+                    Budget
+                  </button>
+                  <button 
                     onClick={() => setActiveTab('wishlist')}
-                    className={`flex items-center gap-2 px-8 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'wishlist' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
+                    className={`flex items-center gap-2 px-6 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'wishlist' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
                   >
                     <Heart className="w-3 h-3" />
                     Wishlist
@@ -179,13 +187,15 @@ export default function AetherDashboard() {
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeTab}
-                  initial={{ opacity: 0, x: activeTab === 'investments' ? -20 : 20 }}
+                  initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: activeTab === 'investments' ? 20 : -20 }}
+                  exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.3 }}
                 >
                   {activeTab === 'investments' ? (
                     <InvestmentTracker profile={profile} />
+                  ) : activeTab === 'budgeting' ? (
+                    <BudgetTracker profile={profile} />
                   ) : (
                     <Wishlist profile={profile} />
                   )}
