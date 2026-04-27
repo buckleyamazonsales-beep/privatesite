@@ -12,6 +12,7 @@ interface Investment {
   name: string
   amount: number
   value: number
+  costBasis: number
 }
 
 interface InvestmentTrackerProps {
@@ -21,7 +22,7 @@ interface InvestmentTrackerProps {
 export function InvestmentTracker({ profile }: InvestmentTrackerProps) {
   const [investments, setInvestments] = useState<Investment[]>([])
   const [isAdding, setIsAdding] = useState(false)
-  const [newAsset, setNewAsset] = useState({ name: '', amount: '', value: '' })
+  const [newAsset, setNewAsset] = useState({ name: '', amount: '', costBasis: '', value: '' })
   const [isUpdating, setIsUpdating] = useState(false)
 
   // Asset mapping for CoinGecko
@@ -74,6 +75,17 @@ export function InvestmentTracker({ profile }: InvestmentTrackerProps) {
     } else {
       setInvestments([])
     }
+
+    // Auto-update every 30 seconds
+    const interval = setInterval(() => {
+      // Use the latest investments state to fetch prices
+      const currentSaved = localStorage.getItem(`aether_investments_${profile}`)
+      if (currentSaved) {
+        fetchLivePrices(JSON.parse(currentSaved))
+      }
+    }, 30000)
+
+    return () => clearInterval(interval)
   }, [profile])
 
   // Save to localStorage
@@ -88,10 +100,11 @@ export function InvestmentTracker({ profile }: InvestmentTrackerProps) {
       id: Math.random().toString(36).substr(2, 9),
       name: newAsset.name,
       amount: parseFloat(newAsset.amount) || 0,
-      value: parseFloat(newAsset.value) || 0
+      costBasis: parseFloat(newAsset.costBasis) || 0,
+      value: parseFloat(newAsset.value) || parseFloat(newAsset.costBasis) || 0
     }
     save([...investments, asset])
-    setNewAsset({ name: '', amount: '', value: '' })
+    setNewAsset({ name: '', amount: '', costBasis: '', value: '' })
     setIsAdding(false)
   }
 
@@ -150,6 +163,11 @@ export function InvestmentTracker({ profile }: InvestmentTrackerProps) {
                 <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center">
                   <Wallet className="w-5 h-5 text-zinc-400" />
                 </div>
+                {asset.costBasis > 0 && (
+                  <div className={`text-[10px] font-bold px-2 py-1 rounded-md ${((asset.value - asset.costBasis) / asset.costBasis) >= 0 ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'}`}>
+                    {((asset.value - asset.costBasis) / asset.costBasis * 100).toFixed(1)}%
+                  </div>
+                )}
                 <button 
                   onClick={() => removeAsset(asset.id)}
                   className="opacity-0 group-hover:opacity-100 p-2 text-zinc-600 hover:text-red-400 transition-all"
@@ -157,16 +175,22 @@ export function InvestmentTracker({ profile }: InvestmentTrackerProps) {
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
-              <div className="space-y-1">
-                <h4 className="font-bold text-lg tracking-tight text-zinc-200">{asset.name}</h4>
-                <div className="flex justify-between items-end">
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <h4 className="font-bold text-lg tracking-tight text-zinc-200">{asset.name}</h4>
+                  <p className={`text-sm font-bold ${asset.value >= asset.costBasis ? 'text-green-400' : 'text-red-400'}`}>
+                    ${(asset.amount * (asset.value - asset.costBasis)).toLocaleString()}
+                  </p>
+                </div>
+                
+                <div className="flex justify-between items-end border-t border-white/5 pt-3">
                   <div>
-                    <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Position</p>
-                    <p className="text-sm font-bold text-white">{asset.amount} Units</p>
+                    <p className="text-[8px] text-zinc-500 uppercase tracking-widest font-mono">Cost Basis</p>
+                    <p className="text-xs font-medium text-zinc-400">${asset.costBasis.toLocaleString()}</p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Market Value</p>
-                    <p className="text-sm font-bold text-white">${(asset.amount * asset.value).toLocaleString()}</p>
+                    <p className="text-[8px] text-zinc-500 uppercase tracking-widest font-mono">Market Value</p>
+                    <p className="text-xs font-bold text-white">${(asset.amount * asset.value).toLocaleString()}</p>
                   </div>
                 </div>
               </div>
@@ -193,13 +217,20 @@ export function InvestmentTracker({ profile }: InvestmentTrackerProps) {
                   onChange={e => setNewAsset({...newAsset, amount: e.target.value})}
                 />
                 <Input 
-                  placeholder="Price" 
+                  placeholder="Initial Cost" 
                   type="number"
                   className="h-9 bg-black/40 border-white/5 text-xs"
-                  value={newAsset.value}
-                  onChange={e => setNewAsset({...newAsset, value: e.target.value})}
+                  value={newAsset.costBasis}
+                  onChange={e => setNewAsset({...newAsset, costBasis: e.target.value})}
                 />
               </div>
+              <Input 
+                placeholder="Market Price (Override)" 
+                type="number"
+                className="h-9 bg-black/40 border-white/5 text-xs"
+                value={newAsset.value}
+                onChange={e => setNewAsset({...newAsset, value: e.target.value})}
+              />
               <div className="flex gap-2">
                 <Button onClick={addAsset} className="flex-1 bg-white text-black h-8 text-[10px] font-bold uppercase">Add</Button>
                 <Button onClick={() => setIsAdding(false)} variant="ghost" className="flex-1 text-[10px] uppercase h-8">Cancel</Button>

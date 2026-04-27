@@ -171,7 +171,7 @@ export default function AetherDashboard() {
                     className={`flex items-center gap-2 px-8 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'wishlist' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
                   >
                     <Heart className="w-3 h-3" />
-                    Vision Board
+                    Wishlist
                   </button>
                 </div>
               </div>

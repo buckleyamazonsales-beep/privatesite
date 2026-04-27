@@ -56,8 +56,8 @@ export function Wishlist({ profile }: WishlistProps) {
             <Heart className="w-5 h-5 text-zinc-400" />
           </div>
           <div>
-            <h3 className="text-2xl font-black italic tracking-tighter uppercase">Vision Board</h3>
-            <p className="text-[10px] text-zinc-600 font-mono tracking-widest uppercase">Future Aspirations • {profile}</p>
+            <h3 className="text-2xl font-black italic tracking-tighter uppercase">Wishlist</h3>
+            <p className="text-[10px] text-zinc-600 font-mono tracking-widest uppercase">Target Goals • {profile}</p>
           </div>
         </div>
         <Button 
