@@ -3,19 +3,39 @@
 import React, { useState, useEffect } from 'react'
 import { Header } from '@/components/layout/Header'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Sparkles, TrendingUp, Heart, PieChart } from 'lucide-react'
+import { TrendingUp, PieChart, Heart, Flame, MessageSquare, History, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { InvestmentTracker } from '@/components/dashboard/InvestmentTracker'
 import { Wishlist } from '@/components/dashboard/Wishlist'
 import { BudgetTracker } from '@/components/dashboard/BudgetTracker'
+import { HabitTracker } from '@/components/dashboard/HabitTracker'
+import { SharedNotes } from '@/components/dashboard/SharedNotes'
+import { Timeline } from '@/components/dashboard/Timeline'
+import { GlobalIdentity } from '@/components/dashboard/GlobalIdentity'
 import { Starfield } from '@/components/layout/Starfield'
+
+type Tab = 'investments' | 'budgeting' | 'wishlist' | 'habits' | 'notes' | 'legacy'
 
 export default function AetherDashboard() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [loading, setLoading] = useState(true)
   const [profile, setProfile] = useState<'matt' | 'meighan'>('matt')
-  const [activeTab, setActiveTab] = useState<'investments' | 'wishlist' | 'budgeting'>('investments')
+  const [activeTab, setActiveTab] = useState<Tab>('investments')
   const [dailyQuote, setDailyQuote] = useState({ text: '', author: '' })
+
+  const renderTab = () => {
+    switch (activeTab) {
+      case 'investments': return <InvestmentTracker profile={profile} />
+      case 'budgeting': return <BudgetTracker profile={profile} />
+      case 'wishlist': return <Wishlist profile={profile} />
+      case 'habits': return <HabitTracker profile={profile} />
+      case 'notes': return <SharedNotes activeProfile={profile} />
+      case 'legacy': return <Timeline profile={profile} />
+      default: return <InvestmentTracker profile={profile} />
+    }
+  }
+
+  // ... quotes logic ...
 
   const mattQuotes = [
     { text: "He who has a why to live can bear almost any how.", author: "Friedrich Nietzsche" },
@@ -72,18 +92,13 @@ export default function AetherDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-black relative overflow-x-hidden flex flex-col font-sans">
+    <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black relative overflow-x-hidden flex flex-col font-sans">
       <Starfield />
+      <Header />
       
-      <Header 
-        isLoggedIn={isLoggedIn} 
-        onSignIn={handleSignIn} 
-        onSignOut={handleSignOut} 
-      />
-
-      <main className="flex-1 flex flex-col items-center justify-center container mx-auto px-4 z-10">
-        <AnimatePresence mode="wait">
-          {!isLoggedIn ? (
+      <AnimatePresence mode="wait">
+        {!isLoggedIn ? (
+          <div key="welcome" className="relative z-10 flex flex-col items-center justify-center min-h-[90vh]">
             <motion.div 
               key="auth-gate"
               initial={{ opacity: 0, scale: 0.9 }}
@@ -146,75 +161,68 @@ export default function AetherDashboard() {
                 </Button>
               </motion.div>
             </motion.div>
-          ) : (
-            <motion.div 
-              key="active"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-6 md:space-y-12"
-            >
-              <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div className="space-y-1 text-center md:text-left">
-                  <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase">Command Center</h2>
-                  <p className="text-[10px] text-zinc-600 font-mono tracking-[0.4em] uppercase">Unified Intelligence • {profile}</p>
+          </div>
+        ) : (
+          <div key="dashboard" className="relative z-10 pt-24 md:pt-32 pb-20">
+            <div className="w-full max-w-7xl mx-auto px-4 md:px-6">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="space-y-6 md:space-y-12"
+              >
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div className="space-y-1 text-center md:text-left">
+                    <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase">Command Center</h2>
+                    <p className="text-[10px] text-zinc-600 font-mono tracking-[0.4em] uppercase">Unified Intelligence • {profile}</p>
+                  </div>
+                  
+                  <GlobalIdentity />
                 </div>
-                
-                <div className="flex flex-wrap justify-center bg-zinc-900/40 p-1 rounded-3xl md:rounded-full border border-white/5 backdrop-blur-xl gap-1">
-                  <button 
-                    onClick={() => setActiveTab('investments')}
-                    className={`flex items-center gap-2 px-4 md:px-6 py-2 md:py-2.5 rounded-2xl md:rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'investments' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
-                  >
-                    <TrendingUp className="w-3 h-3" />
-                    Investments
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('budgeting')}
-                    className={`flex items-center gap-2 px-4 md:px-6 py-2 md:py-2.5 rounded-2xl md:rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'budgeting' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
-                  >
-                    <PieChart className="w-3 h-3" />
-                    Budget
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('wishlist')}
-                    className={`flex items-center gap-2 px-4 md:px-6 py-2 md:py-2.5 rounded-2xl md:rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'wishlist' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
-                  >
-                    <Heart className="w-3 h-3" />
-                    Wishlist
-                  </button>
-                </div>
-              </div>
 
-              <AnimatePresence mode="wait">
+                <div className="flex overflow-x-auto no-scrollbar md:justify-center bg-zinc-900/40 p-1 rounded-3xl md:rounded-full border border-white/5 backdrop-blur-xl gap-1">
+                  {[
+                    { id: 'investments', label: 'Investments', icon: TrendingUp },
+                    { id: 'budgeting', label: 'Budget', icon: PieChart },
+                    { id: 'habits', label: 'Pulse', icon: Flame },
+                    { id: 'notes', label: 'Briefs', icon: MessageSquare },
+                    { id: 'wishlist', label: 'Goals', icon: Heart },
+                    { id: 'legacy', label: 'Legacy', icon: History }
+                  ].map((tab) => (
+                    <button 
+                      key={tab.id}
+                      onClick={() => setActiveTab(tab.id as Tab)}
+                      className={`flex items-center gap-2 px-6 py-2.5 rounded-2xl md:rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap ${activeTab === tab.id ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'}`}
+                    >
+                      <tab.icon className="w-3 h-3" />
+                      {tab.label}
+                    </button>
+                  ))}
+                </div>
+
                 <motion.div
                   key={activeTab}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ type: 'spring', damping: 20, stiffness: 100 }}
+                  className="min-h-[500px]"
                 >
-                  {activeTab === 'investments' ? (
-                    <InvestmentTracker profile={profile} />
-                  ) : activeTab === 'budgeting' ? (
-                    <BudgetTracker profile={profile} />
-                  ) : (
-                    <Wishlist profile={profile} />
-                  )}
+                  {renderTab()}
                 </motion.div>
-              </AnimatePresence>
 
-              <div className="flex justify-center pt-16">
-                <Button 
-                  variant="ghost" 
-                  onClick={() => setIsLoggedIn(false)}
-                  className="text-zinc-800 hover:text-white uppercase text-[10px] tracking-[0.5em] font-black transition-all"
-                >
-                  Terminate Session
-                </Button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </main>
+                <div className="flex justify-center pt-16">
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => setIsLoggedIn(false)}
+                    className="text-zinc-800 hover:text-white uppercase text-[10px] tracking-[0.5em] font-black transition-all"
+                  >
+                    Terminate Session
+                  </Button>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }
