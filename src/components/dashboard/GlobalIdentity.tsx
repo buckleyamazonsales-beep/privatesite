@@ -13,9 +13,21 @@ export function GlobalIdentity() {
       setTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))
     }, 1000)
 
-    // Mock weather for aesthetic
-    setTemp('24°C')
-    setLocation('Dubai, UAE')
+    // Detect Location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          // In a real app, we'd reverse geocode here. 
+          // For now, we'll sync with Canadian context based on the bank details.
+          setLocation('Canada East')
+          setTemp('12°C') 
+        },
+        () => {
+          setLocation('Ontario, CA')
+          setTemp('14°C')
+        }
+      )
+    }
 
     return () => clearInterval(timer)
   }, [])
