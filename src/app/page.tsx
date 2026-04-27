@@ -67,7 +67,7 @@ export default function AetherDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-black relative overflow-hidden flex flex-col">
+    <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-black relative overflow-x-hidden flex flex-col">
       <Header 
         isLoggedIn={isLoggedIn} 
         onSignIn={handleSignIn} 
@@ -102,12 +102,12 @@ export default function AetherDashboard() {
                   </Button>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-4 pb-12">
                   <motion.h1 
                     key={profile}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-8xl md:text-[10rem] font-black tracking-tighter bg-gradient-to-b from-white to-zinc-600 bg-clip-text text-transparent italic leading-[0.8]"
+                    className="text-8xl md:text-[10rem] font-black tracking-tighter bg-gradient-to-b from-white to-zinc-600 bg-clip-text text-transparent italic leading-[1.1] pb-8 block"
                   >
                     Welcome<br />{profile === 'matt' ? 'Matt' : 'Meighan'}
                   </motion.h1>
