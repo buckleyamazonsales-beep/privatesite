@@ -13,13 +13,7 @@ import {
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
-interface HeaderProps {
-  isLoggedIn: boolean
-  onSignIn: (key: string) => void
-  onSignOut: () => void
-}
-
-export function Header({ isLoggedIn, onSignIn, onSignOut }: HeaderProps) {
+export function Header() {
   return (
     <header className="bg-transparent border-none sticky top-0 z-50">
       <div className="container mx-auto px-4 h-24 flex items-center justify-center">
