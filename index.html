@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>imbuckleyy's PokéMMO Companion Tool</title>
+    <meta name="description" content="The ultimate companion app for PokéMMO players. Plan breeds, track gym cooldowns, manage GTL ledgers, cultivate berries, search thief databases, count shiny hunts, analyze PvP speed tiers, plan money making routes, and track story caps.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header>
+        <div class="header-container">
+            <div class="logo-section">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="10" stroke="url(#logo-grad)" stroke-width="2"/>
+                    <line x1="2" y1="12" x2="22" y2="12" stroke="url(#logo-grad)" stroke-width="2"/>
+                    <circle cx="12" cy="12" r="3" fill="var(--bg-dark)" stroke="url(#logo-grad)" stroke-width="2"/>
+                    <defs>
+                        <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#FFDE00" />
+                            <stop offset="50%" stop-color="#CC0000" />
+                            <stop offset="100%" stop-color="#3B4CCA" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <h1>imbuckleyy</h1>
+                <span class="logo-badge">Companion</span>
+            </div>
+            
+            <nav class="nav-tabs">
+                <button class="tab-btn active" onclick="switchTab('breeding')" id="nav-btn-breeding">Breeding Calc</button>
+                <button class="tab-btn" onclick="switchTab('gyms')" id="nav-btn-gyms">Gym Tracker</button>
+                <button class="tab-btn" onclick="switchTab('gtl')" id="nav-btn-gtl">GTL Ledger</button>
+                <button class="tab-btn" onclick="switchTab('berry')" id="nav-btn-berry">Berry Garden</button>
+                <button class="tab-btn" onclick="switchTab('thief')" id="nav-btn-thief">Thief/Pickup</button>
+                <button class="tab-btn" onclick="switchTab('shiny')" id="nav-btn-shiny">Shiny Tracker</button>
+                <button class="tab-btn" onclick="switchTab('pvp')" id="nav-btn-pvp">PvP Speed</button>
+                <button class="tab-btn" onclick="switchTab('ev')" id="nav-btn-ev">EV Hordes</button>
+                <button class="tab-btn" onclick="switchTab('catch')" id="nav-btn-catch">Catch Calc</button>
+                <button class="tab-btn" onclick="switchTab('money')" id="nav-btn-money">Daily Planner</button>
+                <button class="tab-btn" onclick="switchTab('story')" id="nav-btn-story">Story Guides</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main>
+
+        <!-- 1. BREEDING CALCULATOR VIEW -->
+        <section id="breeding-tab" class="tab-content active">
+            <div class="grid-3">
+                <!-- Breeding Inputs -->
+                <div class="card">
+                    <h2 class="card-title">Target Specifications</h2>
+                    
+                    <!-- Pokémon Species Lookup -->
+                    <div class="form-group" style="margin-bottom: 1.25rem; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 1rem;">
+                        <label for="breed-lookup-input">Pokémon Lookup (Egg Groups & Advice)</label>
+                        <input type="text" id="breed-lookup-input" placeholder="e.g. Garchomp, Beldum, Charmander..." oninput="lookupBreedingPokemon(this.value)" autocomplete="off">
+                        <div id="breed-lookup-results" class="summary-box" style="margin-top: 0.75rem; display: none; background: rgba(139,92,246,0.03); border-color: rgba(139,92,246,0.25);">
+                            <!-- Populated dynamically by app.js -->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Select 31 IV Stats</label>
+                        <div class="iv-checkbox-group">
+                            <div class="iv-checkbox-card" id="iv-card-HP">
+                                <input type="checkbox" id="iv-hp" class="iv-checkbox" value="HP">
+                                <label for="iv-hp" style="margin-bottom: 0; cursor: pointer;">HP</label>
+                            </div>
+                            <div class="iv-checkbox-card" id="iv-card-Atk">
+                                <input type="checkbox" id="iv-atk" class="iv-checkbox" value="Atk">
+                                <label for="iv-atk" style="margin-bottom: 0; cursor: pointer;">Atk</label>
+                            </div>
+                            <div class="iv-checkbox-card" id="iv-card-Def">
+                                <input type="checkbox" id="iv-def" class="iv-checkbox" value="Def">
+                                <label for="iv-def" style="margin-bottom: 0; cursor: pointer;">Def</label>
+                            </div>
+                            <div class="iv-checkbox-card" id="iv-card-SpA">
+                                <input type="checkbox" id="iv-spa" class="iv-checkbox" value="SpA">
+                                <label for="iv-spa" style="margin-bottom: 0; cursor: pointer;">SpA</label>
+                            </div>
+                            <div class="iv-checkbox-card" id="iv-card-SpD">
+                                <input type="checkbox" id="iv-spd" class="iv-checkbox" value="SpD">
+                                <label for="iv-spd" style="margin-bottom: 0; cursor: pointer;">SpD</label>
+                            </div>
+                            <div class="iv-checkbox-card" id="iv-card-Spe">
+                                <input type="checkbox" id="iv-spe" class="iv-checkbox" value="Spe">
+                                <label for="iv-spe" style="margin-bottom: 0; cursor: pointer;">Spe</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="nature-select">Desired Nature</label>
+                        <select id="nature-select" onchange="calculateAndRenderBreeding()">
+                            <option value="yes">Lock Nature (Everstone)</option>
+                            <option value="no" selected>No Specific Nature</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender-ratio">Egg Group Gender Ratio</label>
+                        <select id="gender-ratio" onchange="calculateAndRenderBreeding()">
+                            <option value="50_50" selected>50% Male / 50% Female (Standard)</option>
+                            <option value="875_125">87.5% Male / 12.5% Female (Starters, Eevee)</option>
+                            <option value="75_25_male">75% Male / 25% Female (Abra, Machop)</option>
+                            <option value="75_25_female">25% Male / 75% Female (Clefairy, Vulpix)</option>
+                            <option value="genderless">Genderless (Ditto Breeding Only)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <div class="iv-checkbox-card" id="ditto-shortcut-card" style="padding: 0.55rem; background: rgba(139,92,246,0.03); border-color: rgba(139,92,246,0.15);">
+                            <input type="checkbox" id="ditto-shortcuts-toggle" onchange="calculateAndRenderBreeding()" style="cursor: pointer;">
+                            <label for="ditto-shortcuts-toggle" style="margin-bottom: 0; cursor: pointer; font-size: 0.8rem; font-weight: 600;">Ditto-Only Partner Mode (GTL Skip-Steps)</label>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="resetBreedingChecklist()" style="width: 100%; margin-top: 0.5rem;">
+                        Reset Checklist
+                    </button>
+                </div>
+
+                <!-- Market Prices -->
+                <div class="card">
+                    <h2 class="card-title">Market Prices (GTL / NPC)</h2>
+                    <div id="prices-panel-inputs" style="max-height: 230px; overflow-y: auto; padding-right: 0.5rem;"></div>
+                    <button class="btn btn-secondary" onclick="resetPricesToDefault()" style="width: 100%; margin-top: 1rem;">
+                        Reset to Defaults
+                    </button>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="card">
+                    <h2 class="card-title">Project Summary</h2>
+                    <div class="summary-box">
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">Estimated Project Total</span><br>
+                        <span class="summary-cost" id="total-breeding-cost">0 ¥</span>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">Raw Parents Required:</span>
+                        <div id="total-parents-needed" style="font-weight: 600; margin-top: 0.25rem;">0 parents</div>
+                    </div>
+                    <div id="breeding-summary-details" style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.75rem; color: var(--text-muted); line-height: 1.4;"></div>
+                </div>
+            </div>
+
+            <!-- Breeding Tree Visualization -->
+            <div class="card">
+                <h2 class="card-title">Interactive Breeding Tree Checklist</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0;">
+                        Click cards to mark them as <strong style="color: var(--accent-green)">Acquired</strong>. Sibling parents dynamically highlight as <strong style="color: var(--accent-blue)">Ready to Breed</strong>.
+                    </p>
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        <button class="btn btn-secondary" onclick="zoomBreedingTree(0.1)" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">Zoom In</button>
+                        <button class="btn btn-secondary" onclick="zoomBreedingTree(-0.1)" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">Zoom Out</button>
+                        <button class="btn btn-secondary" onclick="zoomBreedingTree(0)" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">Reset</button>
+                        <span id="zoom-level-text" style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600; min-width: 70px; text-align: right;">Zoom: 100%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Daycare Step Simulator -->
+            <div class="card" style="margin-top: 1.5rem;">
+                <h2 class="card-title">Quick Daycare Step Simulator</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                    Quickly check what happens when you cross two specific parents, or get suggestions for what partner stat to buy.
+                </p>
+                <div class="grid-2">
+                    <!-- Inputs -->
+                    <div>
+                        <div class="form-group">
+                            <label style="font-weight:600; color:#fff;">Parent A (Your Species Parent) 31 IVs</label>
+                            <div class="iv-checkbox-group" style="grid-template-columns: repeat(6, 1fr); margin-top:0.4rem;">
+                                <div class="iv-checkbox-card" id="sim-parent-card-HP">
+                                    <input type="checkbox" id="sim-parent-iv-HP" class="sim-parent-checkbox" value="HP" onchange="runSimStep()">
+                                    <label for="sim-parent-iv-HP" style="margin-bottom:0; cursor:pointer;">HP</label>
+                                </div>
+                                <div class="iv-checkbox-card" id="sim-parent-card-Atk">
+                                    <input type="checkbox" id="sim-parent-iv-Atk" class="sim-parent-checkbox" value="Atk" onchange="runSimStep()">
+                                    <label for="sim-parent-iv-Atk" style="margin-bottom:0; cursor:pointer;">Atk</label>
+                                </div>
+                                <div class="iv-checkbox-card" id="sim-parent-card-Def">
+                                    <input type="checkbox" id="sim-parent-iv-Def" class="sim-parent-checkbox" value="Def" onchange="runSimStep()">
+                                    <label for="sim-parent-iv-Def" style="margin-bottom:0; cursor:pointer;">Def</label>
+                                </div>
+                                <div class="iv-checkbox-card" id="sim-parent-card-SpA">
+                                    <input type="checkbox" id="sim-parent-iv-SpA" class="sim-parent-checkbox" value="SpA" onchange="runSimStep()">
+                                    <label for="sim-parent-iv-SpA" style="margin-bottom:0; cursor:pointer;">SpA</label>
+                                </div>
+                                <div class="iv-checkbox-card" id="sim-parent-card-SpD">
+                                    <input type="checkbox" id="sim-parent-iv-SpD" class="sim-parent-checkbox" value="SpD" onchange="runSimStep()">
+                                    <label for="sim-parent-iv-SpD" style="margin-bottom:0; cursor:pointer;">SpD</label>
+                                </div>
+                                <div class="iv-checkbox-card" id="sim-parent-card-Spe">
+                                    <input type="checkbox" id="sim-parent-iv-Spe" class="sim-parent-checkbox" value="Spe" onchange="runSimStep()">
+                                    <label for="sim-parent-iv-Spe" style="margin-bottom:0; cursor:pointer;">Spe</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 1rem;">
+                            <label style="font-weight:600; color:#fff;">Parent B (Ditto or Partner Parent) 31 IVs</label>
+                            <div class="iv-checkbox-group" style="grid-template-columns: repeat(6, 1fr); margin-top:0.4rem;">
+                                <div class="iv-checkbox-card" id="sim-partner-card-HP">
+                                    <input type="checkbox" id="sim-partner-iv-HP" class="sim-partner-checkbox" value="HP" onchange="runSimStep()">
+                                    <label for="sim-partner-iv-HP" style="margin-bottom:0; cursor:pointer;">HP</label>
+                                </div>
+                                <div class="iv-checkbox-card" id="sim-partner-card-Atk">
+                                    <input type="checkbox" id="sim-partner-iv-Atk" class="sim-partner-checkbox" value="Atk" onchange="runSimStep()">
+                                    <label for="sim-partner-iv-Atk" style="margin-bottom:0; cursor:pointer;">Atk</label>
+                                </div>
+                                <div class="iv-checkbox-card" id="sim-partner-card-Def">
+                                    <input type="checkbox" id="sim-partner-iv-Def" class="sim-partner-checkbox" value="Def" onchange="runSimStep()">
+                                    <label for="sim-partner-iv-Def" style="margin-bottom:0; cursor:pointer;">Def</label>
+                                </div>
+                                <div class="iv-checkbox-card" id="sim-partner-card-SpA">
+                                    <input type="checkbox" id="sim-partner-iv-SpA" class="sim-partner-checkbox" value="SpA" onchange="runSimStep()">
+                                    <label for="sim-partner-iv-SpA" style="margin-bottom:0; cursor:pointer;">SpA</label>
+                                </div>
+                                <div class="iv-checkbox-card" id="sim-partner-card-SpD">
+                                    <input type="checkbox" id="sim-partner-iv-SpD" class="sim-partner-checkbox" value="SpD" onchange="runSimStep()">
+                                    <label for="sim-partner-iv-SpD" style="margin-bottom:0; cursor:pointer;">SpD</label>
+                                </div>
+                                <div class="iv-checkbox-card" id="sim-partner-card-Spe">
+                                    <input type="checkbox" id="sim-partner-iv-Spe" class="sim-partner-checkbox" value="Spe" onchange="runSimStep()">
+                                    <label for="sim-partner-iv-Spe" style="margin-bottom:0; cursor:pointer;">Spe</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Output Recommendations -->
+                    <div>
+                        <div class="card" style="background: rgba(139,92,246,0.03); border-color: rgba(139,92,246,0.15); height: 100%; display: flex; flex-direction: column; padding: 1.25rem; margin-bottom: 0;">
+                            <h3 style="font-size: 1rem; color: #fff; margin-bottom: 0.75rem;">
+                                💡 Daycare Matcher & Suggestions
+                            </h3>
+                            <div id="sim-results" style="font-size: 0.85rem; line-height: 1.5; color: var(--text-muted); flex: 1;">
+                                Toggle which 31 IV stats your parents have on the left to see the daycare holding setup and child outcome advice!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. GYM COOLDOWN TRACKER VIEW -->
+        <section id="gyms-tab" class="tab-content">
+            <div class="stats-summary">
+                <div class="stat-item" style="border-left: 3px solid var(--accent-blue);">
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">Income Multiplier</div>
+                    <select id="money-multiplier" onchange="updateGymStats(); renderGymList();" style="margin-top: 0.5rem; padding: 0.4rem 0.8rem;">
+                        <option value="1.0">Base Payout (1.0x)</option>
+                        <option value="1.5" selected>Amulet Coin / Charm (1.5x)</option>
+                        <option value="1.75">Riches Charm +75% (1.75x)</option>
+                        <option value="2.0">Riches Charm +100% (2.0x)</option>
+                    </select>
+                </div>
+                <div class="stat-item" style="border-left: 3px solid var(--accent-green);">
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">Gyms On Cooldown</div>
+                    <div class="stat-val" id="gym-count">0 / 0</div>
+                </div>
+                <div class="stat-item" style="border-left: 3px solid var(--primary);">
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">Estimated Earnings</div>
+                    <div class="stat-val" id="gym-earnings" style="color: var(--accent-green);">0 ¥</div>
+                </div>
+                <div class="stat-item" style="display: flex; align-items: center; justify-content: center;">
+                    <button class="btn btn-danger" onclick="resetAllGyms()" style="width: 100%;">Reset Cooldowns</button>
+                </div>
+            </div>
+
+            <div class="region-tabs">
+                <button class="region-tab-btn active" onclick="switchRegion('kanto')">Kanto</button>
+                <button class="region-tab-btn" onclick="switchRegion('hoenn')">Hoenn</button>
+                <button class="region-tab-btn" onclick="switchRegion('sinnoh')">Sinnoh</button>
+                <button class="region-tab-btn" onclick="switchRegion('unova')">Unova</button>
+                <button class="region-tab-btn" onclick="switchRegion('johto')">Johto</button>
+                <button class="region-tab-btn" onclick="switchRegion('other')">Other Bosses</button>
+            </div>
+
+            <div class="gym-list" id="gym-list"></div>
+        </section>
+
+        <!-- 3. GTL FLIP LEDGER VIEW (NEW) -->
+        <section id="gtl-tab" class="tab-content">
+            <div class="grid-1-2">
+                <!-- Record Transaction Form -->
+                <div class="card">
+                    <h2 class="card-title">Record Flip / Trade</h2>
+                    <form id="ledger-form" onsubmit="event.preventDefault(); saveLedgerRecord();">
+                        <div class="form-group">
+                            <label for="ledger-name">Item or Pokémon Name</label>
+                            <input type="text" id="ledger-name" required placeholder="e.g. Choice Specs, Gible 31 Spe">
+                        </div>
+                        <div class="form-group">
+                            <label for="ledger-quantity">Quantity</label>
+                            <input type="number" id="ledger-quantity" value="1" min="1" required onchange="calculateLedgerTaxPreview()">
+                        </div>
+                        <div class="form-group">
+                            <label for="ledger-buy-price">Buy Price (¥ per unit)</label>
+                            <input type="number" id="ledger-buy-price" value="0" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ledger-sell-price">Target Sell Price (¥ per unit)</label>
+                            <input type="number" id="ledger-sell-price" value="0" min="0" required onchange="calculateLedgerTaxPreview()" oninput="calculateLedgerTaxPreview()">
+                        </div>
+                        <div class="form-group">
+                            <label for="ledger-status">Transaction Status</label>
+                            <select id="ledger-status" onchange="toggleLedgerStatusSelect(this.value)">
+                                <option value="active">Active Listing (Escrow)</option>
+                                <option value="sold" selected>Sold Successfully</option>
+                                <option value="cancelled">Cancelled (Listing Fee Lost)</option>
+                            </select>
+                        </div>
+                        <div class="summary-box" style="margin-bottom: 1rem; border-color: rgba(59, 130, 246, 0.2); background: rgba(59,130,246,0.02)">
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                Upfront Listing Fee: <strong id="ledger-fee-preview" style="color: #fff">1,000 ¥</strong><br>
+                                Est. Net Profit: <strong id="ledger-profit-preview" style="color: var(--accent-green)">- ¥</strong>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Add To Ledger</button>
+                    </form>
+                </div>
+
+                <!-- Ledger History and Dashboard -->
+                <div>
+                    <!-- Statistics Panel -->
+                    <div class="stats-summary" style="margin-bottom: 1rem;">
+                        <div class="stat-item" style="border-left: 3px solid var(--accent-green);">
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Net Trade Profits</div>
+                            <div class="ledger-stat-val net-profit-pos" id="ledger-total-profit">0 ¥</div>
+                        </div>
+                        <div class="stat-item" style="border-left: 3px solid var(--accent-blue);">
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Listing Escrow Capital</div>
+                            <div class="ledger-stat-val" id="ledger-total-escrow" style="color: #fff">0 ¥</div>
+                        </div>
+                        <div class="stat-item" style="border-left: 3px solid var(--accent-yellow);">
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Average Flip ROI</div>
+                            <div class="ledger-stat-val" id="ledger-avg-roi" style="color: var(--accent-yellow);">0 %</div>
+                        </div>
+                        <div class="stat-item" style="border-left: 3px solid var(--accent-red);">
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">Listing Fees Paid</div>
+                            <div class="ledger-stat-val" id="ledger-total-fees" style="color: var(--accent-red);">0 ¥</div>
+                        </div>
+                    </div>
+
+                    <!-- Ledger History Table -->
+                    <div class="card">
+                        <h2 class="card-title">Transaction Ledger History</h2>
+                        <div class="directory-search-wrapper">
+                            <input type="text" id="ledger-search" placeholder="Search item name..." oninput="renderLedgerTable()">
+                            <button class="btn btn-danger" onclick="clearLedgerHistory()" style="flex-shrink: 0;">Clear All</button>
+                        </div>
+                        <div class="ledger-table-container">
+                            <table class="ev-table" style="font-size: 0.85rem;">
+                                <thead>
+                                    <tr>
+                                        <th>Item Name</th>
+                                        <th>Qty</th>
+                                        <th>Total Buy</th>
+                                        <th>Total Sell</th>
+                                        <th>Listing Fee</th>
+                                        <th>Net Profit</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ledger-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. BERRY GARDEN HELPER VIEW (NEW) -->
+        <section id="berry-tab" class="tab-content">
+            <div class="grid-1-2">
+                <!-- Seed Combination Panel -->
+                <div class="card">
+                    <h2 class="card-title">Berry Recipe Directory</h2>
+                    <div class="form-group">
+                        <label for="berry-recipe-select">Select Target Berry</label>
+                        <select id="berry-recipe-select" onchange="renderBerryRecipeDetails(this.value)">
+                            <option value="leppa" selected>Leppa Berry (PP Restorer)</option>
+                            <option value="sitrus">Sitrus Berry (HP Restorer)</option>
+                            <option value="lum">Lum Berry (Status Cure)</option>
+                            <option value="oran">Oran Berry (Early Level HP)</option>
+                            <option value="cheri">Cheri Berry (Spicy Seed Farm)</option>
+                            <option value="chesto">Chesto Berry (Dry Seed Farm)</option>
+                            <option value="pecha">Pecha Berry (Sweet Seed Farm)</option>
+                            <option value="rawst">Rawst Berry (Bitter Seed Farm)</option>
+                            <option value="aspear">Aspear Berry (Sour Seed Farm)</option>
+                        </select>
+                    </div>
+
+                    <div id="berry-recipe-details-card" class="summary-box" style="margin-top: 1rem; border-color: rgba(139,92,246,0.25);">
+                        <!-- Loaded dynamically by app.js -->
+                    </div>
+
+                    <div class="card" style="margin-top: 1rem; background: rgba(0,0,0,0.15); border-color: rgba(255,255,255,0.03)">
+                        <h3 style="font-size: 0.9rem; margin-bottom: 0.75rem;">Plant New Crop Slot</h3>
+                        <div class="form-group">
+                            <label for="garden-plant-name">Select Crop to Plant</label>
+                            <select id="garden-plant-name">
+                                <option value="Leppa Berry">Leppa Berry (20h)</option>
+                                <option value="Sitrus Berry">Sitrus Berry (44h)</option>
+                                <option value="Lum Berry">Lum Berry (44h)</option>
+                                <option value="Oran Berry">Oran Berry (16h)</option>
+                                <option value="Cheri Berry">Cheri Berry (16h)</option>
+                                <option value="Chesto Berry">Chesto Berry (16h)</option>
+                                <option value="Pecha Berry">Pecha Berry (16h)</option>
+                                <option value="Rawst Berry">Rawst Berry (16h)</option>
+                                <option value="Aspear Berry">Aspear Berry (16h)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="garden-plant-location">Location Label</label>
+                            <input type="text" id="garden-plant-location" placeholder="e.g. Island 4 - Plot A">
+                        </div>
+                        <button class="btn btn-primary" onclick="plantCropInGarden()" style="width: 100%;">Plant Crop Slot</button>
+                    </div>
+                </div>
+
+                <!-- Active Garden Grid -->
+                <div class="card">
+                    <h2 class="card-title">Active Cultivation Plots</h2>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+                        Track crop states in real-time. Keep water levels topped up. <strong>Harvest within 8 hours of maturity</strong> or they wilt.
+                    </p>
+                    <div class="garden-slots-grid" id="garden-slots-grid">
+                        <!-- Loaded dynamically by app.js -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. THIEF & PICKUP ITEM DIRECTORY VIEW (NEW) -->
+        <section id="thief-tab" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Thief Farming & Pickup Directories</h2>
+                
+                <div class="region-tabs" style="margin-bottom: 1.25rem;">
+                    <button class="region-tab-btn active" id="btn-sub-thief" onclick="switchSubFarmingTab('thief')">Thief Item Targets</button>
+                    <button class="region-tab-btn" id="btn-sub-pickup" onclick="switchSubFarmingTab('pickup')">Pickup Level Tables</button>
+                </div>
+
+                <!-- 5.1 THIEF GUIDE SUB-TAB -->
+                <div id="sub-farming-thief" class="sub-farming-tab-content">
+                    <div class="directory-search-wrapper" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <input type="text" id="thief-search-input" placeholder="Search by item name or Pokemon holder..." oninput="renderThiefDirectory()" style="flex: 1; min-width: 250px;">
+                        <select id="thief-filter-region" onchange="renderThiefDirectory()" style="width: 160px;">
+                            <option value="all">All Regions</option>
+                            <option value="kanto">Kanto</option>
+                            <option value="hoenn">Hoenn</option>
+                            <option value="sinnoh">Sinnoh</option>
+                            <option value="unova">Unova</option>
+                            <option value="johto">Johto</option>
+                        </select>
+                        <select id="thief-filter-item" onchange="renderThiefDirectory()" style="width: 180px;">
+                            <option value="all">Show All Items</option>
+                            <option value="valuable">Valuable Items</option>
+                            <option value="held">Hold Items (PvP/Breeding)</option>
+                        </select>
+                    </div>
+                    <div class="directory-results-grid" id="thief-results-grid"></div>
+                </div>
+
+                <!-- 5.2 PICKUP TABLE SUB-TAB -->
+                <div id="sub-farming-pickup" class="sub-farming-tab-content" style="display: none;">
+                    <div class="grid-2" style="max-width: 600px; gap: 1rem; margin-bottom: 1.25rem;">
+                        <div class="form-group">
+                            <label for="pickup-region-select">Select Region</label>
+                            <select id="pickup-region-select" onchange="renderPickupTableFromUI()">
+                                <option value="kanto" selected>Kanto / Hoenn (Standard)</option>
+                                <option value="hoenn">Hoenn (Same as Kanto)</option>
+                                <option value="sinnoh">Sinnoh</option>
+                                <option value="unova">Unova</option>
+                                <option value="johto">Johto</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="pickup-level-select">Select Ability Level Bracket</label>
+                            <select id="pickup-level-select" onchange="renderPickupTableFromUI()">
+                                <option value="1_10">Level 1 - 10 Bracket</option>
+                                <option value="11_20">Level 11 - 20 Bracket</option>
+                                <option value="21_30">Level 21 - 30 Bracket</option>
+                                <option value="31_40">Level 31 - 40 Bracket</option>
+                                <option value="41_50">Level 41 - 50 Bracket</option>
+                                <option value="51_60">Level 51 - 60 Bracket</option>
+                                <option value="61_70">Level 61 - 70 Bracket</option>
+                                <option value="71_80">Level 71 - 80 Bracket</option>
+                                <option value="81_90">Level 81 - 90 Bracket</option>
+                                <option value="91_100" selected>Level 91 - 100 Bracket (Best Yields)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="ev-table-container">
+                        <table class="ev-table">
+                            <thead>
+                                <tr>
+                                    <th>Item Drop</th>
+                                    <th>Rarity Tier</th>
+                                    <th>Estimated Catch Drop Rate</th>
+                                    <th>Market Value Category</th>
+                                    <th>Strategic Farming Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pickup-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. SHINY ENCOUNTER TRACKER VIEW (NEW) -->
+        <section id="shiny-tab" class="tab-content">
+            <!-- Add Hunt Section -->
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <h2 class="card-title">Initiate Shiny Hunt Session</h2>
+                <div class="grid-4" style="align-items: flex-end;">
+                    <div class="form-group">
+                        <label for="shiny-hunt-pokemon">Target Pokémon</label>
+                        <input type="text" id="shiny-hunt-pokemon" placeholder="e.g. Charmander, Beldum, Larvitar">
+                    </div>
+                    <div class="form-group">
+                        <label for="shiny-hunt-method">Primary Method</label>
+                        <select id="shiny-hunt-method">
+                            <option value="horde">Sweet Scent Hordes (5x Spawns)</option>
+                            <option value="single">Single Encounters (1x Spawn)</option>
+                            <option value="egg">Egg Hatching (1x Breed)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="shiny-hunt-initial">Initial Encounters Count</label>
+                        <input type="number" id="shiny-hunt-initial" value="0" min="0">
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" onclick="createNewShinyHunt()" style="width: 100%;">Start Hunt</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Hunts Dashboard -->
+            <div class="shiny-tracker-grid" id="shiny-hunts-grid">
+                <!-- Renders dynamically in app.js -->
+            </div>
+        </section>
+
+        <!-- 7. PVP SPEED CALCULATOR VIEW (NEW) -->
+        <section id="pvp-tab" class="tab-content">
+            <div class="grid-2-1">
+                <!-- Speed Matcher Setup -->
+                <div class="card">
+                    <h2 class="card-title">Level 50 Speed Calculator</h2>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="speed-calc-base">Base Speed Stat</label>
+                            <input type="number" id="speed-calc-base" value="102" min="1" max="255" onchange="runSpeedMatchCalculations()" oninput="runSpeedMatchCalculations()">
+                        </div>
+                        <div class="form-group">
+                            <label for="speed-calc-iv">Speed IV (0-31)</label>
+                            <input type="number" id="speed-calc-iv" value="31" min="0" max="31" onchange="runSpeedMatchCalculations()" oninput="runSpeedMatchCalculations()">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="speed-calc-ev">Speed EV (0-252)</label>
+                            <input type="number" id="speed-calc-ev" value="252" min="0" max="252" step="4" onchange="runSpeedMatchCalculations()" oninput="runSpeedMatchCalculations()">
+                        </div>
+                        <div class="form-group">
+                            <label for="speed-calc-nature">Speed Nature Modifier</label>
+                            <select id="speed-calc-nature" onchange="runSpeedMatchCalculations()">
+                                <option value="1.1" selected>Positive (+10% e.g. Jolly, Timid)</option>
+                                <option value="1.0">Neutral (0% e.g. Adamant, Modest)</option>
+                                <option value="0.9">Negative (-10% e.g. Brave, Quiet)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <h3 style="font-size: 0.95rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.75rem; margin-top: 0.75rem; margin-bottom: 0.5rem;">Modifiers & Stage Boosts</h3>
+                    <div class="grid-3">
+                        <div class="form-group">
+                            <label for="speed-calc-stage">Stat Stage Boost</label>
+                            <select id="speed-calc-stage" onchange="runSpeedMatchCalculations()">
+                                <option value="4.0">+6 Stages (x4.0)</option>
+                                <option value="3.5">+5 Stages (x3.5)</option>
+                                <option value="3.0">+4 Stages (x3.0)</option>
+                                <option value="2.5">+3 Stages (x2.5)</option>
+                                <option value="2.0">+2 Stages (x2.0 e.g. Rock Polish)</option>
+                                <option value="1.5">+1 Stage (x1.5 e.g. Dragon Dance)</option>
+                                <option value="1.0" selected>Neutral (x1.0)</option>
+                                <option value="-1">-1 Stage (x0.67)</option>
+                                <option value="-2">-2 Stages (x0.50)</option>
+                                <option value="-3">-3 Stages (x0.40)</option>
+                                <option value="-4">-4 Stages (x0.33)</option>
+                                <option value="-5">-5 Stages (x0.29)</option>
+                                <option value="-6">-6 Stages (x0.25)</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="display: flex; flex-direction: column; justify-content: flex-end;">
+                            <div class="iv-checkbox-card" id="speed-scarf-card" style="padding: 0.55rem;">
+                                <input type="checkbox" id="speed-calc-scarf" onchange="runSpeedMatchCalculations()">
+                                <label for="speed-calc-scarf" style="margin-bottom: 0; cursor: pointer;">Choice Scarf (1.5x)</label>
+                            </div>
+                        </div>
+                        <div class="form-group" style="display: flex; flex-direction: column; justify-content: flex-end;">
+                            <div class="iv-checkbox-card" id="speed-tailwind-card" style="padding: 0.55rem;">
+                                <input type="checkbox" id="speed-calc-tailwind" onchange="runSpeedMatchCalculations()">
+                                <label for="speed-calc-tailwind" style="margin-bottom: 0; cursor: pointer;">Tailwind (2.0x)</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <div class="iv-checkbox-card" id="speed-paralysis-card" style="padding: 0.55rem;">
+                                <input type="checkbox" id="speed-calc-paralysis" onchange="runSpeedMatchCalculations()">
+                                <label for="speed-calc-paralysis" style="margin-bottom: 0; cursor: pointer;">Paralyzed (0.5x)</label>
+                            </div>
+                        </div>
+                        <div class="form-group" style="text-align: right;">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">Calculated Speed Stat</span><br>
+                            <span style="font-family: 'Space Grotesk', sans-serif; font-size: 2rem; font-weight: 800; color: #fff" id="speed-calc-result-stat">154</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PvP Speed Tiers List -->
+                <div class="card">
+                    <h2 class="card-title">Level 50 Speed Tiers Matcher</h2>
+                    <div class="form-group">
+                        <label for="speed-tier-filter">Filter Matchup List</label>
+                        <select id="speed-tier-filter" onchange="filterSpeedTiersList(this.value)">
+                            <option value="all" selected>Show All PvP Threat Tiers</option>
+                            <option value="outspeed">Show Targets Outspeeded By You</option>
+                            <option value="outspeeded">Show Targets Outspeeding You</option>
+                        </select>
+                    </div>
+                    <div class="speed-tiers-list" id="speed-tiers-list">
+                        <!-- Loaded dynamically by app.js -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. EV HORDE GUIDE VIEW -->
+        <section id="ev-tab" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Optimal Horde Training Locations</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">
+                    Hordes in PokéMMO consist of 5 wild Pokemon spawned instantly using the move <strong>Sweet Scent</strong>. Clear them using spread moves (Surf, Earthquake, Discharge) with a Macho Brace or Power Item held to gain 25 to 50 EVs per battle.
+                </p>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+                    <div class="ev-tabs" style="margin-bottom: 0;">
+                        <button class="ev-tab-btn active" onclick="switchEvStat('hp')">HP EVs</button>
+                        <button class="ev-tab-btn" onclick="switchEvStat('atk')">Attack EVs</button>
+                        <button class="ev-tab-btn" onclick="switchEvStat('def')">Defense EVs</button>
+                        <button class="ev-tab-btn" onclick="switchEvStat('spa')">Sp. Attack EVs</button>
+                        <button class="ev-tab-btn" onclick="switchEvStat('spd')">Sp. Defense EVs</button>
+                        <button class="ev-tab-btn" onclick="switchEvStat('spe')">Speed EVs</button>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0; min-width: 180px;">
+                        <select id="ev-filter-region" onchange="renderEvGuide()" style="padding: 0.45rem 0.75rem; font-size: 0.8rem;">
+                            <option value="all" selected>All Regions</option>
+                            <option value="kanto">Kanto</option>
+                            <option value="hoenn">Hoenn</option>
+                            <option value="sinnoh">Sinnoh</option>
+                            <option value="unova">Unova</option>
+                            <option value="johto">Johto</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="ev-table-container">
+                    <table class="ev-table">
+                        <thead>
+                            <tr>
+                                <th>Region</th>
+                                <th>Location</th>
+                                <th>Target Pokemon</th>
+                                <th>Levels</th>
+                                <th>Scent Req.</th>
+                                <th>EV Yield</th>
+                                <th>Strategic Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ev-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. CATCH CALCULATOR VIEW -->
+        <section id="catch-tab" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h2 class="card-title">Target & Encounter Setup</h2>
+                    <div class="form-group">
+                        <label for="catch-pokemon-select">Target Pokemon Template</label>
+                        <select id="catch-pokemon-select" onchange="onPokemonSelectChange(this.value)">
+                            <option value="255">Common (e.g. Magikarp, Caterpie) - Rate 255</option>
+                            <option value="235">Uncommon (e.g. Ralts, Geodude) - Rate 235</option>
+                            <option value="190">Gastly / Pidgey - Rate 190</option>
+                            <option value="45" selected>Rare/Starter (e.g. Gible, Eevee, Smeargle) - Rate 45</option>
+                            <option value="35">Ditto - Rate 35</option>
+                            <option value="3">Beldum / Legendary - Rate 3</option>
+                            <option value="custom">Custom Capture Rate...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="catch-base-rate">Base Capture Rate (1 to 255)</label>
+                        <input type="number" id="catch-base-rate" value="45" min="1" max="255" disabled onchange="calculateCatchRate()">
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="catch-level">Encounter Level</label>
+                            <input type="number" id="catch-level" value="30" min="1" max="100" onchange="calculateCatchRate()" oninput="calculateCatchRate()">
+                        </div>
+                        <div class="form-group">
+                            <label for="catch-hp-percent">Target HP Remaining (%)</label>
+                            <input type="number" id="catch-hp-percent" value="10" min="1" max="100" onchange="calculateCatchRate()" oninput="calculateCatchRate()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="catch-status">Status Condition</label>
+                        <select id="catch-status" onchange="calculateCatchRate()">
+                            <option value="2.5">Sleep / Freeze (2.5x)</option>
+                            <option value="1.5">Paralysis / Poison / Burn (1.5x)</option>
+                            <option value="1.0" selected>None (1.0x)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="catch-ball">Pokéball Type</label>
+                        <select id="catch-ball" onchange="calculateCatchRate()">
+                            <option value="1.0" selected>Poké Ball (1.0x)</option>
+                            <option value="1.5">Great Ball (1.5x)</option>
+                            <option value="2.0">Ultra Ball (2.0x)</option>
+                            <option value="2.5">Repeat Ball - Caught Before (2.5x)</option>
+                            <option value="3.0">Dusk Ball - Caves/Night (3.0x)</option>
+                            <option value="3.5">Net Ball - Water/Bug Target (3.5x)</option>
+                            <option value="4.0">Timer Ball - Max Turns 11+ (4.0x)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                    <h2 class="card-title">Catch Probability</h2>
+                    <div class="catch-result-card">
+                        <div class="catch-probability-circle">
+                            <svg class="catch-probability-svg">
+                                <circle class="catch-probability-bg" cx="70" cy="70" r="60"></circle>
+                                <circle class="catch-probability-bar" id="catch-progress-bar" cx="70" cy="70" r="60" stroke-dasharray="377" stroke-dashoffset="377"></circle>
+                            </svg>
+                            <div class="catch-probability-text" id="catch-probability-text">0%</div>
+                        </div>
+                        <div class="catch-info-text" id="catch-calc-info"></div>
+                    </div>
+                    <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted); line-height: 1.4;">
+                        <strong>Note:</strong> Capture mechanics use PokéMMO's custom balances based on the Gen 4 formulas. Sleep or Freeze are highly recommended to increase catch chances.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 10. MONEY-MAKING & DAILY ROUTINE TRACKER VIEW -->
+        <section id="money-tab" class="tab-content">
+            <div class="grid-2-1">
+                <!-- Daily Planner Checklist -->
+                <div class="card">
+                    <h2 class="card-title">Daily Routine Chore Planner</h2>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+                        Track your daily farming tasks. Tick items off as you complete them to update your daily income summary in real-time.
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;" id="money-chores-list">
+                        <!-- Loaded dynamically by app.js -->
+                    </div>
+                </div>
+
+                <!-- Daily Summary & Efficiency -->
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div class="card">
+                        <h2 class="card-title">Earnings Summary</h2>
+                        <div class="summary-box">
+                            <span style="font-size: 0.85rem; color: var(--text-muted);">Daily Income Earned</span><br>
+                            <span class="summary-cost" id="daily-earned-total" style="color: var(--primary);">0 ¥</span>
+                        </div>
+                        <div style="margin-top: 1rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 0.75rem;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.4rem; font-size: 0.85rem;">
+                                <span style="color: var(--text-muted);">Estimated Time:</span>
+                                <strong id="daily-time-spent" style="color: #fff;">0 hrs</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                                <span style="color: var(--text-muted);">Daily Efficiency:</span>
+                                <strong id="daily-hourly-efficiency" style="color: #fff;">0 ¥ / hr</strong>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary" onclick="resetDailyChores()" style="width: 100%; margin-top: 1.25rem;">
+                            Reset Daily Tasks
+                        </button>
+                    </div>
+
+                    <!-- GTL link reminder -->
+                    <div class="card" style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4;">
+                        <h3 style="color:#fff; font-size:0.9rem; margin-bottom:0.5rem;">💡 Pro Tip: Flipping</h3>
+                        Check the <strong>GTL Ledger</strong> tab to calculate escrow limits, GTL taxes, and net profit margins for bulk items.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Farming Loops Directory -->
+            <div class="card" style="margin-top: 1.5rem;">
+                <h2 class="card-title">Farming Methods Reference Directory</h2>
+                <div class="grid-3" id="farming-methods-container">
+                    <!-- Dynamic loading of reference cards -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 11. REGIONAL STORY GUIDES & LEVEL CAPS VIEW -->
+        <section id="story-tab" class="tab-content">
+            <div class="card">
+                <h2 class="card-title">Regional Obedience & Story Tracker</h2>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+                    Obedience level caps govern whether your Pokémon obey you. If a Pokémon's level exceeds the cap, it will disobey or hurt itself in battle. Keep track of your progress and view custom guides!
+                </p>
+
+                <!-- Region Selector buttons -->
+                <div class="ev-tabs" style="margin-bottom: 1.5rem;">
+                    <button class="ev-tab-btn active" onclick="switchStoryRegion('kanto')" id="story-btn-kanto">Kanto Guide</button>
+                    <button class="ev-tab-btn" onclick="switchStoryRegion('hoenn')" id="story-btn-hoenn">Hoenn Guide</button>
+                    <button class="ev-tab-btn" onclick="switchStoryRegion('sinnoh')" id="story-btn-sinnoh">Sinnoh Guide</button>
+                    <button class="ev-tab-btn" onclick="switchStoryRegion('unova')" id="story-btn-unova">Unova Guide</button>
+                    <button class="ev-tab-btn" onclick="switchStoryRegion('johto')" id="story-btn-johto">Johto Guide</button>
+                </div>
+
+                <div class="grid-2-1">
+                    <!-- Left: Story Milestones Checklist & Permissions -->
+                    <div>
+                        <div class="card" style="background: rgba(0,0,0,0.15); border-color: rgba(255,255,255,0.03); padding: 1.25rem;">
+                            <h3 style="font-size: 1rem; color: #fff; margin-bottom: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.4rem;">
+                                Badge Checklist & Progress Tracker
+                            </h3>
+                            <div id="story-milestones-list" style="display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.25rem;">
+                                <!-- Loaded dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Dynamic CAN and CANNOT DO card -->
+                        <div class="card" style="background: rgba(139,92,246,0.02); border-color: rgba(139,92,246,0.1); padding: 1.25rem;">
+                            <h3 style="font-size: 1.05rem; color: #fff; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                                Unlocked Abilities & Restrictions
+                            </h3>
+                            <div class="grid-2">
+                                <div>
+                                    <strong style="color: var(--accent-green); font-size: 0.85rem; display: block; margin-bottom: 0.4rem;">✔️ What you CAN do now:</strong>
+                                    <ul id="story-can-do-list" style="font-size: 0.8rem; color: var(--text-muted); padding-left: 1.25rem; line-height: 1.5;">
+                                        <!-- Loaded dynamically -->
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong style="color: var(--accent-red); font-size: 0.85rem; display: block; margin-bottom: 0.4rem;">❌ What you CANNOT do yet:</strong>
+                                    <ul id="story-cannot-do-list" style="font-size: 0.8rem; color: var(--text-muted); padding-left: 1.25rem; line-height: 1.5;">
+                                        <!-- Loaded dynamically -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Level Caps Table & Story Team Recommendation -->
+                    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                        <div class="card" style="padding: 1rem;">
+                            <h3 style="font-size: 0.9rem; color: #fff; margin-bottom: 0.5rem;">Obedience Level Caps Table</h3>
+                            <div style="max-height: 200px; overflow-y: auto; background: rgba(0,0,0,0.1); border-radius: 8px; border: 1px solid rgba(255,255,255,0.03);">
+                                <table class="ev-table" style="margin-bottom: 0; font-size: 0.75rem;">
+                                    <thead>
+                                        <tr>
+                                            <th>Badges Defeated</th>
+                                            <th>Obedience Cap</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="story-caps-table-body">
+                                        <!-- Loaded dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Story Playthrough Team recommendations -->
+                        <div class="card" id="story-team-recommendation">
+                            <!-- Loaded dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="pokemon_db.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
