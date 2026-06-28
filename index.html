@@ -994,9 +994,13 @@
                     <label style="font-size: 0.7rem;">Email Address</label>
                     <input type="email" id="auth-email" placeholder="trainer@example.com" style="padding: 0.4rem 0.6rem; font-size: 0.75rem;">
                 </div>
-                <div class="form-group" style="margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 0.75rem;">
                     <label style="font-size: 0.7rem;">Password</label>
                     <input type="password" id="auth-password" placeholder="••••••••" style="padding: 0.4rem 0.6rem; font-size: 0.75rem;">
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.85rem; padding: 0.4rem 0.5rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px;">
+                    <input type="checkbox" id="auth-remember-me" checked style="cursor: pointer; accent-color: var(--primary);">
+                    <label for="auth-remember-me" style="font-size: 0.7rem; color: var(--text-muted); cursor: pointer; margin-bottom: 0;">Remember Me</label>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
                     <button class="btn btn-primary" onclick="handleLogin()" style="padding: 0.5rem; font-size: 0.65rem; font-family:'Press Start 2P', monospace; color:#000;">

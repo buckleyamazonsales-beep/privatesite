@@ -2760,13 +2760,28 @@ const API_BASE_URL = window.location.hostname === 'localhost' || window.location
 
 let syncTimeout = null;
 
+// Returns the storage that holds session credentials
+function getAuthStorage() {
+    // If credentials exist in sessionStorage, use that (session-only login)
+    if (sessionStorage.getItem('sync_user_id')) return sessionStorage;
+    return localStorage;
+}
+
+function getSyncUserId() {
+    return localStorage.getItem('sync_user_id') || sessionStorage.getItem('sync_user_id');
+}
+
+function getSyncUserEmail() {
+    return localStorage.getItem('sync_user_email') || sessionStorage.getItem('sync_user_email');
+}
+
 function initSupabase() {
     checkAuthState();
 }
 
 function checkAuthState() {
-    const userId = localStorage.getItem('sync_user_id');
-    const email = localStorage.getItem('sync_user_email');
+    const userId = getSyncUserId();
+    const email = getSyncUserEmail();
 
     if (userId && email) {
         showLoggedInUI(email);
@@ -2847,8 +2862,10 @@ async function handleLogin() {
 
         if (!result.success) throw new Error(result.error || 'Login failed');
 
-        localStorage.setItem('sync_user_id', result.userId);
-        localStorage.setItem('sync_user_email', result.email);
+        const rememberMe = document.getElementById('auth-remember-me');
+        const store = (rememberMe && rememberMe.checked) ? localStorage : sessionStorage;
+        store.setItem('sync_user_id', result.userId);
+        store.setItem('sync_user_email', result.email);
         
         showLoggedInUI(result.email);
         setSyncBadgeStatus('Synced', '#34d399');
@@ -2890,13 +2907,15 @@ async function handleSignup() {
 function handleLogout() {
     localStorage.removeItem('sync_user_id');
     localStorage.removeItem('sync_user_email');
+    sessionStorage.removeItem('sync_user_id');
+    sessionStorage.removeItem('sync_user_email');
     sessionStorage.removeItem('initial_sync_done');
     showLoggedOutUI();
     alert('Logged out successfully.');
 }
 
 async function forceSyncData() {
-    const userId = localStorage.getItem('sync_user_id');
+    const userId = getSyncUserId();
     if (userId) {
         setSyncBadgeStatus('Syncing...', '#ffde00');
         await uploadCloudData(userId);
@@ -2908,7 +2927,7 @@ async function forceSyncData() {
 function scheduleCloudSync() {
     if (syncTimeout) clearTimeout(syncTimeout);
     syncTimeout = setTimeout(async () => {
-        const userId = localStorage.getItem('sync_user_id');
+        const userId = getSyncUserId();
         if (userId) {
             setSyncBadgeStatus('Saving...', '#ffde00');
             await uploadCloudData(userId);
