@@ -2603,6 +2603,14 @@ function showLoggedOutUI() {
     
     if (loginSection) loginSection.style.display = 'block';
     if (statusSection) statusSection.style.display = 'none';
+
+    // Pre-fill email if they previously used "Remember Me"
+    const savedEmail = localStorage.getItem('saved_email_pref');
+    if (savedEmail) {
+        const emailInput = document.getElementById('auth-email');
+        if (emailInput) emailInput.value = savedEmail;
+    }
+
     updateSyncButtonUI(false, '👤 Sync Offline');
 }
 
@@ -2647,6 +2655,7 @@ async function handleLogin() {
         if (store === localStorage) {
             sessionStorage.removeItem('sync_user_id');
             sessionStorage.removeItem('sync_user_email');
+            localStorage.setItem('saved_email_pref', result.email); // Remember email for next time
         } else {
             localStorage.removeItem('sync_user_id');
             localStorage.removeItem('sync_user_email');
