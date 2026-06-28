@@ -2541,7 +2541,8 @@ let syncTimeout = null;
 // Returns the storage that holds session credentials
 function getAuthStorage() {
     if (localStorage.getItem('sync_user_id')) return localStorage;
-    return sessionStorage;
+    if (sessionStorage.getItem('sync_user_id')) return sessionStorage;
+    return localStorage; // Default fallback to save state
 }
 
 function getSyncUserId() {
