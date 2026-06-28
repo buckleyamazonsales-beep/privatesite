@@ -2754,6 +2754,10 @@ function renderStoryTab() {
 // ==========================================
 // 15. CLOUD DATABASE SYNC ENGINE (LOCAL REST API)
 // ==========================================
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? '' 
+    : 'https://privatesite-production.up.railway.app';
+
 let syncTimeout = null;
 
 function initSupabase() {
@@ -2834,7 +2838,7 @@ async function handleLogin() {
 
     try {
         setSyncBadgeStatus('Logging in...', '#ffde00');
-        const response = await fetch('/api/auth/login', {
+        const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -2866,7 +2870,7 @@ async function handleSignup() {
 
     try {
         setSyncBadgeStatus('Signing up...', '#ffde00');
-        const response = await fetch('/api/auth/signup', {
+        const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -2936,7 +2940,7 @@ function getLocalDataPayload() {
 async function uploadCloudData(userId) {
     try {
         const payload = getLocalDataPayload();
-        const response = await fetch('/api/sync/upload', {
+        const response = await fetch(`${API_BASE_URL}/api/sync/upload`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userId, data: payload })
@@ -2953,7 +2957,7 @@ async function uploadCloudData(userId) {
 async function downloadCloudData(userId) {
     try {
         setSyncBadgeStatus('Downloading...', '#ffde00');
-        const response = await fetch(`/api/sync/download?userId=${userId}`);
+        const response = await fetch(`${API_BASE_URL}/api/sync/download?userId=${userId}`);
         const result = await response.json();
 
         if (!result.success) throw new Error(result.error);
