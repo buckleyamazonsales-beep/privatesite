@@ -7,10 +7,13 @@ const { Pool } = require('pg');
 const PORT = process.env.PORT || 3000;
 
 // Setup PostgreSQL pool if connection string exists
+const isProduction = !!process.env.PORT;
+const DB_URL = process.env.DATABASE_URL || (isProduction ? 'postgresql://postgres:GTHyiFxpoOwigjsXtMrcPcBXxALKratr@postgres.railway.internal:5432/railway' : null);
+
 let pool = null;
-if (process.env.DATABASE_URL) {
+if (DB_URL) {
     pool = new Pool({
-        connectionString: process.env.DATABASE_URL,
+        connectionString: DB_URL,
         ssl: {
             rejectUnauthorized: false
         }
