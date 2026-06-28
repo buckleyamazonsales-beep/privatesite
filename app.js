@@ -2642,6 +2642,16 @@ async function handleLogin() {
 
         const rememberMe = document.getElementById('auth-remember-me');
         const store = (rememberMe && rememberMe.checked) ? localStorage : sessionStorage;
+        
+        // Clear the opposite storage to avoid persistence conflicts
+        if (store === localStorage) {
+            sessionStorage.removeItem('sync_user_id');
+            sessionStorage.removeItem('sync_user_email');
+        } else {
+            localStorage.removeItem('sync_user_id');
+            localStorage.removeItem('sync_user_email');
+        }
+
         store.setItem('sync_user_id', result.userId);
         store.setItem('sync_user_email', result.email);
         
