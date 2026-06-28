@@ -16,7 +16,6 @@ const DEFAULT_PRICES = {
 };
 
 let prices = { ...DEFAULT_PRICES };
-let acquiredNodes = new Set();
 let gymReruns = {};
 let activeTab = 'breeding';
 
@@ -34,9 +33,6 @@ function loadLocalStorage() {
     const savedGyms = localStorage.getItem('pokemmo_gyms');
     if (savedGyms) gymReruns = JSON.parse(savedGyms);
 
-    const savedAcquired = localStorage.getItem('pokemmo_acquired_nodes');
-    if (savedAcquired) acquiredNodes = new Set(JSON.parse(savedAcquired));
-
     const savedLedger = localStorage.getItem('pokemmo_ledger');
     if (savedLedger) ledgerRecords = JSON.parse(savedLedger);
 
@@ -49,7 +45,6 @@ function loadLocalStorage() {
 
 function savePrices() { localStorage.setItem('pokemmo_prices', JSON.stringify(prices)); }
 function saveGyms() { localStorage.setItem('pokemmo_gyms', JSON.stringify(gymReruns)); }
-function saveAcquiredNodes() { localStorage.setItem('pokemmo_acquired_nodes', JSON.stringify(Array.from(acquiredNodes))); }
 function saveLedger() { localStorage.setItem('pokemmo_ledger', JSON.stringify(ledgerRecords)); }
 function saveGarden() { localStorage.setItem('pokemmo_garden', JSON.stringify(gardenCrops)); }
 function saveHunts() { localStorage.setItem('pokemmo_hunts', JSON.stringify(shinyHunts)); }
@@ -1322,224 +1317,7 @@ function getGenderSelectionFee(gender, ratio) {
     return 5000;
 }
 
-function getTreeLevels(root) {
-    const levels = [];
-    function traverse(node, depth) {
-        if (!node) return;
-        if (!levels[depth]) levels[depth] = [];
-        levels[depth].push(node);
-        traverse(node.left, depth + 1);
-        traverse(node.right, depth + 1);
-    }
-    traverse(root, 0);
-    return levels;
-}
 
-function updateTreeNodeStatus(node) {
-    if (!node) return;
-    updateTreeNodeStatus(node.left);
-    updateTreeNodeStatus(node.right);
-    if (!node.left && !node.right) {
-        node.isReady = true;
-        return;
-    }
-    node.isReady = acquiredNodes.has(node.left.id) && acquiredNodes.has(node.right.id);
-}
-
-let zoomLevel = 1.0;
-function zoomBreedingTree(delta) {
-    if (delta === 0) zoomLevel = 1.0;
-    else zoomLevel = Math.min(1.5, Math.max(0.4, zoomLevel + delta));
-
-    document.getElementById('zoom-level-text').innerText = `Zoom: ${Math.round(zoomLevel * 100)}%`;
-    const tree = document.querySelector('.breeding-tree');
-    if (tree) {
-        tree.style.transform = `scale(${zoomLevel})`;
-        tree.style.transformOrigin = 'right center';
-    }
-    setTimeout(() => {
-        if (window.currentBreedingRoot) drawTreeConnectors(window.currentBreedingRoot);
-    }, 100);
-}
-
-function renderBreedingTree(root, genderRatio) {
-    const container = document.getElementById('breeding-tree-container');
-    container.innerHTML = '';
-
-    const outer = document.createElement('div');
-    outer.className = 'breeding-tree';
-    outer.style.transform = `scale(${zoomLevel})`;
-    outer.style.transformOrigin = 'right center';
-    container.appendChild(outer);
-
-    const levels = getTreeLevels(root);
-    updateTreeNodeStatus(root);
-
-    levels.forEach((levelNodes, depthIndex) => {
-        const levelDiv = document.createElement('div');
-        levelDiv.className = 'tree-level';
-        levelDiv.id = `tree-level-${depthIndex}`;
-
-        levelNodes.forEach(node => {
-            const card = document.createElement('div');
-            let statusClass = '';
-            if (acquiredNodes.has(node.id)) statusClass = 'acquired';
-            else if (node.isReady) statusClass = 'ready-to-breed';
-
-            let genderClass = 'gender-any';
-            if (node.gender === 'Male') genderClass = 'gender-male';
-            else if (node.gender === 'Female') genderClass = 'gender-female';
-            else if (node.gender === 'Ditto') genderClass = 'gender-ditto';
-
-            card.className = `tree-node ${statusClass} ${genderClass}`;
-            card.id = `node-${node.id}`;
-            card.onclick = (e) => {
-                e.stopPropagation();
-                toggleNodeAcquired(node.id);
-            };
-
-            // Stat pills
-            let pillsHtml = '<div class="stat-pill-group">';
-            if (node.stats.length > 0) {
-                node.stats.forEach(st => {
-                    pillsHtml += `<span class="stat-pill">${st}</span>`;
-                });
-            }
-            if (node.hasNature) {
-                pillsHtml += `<span class="nature-pill">Nature</span>`;
-            }
-            pillsHtml += '</div>';
-
-            // Item badge
-            let itemHtml = '';
-            if (node.item) {
-                itemHtml = `<div class="item-pill">${node.item}</div>`;
-            }
-            
-            let genderIcon = '';
-            if (node.gender === 'Male') genderIcon = '<span class="node-gender-male">♂ Male</span>';
-            else if (node.gender === 'Female') genderIcon = '<span class="node-gender-female">♀ Female</span>';
-            else if (node.gender === 'Ditto') genderIcon = '<span class="node-gender-ditto">Ditto</span>';
-            else genderIcon = '<span style="color:var(--text-muted)">Any</span>';
-
-            let badgeText = 'BREED';
-            if (!node.left && !node.right) {
-                badgeText = node.gender === 'Ditto' ? 'BUY DITTO' : 'WILD PARENT';
-            }
-
-            card.innerHTML = `
-                <span class="tree-node-badge">${badgeText}</span>
-                <div class="tree-node-title">
-                    <span>${node.hasNature ? 'Perfect Nature' : node.stats.length + 'x31'}</span>
-                    ${genderIcon}
-                </div>
-                <div class="tree-node-details">
-                    ${pillsHtml}
-                    ${itemHtml}
-                    <div style="margin-top: 0.4rem; font-weight: 700; color: #fff;">Cost: ${node.cost.toLocaleString()} ¥</div>
-                </div>
-            `;
-            levelDiv.appendChild(card);
-        });
-        outer.appendChild(levelDiv);
-    });
-
-    setTimeout(() => { drawTreeConnectors(root); }, 100);
-}
-
-function toggleNodeAcquired(nodeId) {
-    if (acquiredNodes.has(nodeId)) acquiredNodes.delete(nodeId);
-    else acquiredNodes.add(nodeId);
-    saveAcquiredNodes();
-    calculateAndRenderBreeding();
-}
-
-function resetBreedingChecklist() {
-    acquiredNodes.clear();
-    saveAcquiredNodes();
-    calculateAndRenderBreeding();
-}
-
-function drawTreeConnectors(root) {
-    const container = document.getElementById('breeding-tree-container');
-    const containerRect = container.getBoundingClientRect();
-
-    let svgCanvas = document.getElementById('tree-svg-canvas');
-    if (!svgCanvas) {
-        svgCanvas = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svgCanvas.id = 'tree-svg-canvas';
-        svgCanvas.style.position = 'absolute';
-        svgCanvas.style.top = '0';
-        svgCanvas.style.left = '0';
-        svgCanvas.style.pointerEvents = 'none';
-        svgCanvas.style.zIndex = '2';
-        container.appendChild(svgCanvas);
-    } else {
-        svgCanvas.innerHTML = '';
-    }
-
-    const scrollWidth = container.scrollWidth;
-    const scrollHeight = container.scrollHeight;
-    svgCanvas.setAttribute('width', scrollWidth);
-    svgCanvas.setAttribute('height', scrollHeight);
-    svgCanvas.style.width = scrollWidth + 'px';
-    svgCanvas.style.height = scrollHeight + 'px';
-
-    function drawLine(node) {
-        if (!node) return;
-        if (node.left) {
-            connectCards(node.id, node.left.id, container, containerRect, svgCanvas);
-            drawLine(node.left);
-        }
-        if (node.right) {
-            connectCards(node.id, node.right.id, container, containerRect, svgCanvas);
-            drawLine(node.right);
-        }
-    }
-    drawLine(root);
-}
-
-function connectCards(parentId, childId, container, containerRect, svgCanvas) {
-    const parentCard = document.getElementById(`node-${parentId}`);
-    const childCard = document.getElementById(`node-${childId}`);
-    if (!parentCard || !childCard) return;
-
-    const parentRect = parentCard.getBoundingClientRect();
-    const childRect = childCard.getBoundingClientRect();
-
-    const startX = parentRect.left - containerRect.left + container.scrollLeft;
-    const startY = parentRect.top - containerRect.top + (parentRect.height / 2) + container.scrollTop;
-
-    const endX = childRect.right - containerRect.left + container.scrollLeft;
-    const endY = childRect.top - containerRect.top + (childRect.height / 2) + container.scrollTop;
-
-    // Draw background Bezier
-    drawBezierCurve(startX, startY, endX, endY, svgCanvas, 'rgba(255, 255, 255, 0.06)', false);
-
-    // Draw glowing green Bezier if child is acquired
-    const childAcquired = acquiredNodes.has(childId);
-    if (childAcquired) {
-        drawBezierCurve(startX, startY, endX, endY, svgCanvas, '#10b981', true);
-    }
-}
-
-function drawBezierCurve(startX, startY, endX, endY, svgCanvas, color, isGlow) {
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    const midX = (startX + endX) / 2;
-    const d = `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`;
-    path.setAttribute('d', d);
-    path.setAttribute('fill', 'none');
-    path.setAttribute('stroke', color);
-    path.setAttribute('stroke-width', isGlow ? '2.5' : '1.5');
-    if (isGlow) {
-        path.setAttribute('stroke-linecap', 'round');
-        path.style.filter = 'drop-shadow(0px 0px 4px ' + color + ')';
-        path.setAttribute('opacity', '0.85');
-    } else {
-        path.setAttribute('opacity', '0.35');
-    }
-    svgCanvas.appendChild(path);
-}
 
 function calculateAndRenderBreeding() {
     const activeIvs = [];
@@ -1628,8 +1406,6 @@ function calculateAndRenderBreeding() {
     }
     detailsHtml += `</div></div>`;
     document.getElementById('breeding-summary-details').innerHTML = detailsHtml;
-
-    renderBreedingTree(root, genderRatio);
 }
 
 function setupPricesPanel() {
@@ -1832,7 +1608,7 @@ function switchTab(tabName) {
         else farmingGroup.classList.remove('active');
     }
     if (battleGroup) {
-        if (['pvp', 'ev'].includes(tabName)) battleGroup.classList.add('active');
+        if (['pvp', 'ev', 'typematch'].includes(tabName)) battleGroup.classList.add('active');
         else battleGroup.classList.remove('active');
     }
 
@@ -1868,6 +1644,8 @@ function switchTab(tabName) {
         renderMoneyTab();
     } else if (tabName === 'story') {
         renderStoryTab();
+    } else if (tabName === 'typematch') {
+        initTypeCalculator();
     }
 }
 
@@ -2762,9 +2540,8 @@ let syncTimeout = null;
 
 // Returns the storage that holds session credentials
 function getAuthStorage() {
-    // If credentials exist in sessionStorage, use that (session-only login)
-    if (sessionStorage.getItem('sync_user_id')) return sessionStorage;
-    return localStorage;
+    if (localStorage.getItem('sync_user_id')) return localStorage;
+    return sessionStorage;
 }
 
 function getSyncUserId() {
@@ -3029,9 +2806,6 @@ function loadFromStorageAndReInit() {
         const cachedGyms = localStorage.getItem('pokemmo_gyms');
         if (cachedGyms) gymReruns = JSON.parse(cachedGyms);
 
-        const cachedNodes = localStorage.getItem('pokemmo_acquired_nodes');
-        if (cachedNodes) acquiredNodes = new Set(JSON.parse(cachedNodes));
-
         const cachedLedger = localStorage.getItem('pokemmo_ledger');
         if (cachedLedger) ledgerRecords = JSON.parse(cachedLedger);
 
@@ -3072,4 +2846,94 @@ localStorage.setItem = function(key, value) {
         }
     }
 };
+
+// ==========================================
+// 16. TYPE MATCHUP CALCULATOR DATA & LOGIC
+// ==========================================
+const TYPE_CHART = {
+  'Normal':   { 'Normal': 1, 'Fire': 1, 'Water': 1, 'Electric': 1, 'Grass': 1, 'Ice': 1, 'Fighting': 1, 'Poison': 1, 'Ground': 1, 'Flying': 1, 'Psychic': 1, 'Bug': 1, 'Rock': 0.5, 'Ghost': 0, 'Dragon': 1, 'Dark': 1, 'Steel': 0.5 },
+  'Fire':     { 'Normal': 1, 'Fire': 0.5, 'Water': 0.5, 'Electric': 1, 'Grass': 2, 'Ice': 2, 'Fighting': 1, 'Poison': 1, 'Ground': 1, 'Flying': 1, 'Psychic': 1, 'Bug': 2, 'Rock': 0.5, 'Ghost': 1, 'Dragon': 0.5, 'Dark': 1, 'Steel': 2 },
+  'Water':    { 'Normal': 1, 'Fire': 2, 'Water': 0.5, 'Electric': 1, 'Grass': 0.5, 'Ice': 1, 'Fighting': 1, 'Poison': 1, 'Ground': 2, 'Flying': 1, 'Psychic': 1, 'Bug': 1, 'Rock': 2, 'Ghost': 1, 'Dragon': 0.5, 'Dark': 1, 'Steel': 1 },
+  'Electric': { 'Normal': 1, 'Fire': 1, 'Water': 2, 'Electric': 0.5, 'Grass': 0.5, 'Ice': 1, 'Fighting': 1, 'Poison': 1, 'Ground': 0, 'Flying': 2, 'Psychic': 1, 'Bug': 1, 'Rock': 1, 'Ghost': 1, 'Dragon': 0.5, 'Dark': 1, 'Steel': 1 },
+  'Grass':    { 'Normal': 1, 'Fire': 0.5, 'Water': 2, 'Electric': 1, 'Grass': 0.5, 'Ice': 1, 'Fighting': 1, 'Poison': 0.5, 'Ground': 2, 'Flying': 0.5, 'Psychic': 1, 'Bug': 0.5, 'Rock': 2, 'Ghost': 1, 'Dragon': 0.5, 'Dark': 1, 'Steel': 0.5 },
+  'Ice':      { 'Normal': 1, 'Fire': 0.5, 'Water': 0.5, 'Electric': 1, 'Grass': 2, 'Ice': 0.5, 'Fighting': 1, 'Poison': 1, 'Ground': 2, 'Flying': 2, 'Psychic': 1, 'Bug': 1, 'Rock': 1, 'Ghost': 1, 'Dragon': 2, 'Dark': 1, 'Steel': 0.5 },
+  'Fighting': { 'Normal': 2, 'Fire': 1, 'Water': 1, 'Electric': 1, 'Grass': 1, 'Ice': 2, 'Fighting': 1, 'Poison': 0.5, 'Ground': 1, 'Flying': 0.5, 'Psychic': 0.5, 'Bug': 0.5, 'Rock': 2, 'Ghost': 0, 'Dragon': 1, 'Dark': 2, 'Steel': 2 },
+  'Poison':   { 'Normal': 1, 'Fire': 1, 'Water': 1, 'Electric': 1, 'Grass': 2, 'Ice': 1, 'Fighting': 1, 'Poison': 0.5, 'Ground': 0.5, 'Flying': 1, 'Psychic': 1, 'Bug': 1, 'Rock': 0.5, 'Ghost': 0.5, 'Dragon': 1, 'Dark': 1, 'Steel': 0 },
+  'Ground':   { 'Normal': 1, 'Fire': 2, 'Water': 1, 'Electric': 2, 'Grass': 0.5, 'Ice': 1, 'Fighting': 1, 'Poison': 2, 'Ground': 1, 'Flying': 0, 'Psychic': 1, 'Bug': 0.5, 'Rock': 2, 'Ghost': 1, 'Dragon': 1, 'Dark': 1, 'Steel': 2 },
+  'Flying':   { 'Normal': 1, 'Fire': 1, 'Water': 1, 'Electric': 0.5, 'Grass': 2, 'Ice': 1, 'Fighting': 2, 'Poison': 1, 'Ground': 1, 'Flying': 1, 'Psychic': 1, 'Bug': 2, 'Rock': 0.5, 'Ghost': 1, 'Dragon': 1, 'Dark': 1, 'Steel': 0.5 },
+  'Psychic':  { 'Normal': 1, 'Fire': 1, 'Water': 1, 'Electric': 1, 'Grass': 1, 'Ice': 1, 'Fighting': 2, 'Poison': 2, 'Ground': 1, 'Flying': 1, 'Psychic': 0.5, 'Bug': 1, 'Rock': 1, 'Ghost': 1, 'Dragon': 1, 'Dark': 0, 'Steel': 0.5 },
+  'Bug':      { 'Normal': 1, 'Fire': 0.5, 'Water': 1, 'Electric': 1, 'Grass': 2, 'Ice': 1, 'Fighting': 0.5, 'Poison': 0.5, 'Ground': 1, 'Flying': 0.5, 'Psychic': 2, 'Bug': 1, 'Rock': 1, 'Ghost': 0.5, 'Dragon': 1, 'Dark': 2, 'Steel': 0.5 },
+  'Rock':     { 'Normal': 1, 'Fire': 2, 'Water': 1, 'Electric': 1, 'Grass': 1, 'Ice': 2, 'Fighting': 0.5, 'Poison': 1, 'Ground': 0.5, 'Flying': 2, 'Psychic': 1, 'Bug': 2, 'Rock': 1, 'Ghost': 1, 'Dragon': 1, 'Dark': 1, 'Steel': 0.5 },
+  'Ghost':    { 'Normal': 0, 'Fire': 1, 'Water': 1, 'Electric': 1, 'Grass': 1, 'Ice': 1, 'Fighting': 1, 'Poison': 1, 'Ground': 1, 'Flying': 1, 'Psychic': 2, 'Bug': 1, 'Rock': 1, 'Ghost': 2, 'Dragon': 1, 'Dark': 0.5, 'Steel': 0.5 },
+  'Dragon':   { 'Normal': 1, 'Fire': 1, 'Water': 1, 'Electric': 1, 'Grass': 1, 'Ice': 1, 'Fighting': 1, 'Poison': 1, 'Ground': 1, 'Flying': 1, 'Psychic': 1, 'Bug': 1, 'Rock': 1, 'Ghost': 1, 'Dragon': 2, 'Dark': 1, 'Steel': 0.5 },
+  'Dark':     { 'Normal': 1, 'Fire': 1, 'Water': 1, 'Electric': 1, 'Grass': 1, 'Ice': 1, 'Fighting': 0.5, 'Poison': 1, 'Ground': 1, 'Flying': 1, 'Psychic': 2, 'Bug': 1, 'Rock': 1, 'Ghost': 2, 'Dragon': 1, 'Dark': 0.5, 'Steel': 0.5 },
+  'Steel':    { 'Normal': 1, 'Fire': 0.5, 'Water': 0.5, 'Electric': 0.5, 'Grass': 1, 'Ice': 2, 'Fighting': 1, 'Poison': 1, 'Ground': 1, 'Flying': 1, 'Psychic': 1, 'Bug': 1, 'Rock': 2, 'Ghost': 1, 'Dragon': 1, 'Dark': 1, 'Steel': 0.5 },
+};
+
+function initTypeCalculator() {
+    const primarySelect = document.getElementById('type-calc-primary');
+    const secondarySelect = document.getElementById('type-calc-secondary');
+    if (!primarySelect || !secondarySelect) return;
+
+    primarySelect.innerHTML = '';
+    secondarySelect.innerHTML = '<option value="None">None</option>';
+
+    Object.keys(TYPE_CHART).sort().forEach(type => {
+        primarySelect.innerHTML += `<option value="${type}">${type}</option>`;
+        secondarySelect.innerHTML += `<option value="${type}">${type}</option>`;
+    });
+
+    primarySelect.value = 'Normal';
+    secondarySelect.value = 'None';
+    runTypeMatchupCalculations();
+}
+
+function runTypeMatchupCalculations() {
+    const type1 = document.getElementById('type-calc-primary').value;
+    const type2 = document.getElementById('type-calc-secondary').value;
+    const resultsDiv = document.getElementById('type-calc-results');
+    if (!resultsDiv) return;
+
+    const matchups = {};
+    Object.keys(TYPE_CHART).forEach(attackingType => {
+        let mult = TYPE_CHART[attackingType][type1];
+        if (type2 !== 'None' && type1 !== type2) {
+            mult *= TYPE_CHART[attackingType][type2];
+        }
+        matchups[attackingType] = mult;
+    });
+
+    const groups = { 4: [], 2: [], 1: [], 0.5: [], 0.25: [], 0: [] };
+    Object.keys(matchups).forEach(type => {
+        groups[matchups[type]].push(type);
+    });
+
+    let html = '';
+
+    const formatGroup = (multiplier, label, colorClass, styleBg) => {
+        const typesList = groups[multiplier];
+        if (typesList && typesList.length > 0) {
+            html += `
+                <div style="background: ${styleBg}; border: 1px solid rgba(255,255,255,0.03); padding: 0.75rem; border-radius: 6px;">
+                    <span style="font-size: 0.8rem; font-weight: 700; color: ${colorClass}; display: block; margin-bottom: 0.4rem;">
+                        ${label} (${multiplier}x)
+                    </span>
+                    <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+            `;
+            typesList.sort().forEach(t => {
+                html += `<span class="badge-scent" style="background: rgba(255,255,255,0.05); color: #fff; font-size: 0.7rem; padding: 0.25rem 0.5rem; border: 1px solid rgba(255,255,255,0.08);">${t}</span>`;
+            });
+            html += `</div></div>`;
+        }
+    };
+
+    formatGroup(4, 'Double Weakness', 'var(--accent-red)', 'rgba(239, 68, 68, 0.04)');
+    formatGroup(2, 'Weakness', '#fca5a5', 'rgba(239, 68, 68, 0.02)');
+    formatGroup(0.5, 'Resistance', '#93c5fd', 'rgba(59, 130, 246, 0.02)');
+    formatGroup(0.25, 'Double Resistance', 'var(--accent-green)', 'rgba(16, 185, 129, 0.04)');
+    formatGroup(0, 'Immunity', 'var(--text-muted)', 'rgba(255,255,255,0.01)');
+    formatGroup(1, 'Neutral Damage', '#e5e7eb', 'rgba(255,255,255,0.02)');
+
+    resultsDiv.innerHTML = html;
+}
 
