@@ -2752,114 +2752,60 @@ function renderStoryTab() {
 }
 
 // ==========================================
-// 15. CLOUD DATABASE SYNC ENGINE (SUPABASE)
+// 15. CLOUD DATABASE SYNC ENGINE (LOCAL REST API)
 // ==========================================
-let supabaseClient = null;
 let syncTimeout = null;
 
 function initSupabase() {
-    const defaultUrl = 'https://rekyrellvohjrrqsvbfj.supabase.co';
-    const defaultKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJla3lyZWxsdm9oanJycXN2YmZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1OTc2ODcsImV4cCI6MjA5ODE3MzY4N30.PwmemLGyZow55QPaEKzsQCPx9_aj5bd8wWJw_RRQ8Hg';
-
-    const url = localStorage.getItem('supabase_url') || defaultUrl;
-    const key = localStorage.getItem('supabase_key') || defaultKey;
-    
-    const dbUrlInput = document.getElementById('db-url-input');
-    const dbKeyInput = document.getElementById('db-key-input');
-    if (dbUrlInput) dbUrlInput.value = localStorage.getItem('supabase_url') || '';
-    if (dbKeyInput) dbKeyInput.value = localStorage.getItem('supabase_key') || '';
-
-    if (!url || !key) {
-        document.getElementById('auth-config-section').style.display = 'block';
-        document.getElementById('auth-login-section').style.display = 'none';
-        document.getElementById('auth-status-section').style.display = 'none';
-        updateSyncButtonUI(false, '👤 Sync Offline');
-        return;
-    }
-
-    try {
-        supabaseClient = supabase.createClient(url, key, {
-            auth: {
-                persistSession: true,
-                autoRefreshToken: true
-            }
-        });
-        
-        document.getElementById('auth-config-section').style.display = 'none';
-        checkAuthState();
-    } catch (e) {
-        console.error('Supabase init failed:', e);
-        alert('Failed to connect to Supabase. Check your URL/Key.');
-    }
+    checkAuthState();
 }
 
-async function checkAuthState() {
-    if (!supabaseClient) return;
-    try {
-        const { data: { session }, error } = await supabaseClient.auth.getSession();
-        if (error) throw error;
+function checkAuthState() {
+    const userId = localStorage.getItem('sync_user_id');
+    const email = localStorage.getItem('sync_user_email');
 
-        if (session && session.user) {
-            showLoggedInUI(session.user.email);
-            if (!sessionStorage.getItem('initial_sync_done')) {
-                await downloadCloudData(session.user.id);
-                sessionStorage.setItem('initial_sync_done', 'true');
-            }
-        } else {
-            showLoggedOutUI();
+    if (userId && email) {
+        showLoggedInUI(email);
+        if (!sessionStorage.getItem('initial_sync_done')) {
+            downloadCloudData(userId);
+            sessionStorage.setItem('initial_sync_done', 'true');
         }
-    } catch (e) {
-        console.error('Auth state check failed:', e);
+    } else {
         showLoggedOutUI();
     }
 }
 
-function saveDatabaseConfig() {
-    const url = document.getElementById('db-url-input').value.trim();
-    const key = document.getElementById('db-key-input').value.trim();
-
-    if (!url || !key) {
-        alert('Please enter both Supabase URL and Anon Key.');
-        return;
-    }
-
-    localStorage.setItem('supabase_url', url);
-    localStorage.setItem('supabase_key', key);
-    initSupabase();
-}
-
 function toggleAuthModal() {
     const modal = document.getElementById('auth-modal');
-    if (modal.style.display === 'none') {
-        modal.style.display = 'flex';
-        const url = localStorage.getItem('supabase_url');
-        const key = localStorage.getItem('supabase_key');
-        if (url) document.getElementById('db-url-input').value = url;
-        if (key) document.getElementById('db-key-input').value = key;
-    } else {
-        modal.style.display = 'none';
+    if (modal) {
+        modal.style.display = modal.style.display === 'none' ? 'flex' : 'none';
     }
 }
 
 function toggleConfigSection() {
     const configSection = document.getElementById('auth-config-section');
-    if (configSection.style.display === 'none') {
-        configSection.style.display = 'block';
-    } else {
-        configSection.style.display = 'none';
+    if (configSection) {
+        configSection.style.display = configSection.style.display === 'none' ? 'block' : 'none';
     }
 }
 
 function showLoggedInUI(email) {
-    document.getElementById('auth-login-section').style.display = 'none';
-    document.getElementById('auth-status-section').style.display = 'block';
-    document.getElementById('auth-user-email').innerText = email;
+    const loginSection = document.getElementById('auth-login-section');
+    const statusSection = document.getElementById('auth-status-section');
+    const emailDisplay = document.getElementById('auth-user-email');
+    
+    if (loginSection) loginSection.style.display = 'none';
+    if (statusSection) statusSection.style.display = 'block';
+    if (emailDisplay) emailDisplay.innerText = email;
     updateSyncButtonUI(true, '☁️ Connected');
 }
 
 function showLoggedOutUI() {
-    document.getElementById('auth-login-section').style.display = 'block';
-    document.getElementById('auth-status-section').style.display = 'none';
+    const loginSection = document.getElementById('auth-login-section');
+    const statusSection = document.getElementById('auth-status-section');
+    
+    if (loginSection) loginSection.style.display = 'block';
+    if (statusSection) statusSection.style.display = 'none';
     updateSyncButtonUI(false, '👤 Sync Offline');
 }
 
@@ -2878,7 +2824,6 @@ function updateSyncButtonUI(connected, text) {
 }
 
 async function handleLogin() {
-    if (!supabaseClient) return;
     const email = document.getElementById('auth-email').value.trim();
     const password = document.getElementById('auth-password').value.trim();
 
@@ -2889,12 +2834,21 @@ async function handleLogin() {
 
     try {
         setSyncBadgeStatus('Logging in...', '#ffde00');
-        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        const response = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const result = await response.json();
+
+        if (!result.success) throw new Error(result.error || 'Login failed');
+
+        localStorage.setItem('sync_user_id', result.userId);
+        localStorage.setItem('sync_user_email', result.email);
         
-        showLoggedInUI(data.user.email);
+        showLoggedInUI(result.email);
         setSyncBadgeStatus('Synced', '#34d399');
-        await downloadCloudData(data.user.id);
+        await downloadCloudData(result.userId);
     } catch (e) {
         alert('Login failed: ' + e.message);
         setSyncBadgeStatus('Failed', 'var(--accent-red)');
@@ -2902,7 +2856,6 @@ async function handleLogin() {
 }
 
 async function handleSignup() {
-    if (!supabaseClient) return;
     const email = document.getElementById('auth-email').value.trim();
     const password = document.getElementById('auth-password').value.trim();
 
@@ -2913,35 +2866,36 @@ async function handleSignup() {
 
     try {
         setSyncBadgeStatus('Signing up...', '#ffde00');
-        const { data, error } = await supabaseClient.auth.signUp({ email, password });
-        if (error) throw error;
-        
-        alert('Signup successful! If email confirmation is enabled, check your inbox. Otherwise, you can now log in.');
-        showLoggedOutUI();
+        const response = await fetch('/api/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        const result = await response.json();
+
+        if (!result.success) throw new Error(result.error || 'Signup failed');
+
+        alert('Signup successful! You can now log in.');
+        setSyncBadgeStatus('Registered', '#34d399');
     } catch (e) {
         alert('Signup failed: ' + e.message);
         setSyncBadgeStatus('Failed', 'var(--accent-red)');
     }
 }
 
-async function handleLogout() {
-    if (!supabaseClient) return;
-    try {
-        await supabaseClient.auth.signOut();
-        sessionStorage.removeItem('initial_sync_done');
-        showLoggedOutUI();
-        alert('Logged out successfully.');
-    } catch (e) {
-        console.error('Logout failed:', e);
-    }
+function handleLogout() {
+    localStorage.removeItem('sync_user_id');
+    localStorage.removeItem('sync_user_email');
+    sessionStorage.removeItem('initial_sync_done');
+    showLoggedOutUI();
+    alert('Logged out successfully.');
 }
 
 async function forceSyncData() {
-    if (!supabaseClient) return;
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (session && session.user) {
+    const userId = localStorage.getItem('sync_user_id');
+    if (userId) {
         setSyncBadgeStatus('Syncing...', '#ffde00');
-        await uploadCloudData(session.user.id);
+        await uploadCloudData(userId);
     } else {
         alert('You must be logged in to sync.');
     }
@@ -2950,11 +2904,10 @@ async function forceSyncData() {
 function scheduleCloudSync() {
     if (syncTimeout) clearTimeout(syncTimeout);
     syncTimeout = setTimeout(async () => {
-        if (!supabaseClient) return;
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (session && session.user) {
+        const userId = localStorage.getItem('sync_user_id');
+        if (userId) {
             setSyncBadgeStatus('Saving...', '#ffde00');
-            await uploadCloudData(session.user.id);
+            await uploadCloudData(userId);
         }
     }, 2000);
 }
@@ -2983,15 +2936,13 @@ function getLocalDataPayload() {
 async function uploadCloudData(userId) {
     try {
         const payload = getLocalDataPayload();
-        const { error } = await supabaseClient
-            .from('user_data')
-            .upsert({
-                user_id: userId,
-                data: payload,
-                updated_at: new Date().toISOString()
-            });
-
-        if (error) throw error;
+        const response = await fetch('/api/sync/upload', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId, data: payload })
+        });
+        const result = await response.json();
+        if (!result.success) throw new Error(result.error);
         setSyncBadgeStatus('Synced', '#34d399');
     } catch (e) {
         console.error('Cloud upload failed:', e);
@@ -3002,18 +2953,13 @@ async function uploadCloudData(userId) {
 async function downloadCloudData(userId) {
     try {
         setSyncBadgeStatus('Downloading...', '#ffde00');
-        const { data, error } = await supabaseClient
-            .from('user_data')
-            .select('data')
-            .eq('user_id', userId)
-            .single();
+        const response = await fetch(`/api/sync/download?userId=${userId}`);
+        const result = await response.json();
 
-        if (error && error.code !== 'PGRST116') {
-            throw error;
-        }
+        if (!result.success) throw new Error(result.error);
 
-        if (data && data.data) {
-            const cloudPayload = data.data;
+        if (result.data) {
+            const cloudPayload = result.data;
             let changesMade = false;
 
             const keys = ['prices', 'gyms', 'acquired_nodes', 'ledger', 'garden', 'hunts', 'chores', 'badges'];
