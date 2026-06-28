@@ -1915,6 +1915,11 @@ window.addEventListener('DOMContentLoaded', () => {
     runSimStep();
     renderMoneyTab();
     renderStoryTab();
+
+    // Initialize Supabase Cloud Sync
+    if (typeof initSupabase === 'function') {
+        initSupabase();
+    }
 });
 
 // ==========================================
@@ -2745,4 +2750,345 @@ function renderStoryTab() {
         walkthroughContainer.innerHTML = html;
     }
 }
+
+// ==========================================
+// 15. CLOUD DATABASE SYNC ENGINE (SUPABASE)
+// ==========================================
+let supabaseClient = null;
+let syncTimeout = null;
+
+function initSupabase() {
+    const url = localStorage.getItem('supabase_url');
+    const key = localStorage.getItem('supabase_key');
+    
+    const dbUrlInput = document.getElementById('db-url-input');
+    const dbKeyInput = document.getElementById('db-key-input');
+    if (dbUrlInput && url) dbUrlInput.value = url;
+    if (dbKeyInput && key) dbKeyInput.value = key;
+
+    if (!url || !key) {
+        document.getElementById('auth-config-section').style.display = 'block';
+        document.getElementById('auth-login-section').style.display = 'none';
+        document.getElementById('auth-status-section').style.display = 'none';
+        updateSyncButtonUI(false, '👤 Sync Offline');
+        return;
+    }
+
+    try {
+        supabaseClient = supabase.createClient(url, key, {
+            auth: {
+                persistSession: true,
+                autoRefreshToken: true
+            }
+        });
+        
+        document.getElementById('auth-config-section').style.display = 'block';
+        checkAuthState();
+    } catch (e) {
+        console.error('Supabase init failed:', e);
+        alert('Failed to connect to Supabase. Check your URL/Key.');
+    }
+}
+
+async function checkAuthState() {
+    if (!supabaseClient) return;
+    try {
+        const { data: { session }, error } = await supabaseClient.auth.getSession();
+        if (error) throw error;
+
+        if (session && session.user) {
+            showLoggedInUI(session.user.email);
+            if (!sessionStorage.getItem('initial_sync_done')) {
+                await downloadCloudData(session.user.id);
+                sessionStorage.setItem('initial_sync_done', 'true');
+            }
+        } else {
+            showLoggedOutUI();
+        }
+    } catch (e) {
+        console.error('Auth state check failed:', e);
+        showLoggedOutUI();
+    }
+}
+
+function saveDatabaseConfig() {
+    const url = document.getElementById('db-url-input').value.trim();
+    const key = document.getElementById('db-key-input').value.trim();
+
+    if (!url || !key) {
+        alert('Please enter both Supabase URL and Anon Key.');
+        return;
+    }
+
+    localStorage.setItem('supabase_url', url);
+    localStorage.setItem('supabase_key', key);
+    initSupabase();
+}
+
+function toggleAuthModal() {
+    const modal = document.getElementById('auth-modal');
+    if (modal.style.display === 'none') {
+        modal.style.display = 'flex';
+        const url = localStorage.getItem('supabase_url');
+        const key = localStorage.getItem('supabase_key');
+        if (url) document.getElementById('db-url-input').value = url;
+        if (key) document.getElementById('db-key-input').value = key;
+    } else {
+        modal.style.display = 'none';
+    }
+}
+
+function showLoggedInUI(email) {
+    document.getElementById('auth-login-section').style.display = 'none';
+    document.getElementById('auth-status-section').style.display = 'block';
+    document.getElementById('auth-user-email').innerText = email;
+    updateSyncButtonUI(true, '☁️ Connected');
+}
+
+function showLoggedOutUI() {
+    document.getElementById('auth-login-section').style.display = 'block';
+    document.getElementById('auth-status-section').style.display = 'none';
+    updateSyncButtonUI(false, '👤 Sync Offline');
+}
+
+function updateSyncButtonUI(connected, text) {
+    const btn = document.getElementById('user-profile-btn');
+    if (btn) {
+        btn.innerText = text;
+        if (connected) {
+            btn.style.borderColor = 'var(--accent-green)';
+            btn.style.color = 'var(--accent-green)';
+        } else {
+            btn.style.borderColor = 'rgba(255,255,255,0.08)';
+            btn.style.color = 'var(--text-muted)';
+        }
+    }
+}
+
+async function handleLogin() {
+    if (!supabaseClient) return;
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value.trim();
+
+    if (!email || !password) {
+        alert('Please fill in both fields.');
+        return;
+    }
+
+    try {
+        setSyncBadgeStatus('Logging in...', '#ffde00');
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        
+        showLoggedInUI(data.user.email);
+        setSyncBadgeStatus('Synced', '#34d399');
+        await downloadCloudData(data.user.id);
+    } catch (e) {
+        alert('Login failed: ' + e.message);
+        setSyncBadgeStatus('Failed', 'var(--accent-red)');
+    }
+}
+
+async function handleSignup() {
+    if (!supabaseClient) return;
+    const email = document.getElementById('auth-email').value.trim();
+    const password = document.getElementById('auth-password').value.trim();
+
+    if (!email || !password) {
+        alert('Please fill in both fields.');
+        return;
+    }
+
+    try {
+        setSyncBadgeStatus('Signing up...', '#ffde00');
+        const { data, error } = await supabaseClient.auth.signUp({ email, password });
+        if (error) throw error;
+        
+        alert('Signup successful! If email confirmation is enabled, check your inbox. Otherwise, you can now log in.');
+        showLoggedOutUI();
+    } catch (e) {
+        alert('Signup failed: ' + e.message);
+        setSyncBadgeStatus('Failed', 'var(--accent-red)');
+    }
+}
+
+async function handleLogout() {
+    if (!supabaseClient) return;
+    try {
+        await supabaseClient.auth.signOut();
+        sessionStorage.removeItem('initial_sync_done');
+        showLoggedOutUI();
+        alert('Logged out successfully.');
+    } catch (e) {
+        console.error('Logout failed:', e);
+    }
+}
+
+async function forceSyncData() {
+    if (!supabaseClient) return;
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session && session.user) {
+        setSyncBadgeStatus('Syncing...', '#ffde00');
+        await uploadCloudData(session.user.id);
+    } else {
+        alert('You must be logged in to sync.');
+    }
+}
+
+function scheduleCloudSync() {
+    if (syncTimeout) clearTimeout(syncTimeout);
+    syncTimeout = setTimeout(async () => {
+        if (!supabaseClient) return;
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session && session.user) {
+            setSyncBadgeStatus('Saving...', '#ffde00');
+            await uploadCloudData(session.user.id);
+        }
+    }, 2000);
+}
+
+function setSyncBadgeStatus(text, color) {
+    const badge = document.getElementById('sync-status-badge');
+    if (badge) {
+        badge.innerText = text;
+        badge.style.color = color;
+    }
+}
+
+function getLocalDataPayload() {
+    return {
+        prices: localStorage.getItem('pokemmo_prices'),
+        gyms: localStorage.getItem('pokemmo_gyms'),
+        acquired_nodes: localStorage.getItem('pokemmo_acquired_nodes'),
+        ledger: localStorage.getItem('pokemmo_ledger'),
+        garden: localStorage.getItem('pokemmo_garden'),
+        hunts: localStorage.getItem('pokemmo_hunts'),
+        chores: localStorage.getItem('checked_daily_chores'),
+        badges: localStorage.getItem('completed_story_badges')
+    };
+}
+
+async function uploadCloudData(userId) {
+    try {
+        const payload = getLocalDataPayload();
+        const { error } = await supabaseClient
+            .from('user_data')
+            .upsert({
+                user_id: userId,
+                data: payload,
+                updated_at: new Date().toISOString()
+            });
+
+        if (error) throw error;
+        setSyncBadgeStatus('Synced', '#34d399');
+    } catch (e) {
+        console.error('Cloud upload failed:', e);
+        setSyncBadgeStatus('Sync Failed', 'var(--accent-red)');
+    }
+}
+
+async function downloadCloudData(userId) {
+    try {
+        setSyncBadgeStatus('Downloading...', '#ffde00');
+        const { data, error } = await supabaseClient
+            .from('user_data')
+            .select('data')
+            .eq('user_id', userId)
+            .single();
+
+        if (error && error.code !== 'PGRST116') {
+            throw error;
+        }
+
+        if (data && data.data) {
+            const cloudPayload = data.data;
+            let changesMade = false;
+
+            const keys = ['prices', 'gyms', 'acquired_nodes', 'ledger', 'garden', 'hunts', 'chores', 'badges'];
+            const localKeyMap = {
+                prices: 'pokemmo_prices',
+                gyms: 'pokemmo_gyms',
+                acquired_nodes: 'pokemmo_acquired_nodes',
+                ledger: 'pokemmo_ledger',
+                garden: 'pokemmo_garden',
+                hunts: 'pokemmo_hunts',
+                chores: 'checked_daily_chores',
+                badges: 'completed_story_badges'
+            };
+
+            window.isDownloadingCloudState = true;
+
+            keys.forEach(k => {
+                const cloudVal = cloudPayload[k];
+                const localKey = localKeyMap[k];
+                if (cloudVal && cloudVal !== localStorage.getItem(localKey)) {
+                    localStorage.setItem(localKey, cloudVal);
+                    changesMade = true;
+                }
+            });
+
+            window.isDownloadingCloudState = false;
+
+            if (changesMade) {
+                loadFromStorageAndReInit();
+            }
+        }
+        setSyncBadgeStatus('Synced', '#34d399');
+    } catch (e) {
+        console.error('Cloud download failed:', e);
+        setSyncBadgeStatus('Download Failed', 'var(--accent-red)');
+    }
+}
+
+function loadFromStorageAndReInit() {
+    try {
+        const cachedPrices = localStorage.getItem('pokemmo_prices');
+        if (cachedPrices) prices = JSON.parse(cachedPrices);
+
+        const cachedGyms = localStorage.getItem('pokemmo_gyms');
+        if (cachedGyms) gymReruns = JSON.parse(cachedGyms);
+
+        const cachedNodes = localStorage.getItem('pokemmo_acquired_nodes');
+        if (cachedNodes) acquiredNodes = new Set(JSON.parse(cachedNodes));
+
+        const cachedLedger = localStorage.getItem('pokemmo_ledger');
+        if (cachedLedger) ledgerRecords = JSON.parse(cachedLedger);
+
+        const cachedGarden = localStorage.getItem('pokemmo_garden');
+        if (cachedGarden) gardenCrops = JSON.parse(cachedGarden);
+
+        const cachedHunts = localStorage.getItem('pokemmo_hunts');
+        if (cachedHunts) shinyHunts = JSON.parse(cachedHunts);
+
+        const cachedChores = localStorage.getItem('checked_daily_chores');
+        if (cachedChores) checkedDailyChores = JSON.parse(cachedChores);
+
+        const cachedStory = localStorage.getItem('completed_story_badges');
+        if (cachedStory) completedStoryBadges = JSON.parse(cachedStory);
+
+        calculateAndRenderBreeding();
+        calculateCatchRate();
+        runSimStep();
+        renderMoneyTab();
+        renderStoryTab();
+        renderGymList();
+        renderLedgerTable();
+        renderGardenGrid();
+        renderShinyHuntsList();
+        if (typeof updateStats === 'function') updateStats();
+        if (typeof updateGymStats === 'function') updateGymStats();
+    } catch (e) {
+        console.error('Failed to parse downloaded cloud state:', e);
+    }
+}
+
+const originalSetItem = localStorage.setItem;
+localStorage.setItem = function(key, value) {
+    originalSetItem.apply(this, arguments);
+    if (!window.isDownloadingCloudState) {
+        if (key.startsWith('pokemmo_') || key === 'completed_story_badges' || key === 'checked_daily_chores') {
+            scheduleCloudSync();
+        }
+    }
+};
 

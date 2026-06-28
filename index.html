@@ -6,6 +6,7 @@
     <title>imbuckleyy's PokéMMO Companion Tool</title>
     <meta name="description" content="The ultimate companion app for PokéMMO players. Plan breeds, track gym cooldowns, manage GTL ledgers, cultivate berries, search thief databases, count shiny hunts, analyze PvP speed tiers, plan money making routes, and track story caps.">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -64,6 +65,13 @@
                 <button class="tab-btn" onclick="switchTab('shiny')" id="nav-btn-shiny">Shiny Hunt</button>
                 <button class="tab-btn" onclick="switchTab('story')" id="nav-btn-story">Story Guides</button>
             </nav>
+            
+            <!-- User Sync Section -->
+            <div class="user-section" style="display: flex; align-items: center; gap: 0.5rem;">
+                <button class="btn btn-secondary" onclick="toggleAuthModal()" id="user-profile-btn" style="font-family:'Press Start 2P', monospace; font-size:0.52rem; padding:0.45rem 0.75rem; display:flex; align-items:center; gap:0.4rem; background:rgba(255,255,255,0.03); border-color:rgba(255,255,255,0.08); white-space:nowrap; margin-bottom:0;">
+                    👤 Sync Offline
+                </button>
+            </div>
         </div>
     </header>
 
@@ -971,6 +979,69 @@
         </section>
 
     </main>
+
+    <!-- Auth & Sync Modal -->
+    <div id="auth-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-card" style="max-width: 420px; text-align: left;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <h3 style="font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: var(--primary); margin: 0;">Cloud Sync</h3>
+                <span onclick="toggleAuthModal()" style="cursor: pointer; font-weight: bold; color: var(--text-muted); font-size: 1.2rem;">&times;</span>
+            </div>
+
+            <!-- Configuration Form (URL & Key) -->
+            <div id="auth-config-section" style="display: block; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 1rem; margin-bottom: 1rem;">
+                <h4 style="font-size: 0.75rem; color: #fff; margin-bottom: 0.5rem; font-family:'Press Start 2P', monospace;">Supabase Link</h4>
+                <div class="form-group" style="margin-bottom: 0.6rem;">
+                    <label style="font-size: 0.7rem;">Supabase URL</label>
+                    <input type="text" id="db-url-input" placeholder="https://your-project.supabase.co" style="padding: 0.4rem 0.6rem; font-size: 0.75rem;">
+                </div>
+                <div class="form-group" style="margin-bottom: 0.6rem;">
+                    <label style="font-size: 0.7rem;">Supabase Anon Key</label>
+                    <input type="password" id="db-key-input" placeholder="your-anon-public-key" style="padding: 0.4rem 0.6rem; font-size: 0.75rem;">
+                </div>
+                <button class="btn btn-secondary" onclick="saveDatabaseConfig()" style="width: 100%; padding: 0.45rem; font-size: 0.65rem; font-family:'Press Start 2P', monospace;">
+                    Save Database Config
+                </button>
+            </div>
+
+            <!-- Login / Signup Form -->
+            <div id="auth-login-section" style="display: none;">
+                <div class="form-group" style="margin-bottom: 0.6rem;">
+                    <label style="font-size: 0.7rem;">Email Address</label>
+                    <input type="email" id="auth-email" placeholder="trainer@example.com" style="padding: 0.4rem 0.6rem; font-size: 0.75rem;">
+                </div>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label style="font-size: 0.7rem;">Password</label>
+                    <input type="password" id="auth-password" placeholder="••••••••" style="padding: 0.4rem 0.6rem; font-size: 0.75rem;">
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                    <button class="btn btn-primary" onclick="handleLogin()" style="padding: 0.5rem; font-size: 0.65rem; font-family:'Press Start 2P', monospace; color:#000;">
+                        Log In
+                    </button>
+                    <button class="btn btn-secondary" onclick="handleSignup()" style="padding: 0.5rem; font-size: 0.65rem; font-family:'Press Start 2P', monospace;">
+                        Sign Up
+                    </button>
+                </div>
+            </div>
+
+            <!-- Logged In / Sync Status -->
+            <div id="auth-status-section" style="display: none; text-align: center;">
+                <div style="font-size: 0.8rem; margin-bottom: 1rem; line-height: 1.4;">
+                    Logged in as:<br>
+                    <strong id="auth-user-email" style="color: var(--primary); font-size:0.75rem;"></strong><br>
+                    Status: <span id="sync-status-badge" class="badge-yield" style="background: rgba(16,185,129,0.15); color: #34d399; font-size:0.65rem;">Synced</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
+                    <button class="btn btn-primary" onclick="forceSyncData()" style="padding: 0.5rem; font-size: 0.65rem; font-family:'Press Start 2P', monospace; color:#000;">
+                        Sync Now
+                    </button>
+                    <button class="btn btn-danger" onclick="handleLogout()" style="padding: 0.5rem; font-size: 0.65rem; font-family:'Press Start 2P', monospace;">
+                        Log Out
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="pokemon_db.js"></script>
     <script src="app.js"></script>
