@@ -7,7 +7,7 @@ const { Pool } = require('pg');
 const PORT = process.env.PORT || 3000;
 
 // Setup PostgreSQL pool if connection string exists
-const DB_URL = process.env.DATABASE_URL || 'postgresql://postgres:GTHyiFxpoOwigjsXtMrcPcBXxALKratr@postgres.railway.internal:5432/railway';
+const DB_URL = process.env.DATABASE_URL || 'postgresql://postgres:GTHyiFxpoOwigjsXtMrcPcBXxALKratr@reseau.proxy.rlwy.net:36725/railway';
 
 let pool = null;
 if (DB_URL) {
