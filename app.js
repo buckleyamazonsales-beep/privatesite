@@ -1934,7 +1934,39 @@ function lookupBreedingPokemon(query) {
         return;
     }
 
-    // Direct lookup
+    // List of standard egg groups
+    const EGG_GROUPS = ['monster', 'field', 'dragon', 'water 1', 'water 2', 'water 3', 'bug', 'flying', 'fairy', 'grass', 'human-like', 'mineral', 'amorphous', 'ditto', 'genderless', 'undiscovered'];
+
+    // Check if query is an egg group match
+    const isEggGroupMatch = EGG_GROUPS.find(g => g.includes(normalized) || normalized.includes(g));
+
+    if (isEggGroupMatch) {
+        const groupName = isEggGroupMatch.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        const matchingPkmn = [];
+        Object.keys(POKEMON_BREED_DB).forEach(key => {
+            const pkmn = POKEMON_BREED_DB[key];
+            if (pkmn.groups.some(g => g.toLowerCase() === isEggGroupMatch)) {
+                matchingPkmn.push(pkmn);
+            }
+        });
+
+        resultsDiv.style.display = 'block';
+        resultsDiv.innerHTML = `
+            <div style="font-size: 0.85rem; text-align: left;">
+                <strong style="color: var(--primary); font-size:1.05rem; display:block; margin-bottom:0.4rem;">Egg Group: ${groupName}</strong>
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:0.5rem;">
+                    Found ${matchingPkmn.length} compatible species in this group:
+                </div>
+                <div style="max-height: 180px; overflow-y: auto; font-size: 0.75rem; line-height: 1.6; padding-right: 0.25rem;">
+                    ${matchingPkmn.map(p => `• <strong>${p.name}</strong> (${p.groups.join('/')})`).join('<br>')}
+                </div>
+            </div>
+        `;
+        currentLookupPokemon = null;
+        return;
+    }
+
+    // Direct lookup by species name
     let match = POKEMON_BREED_DB[normalized];
 
     // If no direct lookup, try partial match
@@ -1948,7 +1980,7 @@ function lookupBreedingPokemon(query) {
         resultsDiv.style.display = 'block';
         resultsDiv.innerHTML = `
             <div style="font-size: 0.85rem; color: var(--text-muted); text-align: center;">
-                No matches found. Select Egg Groups manually in the calculator.
+                No matches found. Try species name (e.g. Ralts) or Egg Group (e.g. Field).
             </div>
         `;
         currentLookupPokemon = null;
@@ -1966,7 +1998,6 @@ function lookupBreedingPokemon(query) {
         Object.keys(POKEMON_BREED_DB).forEach(key => {
             const pkmn = POKEMON_BREED_DB[key];
             if (pkmn.name !== match.name && !pkmn.groups.includes('Undiscovered') && pkmn.groups !== 'Genderless') {
-                // Check if shares any group
                 const sharesGroup = pkmn.groups.some(g => targetGroups.includes(g));
                 if (sharesGroup) {
                     partners.push(pkmn);
@@ -1980,7 +2011,7 @@ function lookupBreedingPokemon(query) {
     if (match.groups.includes('Genderless')) {
         partnersHtml = `
             <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--accent-pink);">
-                <strong>Compatible Partners:</strong> Dittoo (Only breeds with Ditto!)
+                <strong>Compatible Partners:</strong> Ditto (Only breeds with Ditto!)
             </div>
         `;
     } else if (match.groups.includes('Undiscovered')) {
@@ -1991,13 +2022,11 @@ function lookupBreedingPokemon(query) {
         `;
     } else {
         const partnerNames = partners.map(p => {
-            // Highlight shared groups
             const groupsStyled = p.groups.map(g => {
                 if (targetGroups.includes(g)) return `<span style="color:var(--accent-green)">${g}</span>`;
                 return g;
             }).join('/');
             
-            // Check if is a dual group bridge (e.g. has another group in addition to the shared one)
             const isBridge = p.groups.length > 1;
             const bridgeIndicator = isBridge ? ' <span style="color:var(--accent-blue); font-size:0.65rem;">[Bridge]</span>' : '';
 
@@ -2007,7 +2036,7 @@ function lookupBreedingPokemon(query) {
         partnersHtml = `
             <div style="margin-top: 0.75rem; border-top: 1px dashed rgba(255,255,255,0.05); padding-top: 0.5rem;">
                 <strong style="font-size:0.8rem; color:#fff; display:block; margin-bottom:0.25rem;">Compatible Partners (Same Egg Group):</strong>
-                <div style="max-height: 120px; overflow-y: auto; font-size: 0.75rem; line-height: 1.5; padding-right: 0.25rem;">
+                <div style="max-height: 150px; overflow-y: auto; font-size: 0.75rem; line-height: 1.5; padding-right: 0.25rem;">
                     ${partnerNames.length > 0 ? partnerNames.join('<br>') : 'Ditto'}
                 </div>
             </div>
@@ -2019,20 +2048,33 @@ function lookupBreedingPokemon(query) {
         applyBtn = `<button class="btn btn-secondary" onclick="applyLookupToCalculator('${match.ratio}')" style="width: 100%; padding: 0.35rem 0.5rem; font-size: 0.75rem; margin-top: 0.75rem;">Apply Ratio to Calc</button>`;
     }
 
+    // Wrap egg groups in links that trigger search by group
+    const groupsHtml = match.groups.map(g => {
+        return `<span style="color:var(--primary); cursor:pointer; text-decoration:underline;" onclick="triggerGroupSearch('${g}')">${g}</span>`;
+    }).join(' / ');
+
     resultsDiv.innerHTML = `
-        <div style="font-size: 0.85rem;">
+        <div style="font-size: 0.85rem; text-align: left;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
                 <strong style="color: var(--primary); font-size:1.05rem;">${match.name}</strong>
                 <span class="badge-scent" style="background:rgba(236,72,153,0.1); color:var(--accent-pink)">${match.ratioText || match.ratio}</span>
             </div>
             <div>
-                • <strong>Egg Group(s):</strong> ${match.groups.join(' / ')}<br>
+                • <strong>Egg Group(s):</strong> ${groupsHtml}<br>
                 • <strong>Breeding Advice:</strong> ${match.note}
             </div>
             ${partnersHtml}
             ${applyBtn}
         </div>
     `;
+}
+
+function triggerGroupSearch(groupName) {
+    const input = document.getElementById('breed-lookup-input');
+    if (input) {
+        input.value = groupName;
+        lookupBreedingPokemon(groupName);
+    }
 }
 
 function applyLookupToCalculator(ratio) {
