@@ -1,4 +1,4 @@
-// PokéMMO All-in-One Companion Tool Logic
+﻿// PokÃ©MMO All-in-One Companion Tool Logic
 
 // ==========================================
 // 1. STATE & LOCAL STORAGE
@@ -127,7 +127,7 @@ function updateGymStats() {
     });
 
     document.getElementById('gym-count').innerText = `${completedCount} / ${GYM_LEADERS.length}`;
-    document.getElementById('gym-earnings').innerText = `${totalEarned.toLocaleString()} ¥`;
+    document.getElementById('gym-earnings').innerText = `${totalEarned.toLocaleString()} Â¥`;
 }
 
 function toggleGym(gymId, checked) {
@@ -182,7 +182,7 @@ function renderGymList() {
                 </div>
                 <span class="gym-type-badge type-${gym.type}">${gym.type}</span>
             </div>
-            <div class="gym-payout">${estPayout.toLocaleString()} ¥</div>
+            <div class="gym-payout">${estPayout.toLocaleString()} Â¥</div>
             <div class="gym-footer">
                 ${timerHtml}
                 <input type="checkbox" class="gym-checkbox" ${isOnCooldown ? 'checked' : ''} onchange="toggleGym('${gym.id}', this.checked)">
@@ -219,9 +219,9 @@ function calculateLedgerTaxPreview() {
         estProfit = (sellPrice * qty) - (buyPrice * qty) - totalFee;
     }
 
-    document.getElementById('ledger-fee-preview').innerText = `${totalFee.toLocaleString()} ¥`;
+    document.getElementById('ledger-fee-preview').innerText = `${totalFee.toLocaleString()} Â¥`;
     const profitEl = document.getElementById('ledger-profit-preview');
-    profitEl.innerText = `${estProfit.toLocaleString()} ¥`;
+    profitEl.innerText = `${estProfit.toLocaleString()} Â¥`;
     if (estProfit >= 0) {
         profitEl.className = 'net-profit-pos';
     } else {
@@ -311,15 +311,15 @@ function updateLedgerPortfolio() {
     });
 
     const profitEl = document.getElementById('ledger-total-profit');
-    profitEl.innerText = `${totalProfit.toLocaleString()} ¥`;
+    profitEl.innerText = `${totalProfit.toLocaleString()} Â¥`;
     if (totalProfit >= 0) {
         profitEl.className = 'ledger-stat-val net-profit-pos';
     } else {
         profitEl.className = 'ledger-stat-val net-profit-neg';
     }
 
-    document.getElementById('ledger-total-escrow').innerText = `${totalEscrow.toLocaleString()} ¥`;
-    document.getElementById('ledger-total-fees').innerText = `${totalFees.toLocaleString()} ¥`;
+    document.getElementById('ledger-total-escrow').innerText = `${totalEscrow.toLocaleString()} Â¥`;
+    document.getElementById('ledger-total-fees').innerText = `${totalFees.toLocaleString()} Â¥`;
 
     let avgRoi = 0;
     if (totalInvestment > 0) {
@@ -353,10 +353,10 @@ function renderLedgerTable() {
         tr.innerHTML = `
             <td><strong>${r.name}</strong></td>
             <td>${r.qty}</td>
-            <td>${(r.buy * r.qty).toLocaleString()} ¥</td>
-            <td>${r.status === 'cancelled' ? '-' : (r.sell * r.qty).toLocaleString() + ' ¥'}</td>
-            <td style="color: var(--accent-red);">${r.fee.toLocaleString()} ¥</td>
-            <td class="${netProfit >= 0 ? 'net-profit-pos' : 'net-profit-neg'}">${netProfit.toLocaleString()} ¥</td>
+            <td>${(r.buy * r.qty).toLocaleString()} Â¥</td>
+            <td>${r.status === 'cancelled' ? '-' : (r.sell * r.qty).toLocaleString() + ' Â¥'}</td>
+            <td style="color: var(--accent-red);">${r.fee.toLocaleString()} Â¥</td>
+            <td class="${netProfit >= 0 ? 'net-profit-pos' : 'net-profit-neg'}">${netProfit.toLocaleString()} Â¥</td>
             <td>${statusBadge}</td>
             <td>
                 <button class="btn btn-secondary" onclick="deleteLedgerRecord('${r.id}')" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;">Delete</button>
@@ -388,7 +388,7 @@ const BERRY_RECIPES = {
         water: 'Water every 18-20 Hours',
         waterMs: 19 * 60 * 60 * 1000,
         yield: '7 - 9 Berries',
-        notes: 'Can be sold directly to Pokemart vendors for a guaranteed 800 ¥ each. Stable cash maker.'
+        notes: 'Can be sold directly to Pokemart vendors for a guaranteed 800 Â¥ each. Stable cash maker.'
     },
     lum: {
         name: 'Lum Berry (Status Cure)',
@@ -469,10 +469,10 @@ function renderBerryRecipeDetails(val) {
         <div style="font-size: 0.95rem;">
             <strong style="color: var(--primary); font-size: 1.05rem;">${details.name}</strong><br>
             <div style="margin-top: 0.5rem;">
-                • <strong>Recipe:</strong> ${details.seeds}<br>
-                • <strong>Growth Time:</strong> ${details.growth}<br>
-                • <strong>Water Rate:</strong> ${details.water}<br>
-                • <strong>Expected Yield:</strong> ${details.yield}
+                â€¢ <strong>Recipe:</strong> ${details.seeds}<br>
+                â€¢ <strong>Growth Time:</strong> ${details.growth}<br>
+                â€¢ <strong>Water Rate:</strong> ${details.water}<br>
+                â€¢ <strong>Expected Yield:</strong> ${details.yield}
             </div>
             <div style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted); border-top: 1px dashed rgba(255,255,255,0.05); padding-top: 0.5rem;">
                 ${details.notes}
@@ -652,7 +652,7 @@ setInterval(() => {
 // ==========================================
 const THIEF_ITEMS = [
     // Kanto
-    { name: 'Amulet Coin', type: 'valuable', region: 'Kanto', holder: 'Meowth', rate: 'Rare (5% hold rate)', location: 'Route 5 / Route 8 / Bond Bridge', tips: 'Crucial for Gym reruns. Sells on GTL for ~18k-20k ¥. Use Frisk + Thief.' },
+    { name: 'Amulet Coin', type: 'valuable', region: 'Kanto', holder: 'Meowth', rate: 'Rare (5% hold rate)', location: 'Route 5 / Route 8 / Bond Bridge', tips: 'Crucial for Gym reruns. Sells on GTL for ~18k-20k Â¥. Use Frisk + Thief.' },
     { name: 'Lucky Egg (Small)', type: 'valuable', region: 'Kanto', holder: 'Chansey', rate: 'Rare (5% hold rate)', location: 'Safari Zone', tips: 'Increases EXP gain by 1.5x. Good market value.' },
     { name: 'Light Ball', type: 'held', region: 'Kanto', holder: 'Pikachu', rate: 'Rare (5% hold rate)', location: 'Viridian Forest / Power Plant', tips: 'Doubles Pikachu\'s Attack and Sp. Atk.' },
     { name: 'Tiny Mushroom', type: 'valuable', region: 'Kanto', holder: 'Paras', rate: 'Common (50% hold rate)', location: 'Mt. Moon', tips: 'Can be sold to NPCs or used to relearn moves.' },
@@ -685,7 +685,7 @@ const PICKUP_TABLES = {
         "91_100": [
             { item: 'Leftovers', rarity: 'Very Rare', chance: '1%', val: 'Valuable', note: 'Top-tier pickup item. High GTL value.' },
             { item: 'PP Up', rarity: 'Rare', chance: '3%', val: 'Valuable', note: 'Increases max move PP.' },
-            { item: 'Rare Candy', rarity: 'Rare', chance: '4%', val: 'Valuable', note: 'Levels up Pokémon.' },
+            { item: 'Rare Candy', rarity: 'Rare', chance: '4%', val: 'Valuable', note: 'Levels up PokÃ©mon.' },
             { item: 'King\'s Rock', rarity: 'Rare', chance: '5%', val: 'Held Item', note: 'Enables flinching / evolves Slowpoke.' },
             { item: 'Everstone', rarity: 'Uncommon', chance: '10%', val: 'Breeding', note: 'Locks nature.' },
             { item: 'Ultra Ball', rarity: 'Common', chance: '15%', val: 'Consumable', note: 'High catch multiplier.' },
@@ -695,21 +695,21 @@ const PICKUP_TABLES = {
         ],
         "81_90": [
             { item: 'PP Up', rarity: 'Very Rare', chance: '2%', val: 'Valuable', note: 'High value drop.' },
-            { item: 'Rare Candy', rarity: 'Rare', chance: '4%', val: 'Valuable', note: 'Levels up Pokémon.' },
+            { item: 'Rare Candy', rarity: 'Rare', chance: '4%', val: 'Valuable', note: 'Levels up PokÃ©mon.' },
             { item: 'Full Restore', rarity: 'Uncommon', chance: '10%', val: 'Consumable', note: 'Full recovery.' },
             { item: 'Hyper Potion', rarity: 'Common', chance: '34%', val: 'Consumable', note: 'Health recovery.' },
             { item: 'Full Heal', rarity: 'Common', chance: '50%', val: 'Consumable', note: 'Status heal.' }
         ],
         "1_10": [
             { item: 'Potion', rarity: 'Common', chance: '40%', val: 'Consumable', note: 'Low level healing.' },
-            { item: 'Poké Ball', rarity: 'Common', chance: '30%', val: 'Consumable', note: 'Basic ball.' },
+            { item: 'PokÃ© Ball', rarity: 'Common', chance: '30%', val: 'Consumable', note: 'Basic ball.' },
             { item: 'Antidote', rarity: 'Common', chance: '20%', val: 'Consumable', note: 'Poison remedy.' },
             { item: 'Oran Berry', rarity: 'Uncommon', chance: '8%', val: 'Berry', note: 'Basic berry.' },
             { item: 'Rare Candy', rarity: 'Very Rare', chance: '2%', val: 'Valuable', note: 'Rare drop at low levels.' }
         ]
     },
     hoenn: {
-        // Hoenn is identical to Kanto in PokéMMO
+        // Hoenn is identical to Kanto in PokÃ©MMO
     },
     sinnoh: {
         "91_100": [
@@ -717,7 +717,7 @@ const PICKUP_TABLES = {
             { item: 'Dusk Stone', rarity: 'Very Rare', chance: '2%', val: 'Evolution', note: 'Used to evolve Murkrow, Misdreavus.' },
             { item: 'Dawn Stone', rarity: 'Very Rare', chance: '2%', val: 'Evolution', note: 'Used to evolve Kirlia (M), Snorunt (F).' },
             { item: 'PP Up', rarity: 'Rare', chance: '4%', val: 'Valuable', note: 'Increases max move PP.' },
-            { item: 'Rare Candy', rarity: 'Rare', chance: '5%', val: 'Valuable', note: 'Levels up Pokémon.' },
+            { item: 'Rare Candy', rarity: 'Rare', chance: '5%', val: 'Valuable', note: 'Levels up PokÃ©mon.' },
             { item: 'Everstone', rarity: 'Uncommon', chance: '10%', val: 'Breeding', note: 'Locks nature.' },
             { item: 'Ultra Ball', rarity: 'Common', chance: '15%', val: 'Consumable', note: 'Catch ball.' },
             { item: 'Full Restore', rarity: 'Common', chance: '20%', val: 'Consumable', note: 'Full recovery.' },
@@ -725,13 +725,13 @@ const PICKUP_TABLES = {
         ],
         "81_90": [
             { item: 'Dusk Stone', rarity: 'Very Rare', chance: '2%', val: 'Evolution', note: 'Evolves specific Ghost/Dark types.' },
-            { item: 'Rare Candy', rarity: 'Rare', chance: '5%', val: 'Valuable', note: 'Levels up Pokémon.' },
+            { item: 'Rare Candy', rarity: 'Rare', chance: '5%', val: 'Valuable', note: 'Levels up PokÃ©mon.' },
             { item: 'Hyper Potion', rarity: 'Common', chance: '43%', val: 'Consumable', note: 'Health recovery.' },
             { item: 'Full Heal', rarity: 'Common', chance: '50%', val: 'Consumable', note: 'Status heal.' }
         ],
         "1_10": [
             { item: 'Potion', rarity: 'Common', chance: '40%', val: 'Consumable', note: 'Low level healing.' },
-            { item: 'Poké Ball', rarity: 'Common', chance: '30%', val: 'Consumable', note: 'Basic ball.' },
+            { item: 'PokÃ© Ball', rarity: 'Common', chance: '30%', val: 'Consumable', note: 'Basic ball.' },
             { item: 'Oran Berry', rarity: 'Uncommon', chance: '18%', val: 'Berry', note: 'Basic berry.' },
             { item: 'Rare Candy', rarity: 'Very Rare', chance: '12%', val: 'Valuable', note: 'Rare drop.' }
         ]
@@ -741,7 +741,7 @@ const PICKUP_TABLES = {
             { item: 'Prism Scale', rarity: 'Very Rare', chance: '2%', val: 'Evolution', note: 'Used to evolve Feebas into Milotic.' },
             { item: 'PP Max', rarity: 'Very Rare', chance: '1%', val: 'Valuable', note: 'Maxes out move PP. High GTL value.' },
             { item: 'King\'s Rock', rarity: 'Rare', chance: '5%', val: 'Held Item', note: 'Enables flinching.' },
-            { item: 'Rare Candy', rarity: 'Rare', chance: '7%', val: 'Valuable', note: 'Levels up Pokémon.' },
+            { item: 'Rare Candy', rarity: 'Rare', chance: '7%', val: 'Valuable', note: 'Levels up PokÃ©mon.' },
             { item: 'PP Up', rarity: 'Rare', chance: '5%', val: 'Valuable', note: 'Increases max move PP.' },
             { item: 'Everstone', rarity: 'Uncommon', chance: '10%', val: 'Breeding', note: 'Locks nature.' },
             { item: 'Ultra Ball', rarity: 'Common', chance: '15%', val: 'Consumable', note: 'Catch ball.' },
@@ -756,7 +756,7 @@ const PICKUP_TABLES = {
         ],
         "1_10": [
             { item: 'Potion', rarity: 'Common', chance: '40%', val: 'Consumable', note: 'Healing.' },
-            { item: 'Poké Ball', rarity: 'Common', chance: '30%', val: 'Consumable', note: 'Basic ball.' },
+            { item: 'PokÃ© Ball', rarity: 'Common', chance: '30%', val: 'Consumable', note: 'Basic ball.' },
             { item: 'Tiny Mushroom', rarity: 'Uncommon', chance: '20%', val: 'Valuable', note: 'Sell to NPC.' },
             { item: 'Rare Candy', rarity: 'Very Rare', chance: '10%', val: 'Valuable', note: 'Rare drop.' }
         ]
@@ -781,7 +781,7 @@ const PICKUP_TABLES = {
         ],
         "1_10": [
             { item: 'Potion', rarity: 'Common', chance: '40%', val: 'Consumable', note: 'Healing.' },
-            { item: 'Poké Ball', rarity: 'Common', chance: '30%', val: 'Consumable', note: 'Basic ball.' },
+            { item: 'PokÃ© Ball', rarity: 'Common', chance: '30%', val: 'Consumable', note: 'Basic ball.' },
             { item: 'Escape Rope', rarity: 'Uncommon', chance: '20%', val: 'Consumable', note: 'Escape cave.' },
             { item: 'Rare Candy', rarity: 'Very Rare', chance: '10%', val: 'Valuable', note: 'Rare drop.' }
         ]
@@ -882,7 +882,7 @@ function getShinyHuntProbability(encounters) {
 }
 
 function createNewShinyHunt() {
-    const pkmn = document.getElementById('shiny-hunt-pokemon').value || 'Unknown Pokémon';
+    const pkmn = document.getElementById('shiny-hunt-pokemon').value || 'Unknown PokÃ©mon';
     const method = document.getElementById('shiny-hunt-method').value;
     const initial = parseInt(document.getElementById('shiny-hunt-initial').value) || 0;
 
@@ -960,7 +960,7 @@ function renderShinyHunts() {
     if (shinyHunts.length === 0) {
         grid.innerHTML = `
             <div style="padding: 3rem; text-align: center; color: var(--text-muted); width: 100%;">
-                No active hunts. Set up a target Pokémon above to begin tracking!
+                No active hunts. Set up a target PokÃ©mon above to begin tracking!
             </div>
         `;
         return;
@@ -1333,7 +1333,7 @@ function calculateAndRenderBreeding() {
                 Select at least one 31 IV or toggle Nature to generate a breeding tree.
             </div>
         `;
-        document.getElementById('total-breeding-cost').innerText = '0 ¥';
+        document.getElementById('total-breeding-cost').innerText = '0 Â¥';
         document.getElementById('total-parents-needed').innerText = '0 parents';
         document.getElementById('breeding-summary-details').innerHTML = 'Select stats to calculate required items.';
         return;
@@ -1376,7 +1376,7 @@ function calculateAndRenderBreeding() {
     }
     countNodes(root);
 
-    document.getElementById('total-breeding-cost').innerText = `${root.cost.toLocaleString()} ¥`;
+    document.getElementById('total-breeding-cost').innerText = `${root.cost.toLocaleString()} Â¥`;
     let parentsText = `${rawParents} regular parent${rawParents !== 1 ? 's' : ''}`;
     let dittoSum = Object.values(dittosCount).reduce((a, b) => a + b, 0);
     if (dittoSum > 0) parentsText += ` + ${dittoSum} Ditto${dittoSum !== 1 ? 's' : ''}`;
@@ -1386,22 +1386,22 @@ function calculateAndRenderBreeding() {
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.85rem;">
             <div>
                 <strong style="color: var(--primary);">Required Items:</strong><br>
-                • ${powerItems}x Power Items (${(powerItems * prices.powerItem).toLocaleString()} ¥)<br>
-                • ${everstones}x Everstones (${(everstones * prices.everstone).toLocaleString()} ¥)
+                â€¢ ${powerItems}x Power Items (${(powerItems * prices.powerItem).toLocaleString()} Â¥)<br>
+                â€¢ ${everstones}x Everstones (${(everstones * prices.everstone).toLocaleString()} Â¥)
             </div>
             <div>
                 <strong style="color: var(--accent-blue);">Raw Parent Breakdown:</strong><br>
-                • ${rawParents}x Species Parents (${(rawParents * prices.rawParent).toLocaleString()} ¥)<br>
+                â€¢ ${rawParents}x Species Parents (${(rawParents * prices.rawParent).toLocaleString()} Â¥)<br>
     `;
     if (dittoSum > 0) {
-        detailsHtml += `• Dittos: `;
+        detailsHtml += `â€¢ Dittos: `;
         let dittoDetails = [];
-        if (dittosCount['nature'] > 0) dittoDetails.push(`${dittosCount['nature']}x Nature (${(dittosCount['nature'] * prices.dittoNature).toLocaleString()} ¥)`);
-        if (dittosCount['1x'] > 0) dittoDetails.push(`${dittosCount['1x']}x 1x31 (${(dittosCount['1x'] * prices.ditto1x).toLocaleString()} ¥)`);
-        if (dittosCount['2x'] > 0) dittoDetails.push(`${dittosCount['2x']}x 2x31 (${(dittosCount['2x'] * prices.ditto2x).toLocaleString()} ¥)`);
-        if (dittosCount['3x'] > 0) dittoDetails.push(`${dittosCount['3x']}x 3x31 (${(dittosCount['3x'] * prices.ditto3x).toLocaleString()} ¥)`);
-        if (dittosCount['4x'] > 0) dittoDetails.push(`${dittosCount['4x']}x 4x31 (${(dittosCount['4x'] * prices.ditto4x).toLocaleString()} ¥)`);
-        if (dittosCount['5x'] > 0) dittoDetails.push(`${dittosCount['5x']}x 5x31 (${(dittosCount['5x'] * prices.ditto5x).toLocaleString()} ¥)`);
+        if (dittosCount['nature'] > 0) dittoDetails.push(`${dittosCount['nature']}x Nature (${(dittosCount['nature'] * prices.dittoNature).toLocaleString()} Â¥)`);
+        if (dittosCount['1x'] > 0) dittoDetails.push(`${dittosCount['1x']}x 1x31 (${(dittosCount['1x'] * prices.ditto1x).toLocaleString()} Â¥)`);
+        if (dittosCount['2x'] > 0) dittoDetails.push(`${dittosCount['2x']}x 2x31 (${(dittosCount['2x'] * prices.ditto2x).toLocaleString()} Â¥)`);
+        if (dittosCount['3x'] > 0) dittoDetails.push(`${dittosCount['3x']}x 3x31 (${(dittosCount['3x'] * prices.ditto3x).toLocaleString()} Â¥)`);
+        if (dittosCount['4x'] > 0) dittoDetails.push(`${dittosCount['4x']}x 4x31 (${(dittosCount['4x'] * prices.ditto4x).toLocaleString()} Â¥)`);
+        if (dittosCount['5x'] > 0) dittoDetails.push(`${dittosCount['5x']}x 5x31 (${(dittosCount['5x'] * prices.ditto5x).toLocaleString()} Â¥)`);
         detailsHtml += dittoDetails.join(', ') + '<br>';
     }
     detailsHtml += `</div></div>`;
@@ -1420,7 +1420,7 @@ function setupPricesPanel() {
             labelText = `Ditto ${key.replace('ditto', '')} IV`;
         }
         formGroup.innerHTML = `
-            <label style="margin-bottom:0.25rem">${labelText} (¥)</label>
+            <label style="margin-bottom:0.25rem">${labelText} (Â¥)</label>
             <input type="number" id="price-input-${key}" value="${prices[key]}" onchange="updatePriceValue('${key}', this.value)" style="padding:0.4rem 0.6rem">
         `;
         container.appendChild(formGroup);
@@ -1478,7 +1478,7 @@ function calculateCatchRate() {
 
     const infoText = document.getElementById('catch-calc-info');
     let avgThrows = Math.round(100 / finalProbability * 10) / 10;
-    if (finalProbability === 0) avgThrows = '∞';
+    if (finalProbability === 0) avgThrows = 'âˆž';
     
     infoText.innerHTML = `
         Estimated Max HP: <strong>${estMaxHp}</strong> | Current HP: <strong>${estCurrentHp}</strong><br>
@@ -1694,6 +1694,14 @@ window.addEventListener('DOMContentLoaded', () => {
     renderMoneyTab();
     renderStoryTab();
 
+    // Initialize GTL Tools
+    if (typeof renderGtlWatchlist === 'function') {
+        renderGtlWatchlist();
+        renderGtlTrendFilters();
+        renderGtlTrends();
+        renderGtlSearches();
+    }
+
     // Initialize Supabase Cloud Sync
     if (typeof initSupabase === 'function') {
         initSupabase();
@@ -1701,7 +1709,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
-// 11. POKÉMON BREEDING EGG GROUP DATABASE & LOOKUP
+// 11. POKÃ‰MON BREEDING EGG GROUP DATABASE & LOOKUP
 // ==========================================
 
 let currentLookupPokemon = null;
@@ -1741,7 +1749,7 @@ function lookupBreedingPokemon(query) {
                     Found ${matchingPkmn.length} compatible species in this group:
                 </div>
                 <div style="max-height: 180px; overflow-y: auto; font-size: 0.75rem; line-height: 1.6; padding-right: 0.25rem;">
-                    ${matchingPkmn.map(p => `• <strong>${p.name}</strong> (${p.groups.join('/')})`).join('<br>')}
+                    ${matchingPkmn.map(p => `â€¢ <strong>${p.name}</strong> (${p.groups.join('/')})`).join('<br>')}
                 </div>
             </div>
         `;
@@ -1800,7 +1808,7 @@ function lookupBreedingPokemon(query) {
     } else if (match.groups.includes('Undiscovered')) {
         partnersHtml = `
             <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--accent-red);">
-                <strong>Compatible Partners:</strong> None (Baby Pokémon cannot breed).
+                <strong>Compatible Partners:</strong> None (Baby PokÃ©mon cannot breed).
             </div>
         `;
     } else {
@@ -1813,7 +1821,7 @@ function lookupBreedingPokemon(query) {
             const isBridge = p.groups.length > 1;
             const bridgeIndicator = isBridge ? ' <span style="color:var(--accent-blue); font-size:0.65rem;">[Bridge]</span>' : '';
 
-            return `• <strong>${p.name}</strong> (${groupsStyled})${bridgeIndicator}`;
+            return `â€¢ <strong>${p.name}</strong> (${groupsStyled})${bridgeIndicator}`;
         });
 
         partnersHtml = `
@@ -1843,8 +1851,8 @@ function lookupBreedingPokemon(query) {
                 <span class="badge-scent" style="background:rgba(236,72,153,0.1); color:var(--accent-pink)">${match.ratioText || match.ratio}</span>
             </div>
             <div>
-                • <strong>Egg Group(s):</strong> ${groupsHtml}<br>
-                • <strong>Breeding Advice:</strong> ${match.note}
+                â€¢ <strong>Egg Group(s):</strong> ${groupsHtml}<br>
+                â€¢ <strong>Breeding Advice:</strong> ${match.note}
             </div>
             ${partnersHtml}
             ${applyBtn}
@@ -1903,7 +1911,7 @@ function runSimStep() {
         // Warning: stats will be lost
         html += `
             <div style="background: rgba(239, 68, 68, 0.05); border: 1px solid rgba(239, 68, 68, 0.25); border-radius: 8px; padding: 0.75rem; color: #f87171;">
-                <strong style="font-size: 0.95rem; display: block; margin-bottom: 0.25rem;">⚠️ Warning: Stat Loss Detected!</strong>
+                <strong style="font-size: 0.95rem; display: block; margin-bottom: 0.25rem;">âš ï¸ Warning: Stat Loss Detected!</strong>
                 You selected ${totalDiff} differing stats (Parent: ${diffParent.join('/') || 'none'} vs Partner: ${diffPartner.join('/') || 'none'}).<br><br>
                 Because you can only lock **two stats** with Power Items, you cannot lock all differing stats. Unlocked stats will be averaged, and you will lose them.<br><br>
                 <strong>Recommendation:</strong> Your partner must share the same base stats and have at most one new differing stat.
@@ -1932,10 +1940,10 @@ function runSimStep() {
 
         html += `
             <div style="background: rgba(16, 185, 129, 0.04); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: 10px; padding: 0.75rem; margin-bottom: 0.75rem; color: #fff;">
-                <strong style="color: var(--accent-green); font-size: 0.95rem; display: block; margin-bottom: 0.4rem;">✅ Valid Daycare Breed</strong>
-                • Parent A holds: <strong style="color:#fbbf24">${itemParent}</strong><br>
-                • Partner holds: <strong style="color:#fbbf24">${itemPartner}</strong><br>
-                • Resulting Baby: <span class="badge-yield" style="background:rgba(16,185,129,0.15); color:#34d399; font-size:0.75rem;">${babyStats.length}x31 (${babyStats.join('/')})</span><br>
+                <strong style="color: var(--accent-green); font-size: 0.95rem; display: block; margin-bottom: 0.4rem;">âœ… Valid Daycare Breed</strong>
+                â€¢ Parent A holds: <strong style="color:#fbbf24">${itemParent}</strong><br>
+                â€¢ Partner holds: <strong style="color:#fbbf24">${itemPartner}</strong><br>
+                â€¢ Resulting Baby: <span class="badge-yield" style="background:rgba(16,185,129,0.15); color:#34d399; font-size:0.75rem;">${babyStats.length}x31 (${babyStats.join('/')})</span><br>
                 <span style="font-size:0.75rem; color:var(--text-muted); font-style:italic; display:block; margin-top:0.4rem;">
                     * Shared stats (${sharedStats.join('/') || 'none'}) pass down naturally because both parents have them.
                 </span>
@@ -1981,19 +1989,19 @@ const FARMING_METHODS_DATA = [
     {
         title: 'Ditto Catching (Desert Underpass)',
         region: 'Hoenn',
-        yield: '180,000 - 240,000 ¥ / hr',
+        yield: '180,000 - 240,000 Â¥ / hr',
         desc: 'Catch Dittos using a level 100 Smeargle with False Swipe, Spore, and Substitute. Keep boxes of "Shittos" to sell in bulk or GTL list nature/31-IV matches.'
     },
     {
         title: 'Thief Farming (Heart Scales / Everstones)',
         region: 'Hoenn / Sinnoh / Kanto',
-        yield: '140,000 - 180,000 ¥ / hr',
-        desc: 'Use a Banette or Covet/Thief Pokémon with Frisk ability. Thief Luvdiscs (Route 128) for Heart Scales, or Roggenrola/Geodudes for Everstones.'
+        yield: '140,000 - 180,000 Â¥ / hr',
+        desc: 'Use a Banette or Covet/Thief PokÃ©mon with Frisk ability. Thief Luvdiscs (Route 128) for Heart Scales, or Roggenrola/Geodudes for Everstones.'
     },
     {
         title: 'Pay Day / Pickup Farming',
         region: 'Kanto (Cape Brink) / Johto',
-        yield: '90,000 - 130,000 ¥ / hr',
+        yield: '90,000 - 130,000 Â¥ / hr',
         desc: 'Run a Level 100 Meowth with Pickup ability and Pay Day. Grind low-tier wild encounters to gain direct Yen + passive Pickup drops (PP Up, Oran).'
     }
 ];
@@ -2059,18 +2067,18 @@ function renderMoneyTab() {
                 </div>
             </div>
             <div style="text-align:right; min-width:110px;">
-                <span style="color:var(--primary); font-weight:700; font-size:0.9rem;">+${chore.reward.toLocaleString()} ¥</span><br>
+                <span style="color:var(--primary); font-weight:700; font-size:0.9rem;">+${chore.reward.toLocaleString()} Â¥</span><br>
                 <span style="font-size:0.7rem; color:var(--text-muted);">${chore.time} hours</span>
             </div>
         `;
         container.appendChild(div);
     });
 
-    document.getElementById('daily-earned-total').innerText = `${totalEarned.toLocaleString()} ¥`;
+    document.getElementById('daily-earned-total').innerText = `${totalEarned.toLocaleString()} Â¥`;
     document.getElementById('daily-time-spent').innerText = `${totalTime.toFixed(2)} hrs`;
     
     const efficiency = totalTime > 0 ? Math.round(totalEarned / totalTime) : 0;
-    document.getElementById('daily-hourly-efficiency').innerText = `${efficiency.toLocaleString()} ¥ / hr`;
+    document.getElementById('daily-hourly-efficiency').innerText = `${efficiency.toLocaleString()} Â¥ / hr`;
 
     const farmingContainer = document.getElementById('farming-methods-container');
     if (!farmingContainer) return;
@@ -2132,17 +2140,17 @@ const REGIONAL_STORY_DB = {
             ]
         },
         storyline: [
-            { step: '1. Starter & Oak\'s Parcel', desc: 'Acquire your starter Pokémon at Pallet Town. Head north to Viridian City, collect Oak\'s Parcel from the Poké Mart, and deliver it back to Oak to obtain your Pokédex and 5 Poké Balls.' },
+            { step: '1. Starter & Oak\'s Parcel', desc: 'Acquire your starter PokÃ©mon at Pallet Town. Head north to Viridian City, collect Oak\'s Parcel from the PokÃ© Mart, and deliver it back to Oak to obtain your PokÃ©dex and 5 PokÃ© Balls.' },
             { step: '2. Viridian Forest & Brock', desc: 'Travel north through Route 2 and enter Viridian Forest. Grind levels on bugs if needed, then reach Pewter City. Defeat Gym Leader Brock (Rock type) using Water/Grass moves. (Obedience cap increases to Level 20).' },
-            { step: '3. Mt. Moon & Fossil Selection', desc: 'Buy the Level 5 Magikarp at the Route 4 Pokémon Center for 500¥ (essential for Gyarados physical sweeper!). Navigate through Mt. Moon, clear out Team Rocket grunts, and choose either the Dome or Helix Fossil.' },
+            { step: '3. Mt. Moon & Fossil Selection', desc: 'Buy the Level 5 Magikarp at the Route 4 PokÃ©mon Center for 500Â¥ (essential for Gyarados physical sweeper!). Navigate through Mt. Moon, clear out Team Rocket grunts, and choose either the Dome or Helix Fossil.' },
             { step: '4. Nugget Bridge & Misty', desc: 'Arrive in Cerulean City. Head north, defeat your Rival, and clear Nugget Bridge. Save Bill at Route 25 to receive the S.S. Ticket. Return to Cerulean and defeat Misty (Water type) using Grass/Electric moves. (Obedience cap: Level 26).' },
             { step: '5. S.S. Anne & Lt. Surge', desc: 'Walk south through the Underground Path to Vermilion City. Board the S.S. Anne, battle trainers for EXP, and assist the seasick Captain to get HM01 Cut. Teach it to clear the bush to Lt. Surge\'s Gym. Defeat Surge (Electric type) using Ground moves. (Obedience cap: Level 32).' },
-            { step: '6. Rock Tunnel & Pokémon Tower', desc: 'Go east to Route 9, enter Rock Tunnel (HM05 Flash is optional but helpful; you can navigate in the dark). Reach Lavender Town and scale the Pokémon Tower until you get blocked by the ghost. Travel west to Celadon City.' },
+            { step: '6. Rock Tunnel & PokÃ©mon Tower', desc: 'Go east to Route 9, enter Rock Tunnel (HM05 Flash is optional but helpful; you can navigate in the dark). Reach Lavender Town and scale the PokÃ©mon Tower until you get blocked by the ghost. Travel west to Celadon City.' },
             { step: '7. Rocket Hideout & Erika', desc: 'In Celadon City, clear Erika\'s Gym (Grass type) using Fire/Flying moves (Obedience cap: Level 37). Visit the Game Corner, press the poster switch, and clear the Rocket Hideout under the building. Defeat Giovanni to get the Silph Scope.' },
-            { step: '8. Ghost Marowak & Poké Flute', desc: 'Return to Lavender Town with the Silph Scope. Ascend Pokémon Tower, soothe the ghost of Marowak, and defeat Team Rocket at the top. Speak to Mr. Fuji to get the Poké Flute. Wake up the sleeping Snorlax on Route 12 or 16.' },
+            { step: '8. Ghost Marowak & PokÃ© Flute', desc: 'Return to Lavender Town with the Silph Scope. Ascend PokÃ©mon Tower, soothe the ghost of Marowak, and defeat Team Rocket at the top. Speak to Mr. Fuji to get the PokÃ© Flute. Wake up the sleeping Snorlax on Route 12 or 16.' },
             { step: '9. Silph Co. & Sabrina', desc: 'Gain entry to Saffron City. Enter the Silph Co. building, navigate the teleporter pads, defeat your Rival, and clear Giovanni to get the Master Ball. Defeat Sabrina (Psychic type) using Bug/Ghost/Dark moves. (Obedience cap: Level 47).' },
             { step: '10. Safari Zone & Koga', desc: 'Travel south to Fuchsia City. Enter the Safari Zone, locate the Warden\'s Gold Teeth and HM03 Surf. Give the teeth to the Warden to get HM04 Strength. Defeat Koga (Poison type) using Psychic/Ground moves. (Obedience cap: Level 46).' },
-            { step: '11. Cinnabar Mansion & Blaine', desc: 'Surf south from Pallet Town or Fuchsia City to Cinnabar Island. Search the Pokémon Mansion to find the Secret Key. Unlock Cinnabar Gym and defeat Blaine (Fire type) using Water/Ground/Rock moves. (Obedience cap: Level 50).' },
+            { step: '11. Cinnabar Mansion & Blaine', desc: 'Surf south from Pallet Town or Fuchsia City to Cinnabar Island. Search the PokÃ©mon Mansion to find the Secret Key. Unlock Cinnabar Gym and defeat Blaine (Fire type) using Water/Ground/Rock moves. (Obedience cap: Level 50).' },
             { step: '12. Viridian Gym & Giovanni', desc: 'Go back to Viridian City. The locked gym is now open! Defeat Gym Leader Giovanni (Ground type) using Water/Grass/Ice moves. (Obedience cap: Level 55).' },
             { step: '13. Victory Road & Elite Four', desc: 'Head west to Route 22, traverse Victory Road using HM04 Strength. Arrive at the Indigo Plateau. Defeat the Elite Four (Lorelei, Bruno, Agatha, Lance) and your Rival (Champion) to clear the region! (Obedience cap: Level 62 / Post-game Level 100).' }
         ]
@@ -2181,7 +2189,7 @@ const REGIONAL_STORY_DB = {
             ]
         },
         storyline: [
-            { step: '1. Littleroot to Petalburg', desc: 'Save Professor Birch on Route 101 to get your starter. Deliver Birch\'s bag, beat May/Brendan, and get your Pokédex. Head west to Petalburg City and talk to your father, Norman.' },
+            { step: '1. Littleroot to Petalburg', desc: 'Save Professor Birch on Route 101 to get your starter. Deliver Birch\'s bag, beat May/Brendan, and get your PokÃ©dex. Head west to Petalburg City and talk to your father, Norman.' },
             { step: '2. Petalburg Woods & Roxanne', desc: 'Walk through Petalburg Woods, defeat the Aqua grunt, and reach Rustboro City. Clear Rustboro Gym Leader Roxanne (Rock type) using Water/Grass moves. (Obedience cap: Level 20. HM01 Cut is now usable).' },
             { step: '3. Dewford Gym & Brawly', desc: 'Recover Peeko the Wingull and the Devon Parts in Rusturf Tunnel. Sail with Mr. Briney to Dewford Town. Defeat Brawly (Fighting type) using Flying/Psychic moves. (Obedience cap: Level 24. HM05 Flash is usable).' },
             { step: '4. Slateport Musem & Wattson', desc: 'Deliver Devon Parts in Slateport City Museum while fighting off Team Aqua. Walk north to Mauville City. Defeat Gym Leader Wattson (Electric type) using Ground moves. (Obedience cap: Level 28. HM06 Rock Smash is usable).' },
@@ -2190,9 +2198,9 @@ const REGIONAL_STORY_DB = {
             { step: '7. Weather Institute & Winona', desc: 'Surf east from Mauville, clear the Weather Institute to get Castform, and beat your Rival. Arrive in Fortree City. Get the Devon Scope from Steven on Route 120, reveal the invisible Kecleon, and defeat Winona (Flying type). (Obedience cap: Level 38. HM02 Fly is usable).' },
             { step: '8. Mt. Pyre & Hideouts', desc: 'Travel east to Lilycove City. Go to Mt. Pyre, fight off Team Aqua/Magma, and get the Magma Emblem. Clear the Magma Hideout in Jagged Pass and the Aqua Hideout in Lilycove Cove.' },
             { step: '9. Mossdeep Gym & Tate & Liza', desc: 'Surf east to Mossdeep City. Defeat Tate & Liza in a double battle (Psychic type) using Ghost/Dark/Bug moves. (Obedience cap: Level 44. HM08 Dive is usable). Speak to Steven to receive HM08 Dive.' },
-            { step: '10. Seafloor Cavern & Cave of Origin', desc: 'Dive on Route 128 to locate the Seafloor Cavern. Clear the cavern, defeat Archie/Maxie, and watch Groudon/Kyogre escape. Surf to Sootopolis City. Go to the Cave of Origin, calm/defeat the Legendary Pokémon, and unlock Sootopolis Gym.' },
+            { step: '10. Seafloor Cavern & Cave of Origin', desc: 'Dive on Route 128 to locate the Seafloor Cavern. Clear the cavern, defeat Archie/Maxie, and watch Groudon/Kyogre escape. Surf to Sootopolis City. Go to the Cave of Origin, calm/defeat the Legendary PokÃ©mon, and unlock Sootopolis Gym.' },
             { step: '11. Wallace & Waterfall', desc: 'Defeat Gym Leader Wallace/Juan (Water type) in Sootopolis Gym. (Obedience cap: Level 47. HM07 Waterfall is usable). You can now scale waterfalls to reach Ever Grande City.' },
-            { step: '12. Ever Grande & Elite Four', desc: 'Scale the waterfall at Ever Grande City, clear Victory Road, and enter the Pokémon League. Defeat the Elite Four (Sidney, Phoebe, Glacia, Drake) and Steven/Wallace (Champion) to clear the region! (Obedience cap: Level 58 / Post-game Level 100).' }
+            { step: '12. Ever Grande & Elite Four', desc: 'Scale the waterfall at Ever Grande City, clear Victory Road, and enter the PokÃ©mon League. Defeat the Elite Four (Sidney, Phoebe, Glacia, Drake) and Steven/Wallace (Champion) to clear the region! (Obedience cap: Level 58 / Post-game Level 100).' }
         ]
     },
     sinnoh: {
@@ -2229,7 +2237,7 @@ const REGIONAL_STORY_DB = {
             ]
         },
         storyline: [
-            { step: '1. Twinleaf to Oreburgh', desc: 'Start in Twinleaf Town. Choose starter at Lake Verity. Get your Pokédex in Jubilife City. Travel east through Oreburgh Gate to Oreburgh City. Defeat Roark (Coal Badge, cap level 27).' },
+            { step: '1. Twinleaf to Oreburgh', desc: 'Start in Twinleaf Town. Choose starter at Lake Verity. Get your PokÃ©dex in Jubilife City. Travel east through Oreburgh Gate to Oreburgh City. Defeat Roark (Coal Badge, cap level 27).' },
             { step: '2. Valley Windworks & Eterna Forest', desc: 'Go north to Jubilife and then to Floaroma Town. Clean Team Galactic out of Valley Windworks. Traverse Eterna Forest and arrive in Eterna City.' },
             { step: '3. Eterna Gym & Bicycle', desc: 'Defeat Eterna Gym Leader Gardenia (Forest Badge, cap level 29). Clear Eterna Galactic Building, rescue the Cycle Shop owner, and claim your Bicycle. Teach HM01 Cut.' },
             { step: '4. Hearthome Gym & Fantina', desc: 'Ride down Cycling Road, travel through Mt. Coronet to Hearthome City. Defeat Gym Leader Fantina (Relic Badge, cap level 34) using Ghost/Dark moves.' },
@@ -2323,7 +2331,7 @@ const REGIONAL_STORY_DB = {
             ]
         },
         storyline: [
-            { step: '1. New Bark to Violet City', desc: 'Select starter in New Bark Town. Visit Mr. Pokémon to get the Mystery Egg, meet your Rival, and return the egg to Professor Elm. Reach Violet City, clear Sprout Tower, and defeat Falkner (Zephyr Badge, cap level 24).' },
+            { step: '1. New Bark to Violet City', desc: 'Select starter in New Bark Town. Visit Mr. PokÃ©mon to get the Mystery Egg, meet your Rival, and return the egg to Professor Elm. Reach Violet City, clear Sprout Tower, and defeat Falkner (Zephyr Badge, cap level 24).' },
             { step: '2. Union Cave & Slowpoke Well', desc: 'Travel south through Union Cave to Azalea Town. Defeat Team Rocket grunts in the Slowpoke Well. Defeat Bugsy (Hive Badge, cap level 29).' },
             { step: '3. Ilex Forest & Whitney', desc: 'Teach HM01 Cut. Navigate Ilex Forest (catch Farfetch\'d). Reach Goldenrod City. Defeat Whitney (Plain Badge, cap level 32). (Buy a female Geodude or Machop to clear her Miltank easily!).' },
             { step: '4. Burned Tower & Morty', desc: 'Go north to Ecruteak City. Wake up the legendary beasts in the Burned Tower. Defeat Morty (Fog Badge, cap level 37).' },
@@ -2425,11 +2433,11 @@ function renderStoryTab() {
         cannotDoUl.innerHTML = '';
 
         const liLevel = document.createElement('li');
-        liLevel.innerHTML = `Pokémon up to <strong>Level ${maxObedienceLevel}</strong> will obey you in battle.`;
+        liLevel.innerHTML = `PokÃ©mon up to <strong>Level ${maxObedienceLevel}</strong> will obey you in battle.`;
         canDoUl.appendChild(liLevel);
 
         const liLevelWarn = document.createElement('li');
-        liLevelWarn.innerHTML = `Pokémon above <strong>Level ${maxObedienceLevel}</strong> will disobey or hurt themselves.`;
+        liLevelWarn.innerHTML = `PokÃ©mon above <strong>Level ${maxObedienceLevel}</strong> will disobey or hurt themselves.`;
         cannotDoUl.appendChild(liLevelWarn);
 
         const usableHms = [];
@@ -2488,8 +2496,8 @@ function renderStoryTab() {
             teamHtml += `
                 <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.04); padding:0.6rem; border-radius:8px; font-size:0.8rem; text-align:left;">
                     <strong style="color:#fff">${pkmn.name}</strong> - <span style="color:var(--text-muted); font-size:0.7rem;">${pkmn.role}</span><br>
-                    • Moveset: <span style="color:var(--accent-green); font-size:0.75rem;">${pkmn.moves}</span><br>
-                    • Location: <span style="font-size:0.7rem; color:var(--text-muted);">${pkmn.loc}</span>
+                    â€¢ Moveset: <span style="color:var(--accent-green); font-size:0.75rem;">${pkmn.moves}</span><br>
+                    â€¢ Location: <span style="font-size:0.7rem; color:var(--text-muted);">${pkmn.loc}</span>
                 </div>
             `;
         });
@@ -2519,7 +2527,7 @@ function renderStoryTab() {
                         <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.45; margin:0;">${item.desc}</p>
                     </div>
                     <a href="${videoUrl}" target="_blank" class="yt-guide-btn" style="font-family:'Press Start 2P', monospace; font-size:0.45rem; padding:0.4rem 0.65rem; border-radius:4px; text-decoration:none; display:flex; align-items:center; gap:0.3rem; white-space:nowrap; margin-top:0.15rem; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color:var(--text-muted); transition: all 0.2s ease;">
-                        📺 Video
+                        ðŸ“º Video
                     </a>
                 </div>
             `;
@@ -2594,7 +2602,7 @@ function showLoggedInUI(email) {
     if (loginSection) loginSection.style.display = 'none';
     if (statusSection) statusSection.style.display = 'block';
     if (emailDisplay) emailDisplay.innerText = email;
-    updateSyncButtonUI(true, '☁️ Connected');
+    updateSyncButtonUI(true, 'â˜ï¸ Connected');
 }
 
 function showLoggedOutUI() {
@@ -2611,7 +2619,7 @@ function showLoggedOutUI() {
         if (emailInput) emailInput.value = savedEmail;
     }
 
-    updateSyncButtonUI(false, '👤 Sync Offline');
+    updateSyncButtonUI(false, 'ðŸ‘¤ Sync Offline');
 }
 
 function updateSyncButtonUI(connected, text) {
@@ -2749,7 +2757,10 @@ function getLocalDataPayload() {
         garden: localStorage.getItem('pokemmo_garden'),
         hunts: localStorage.getItem('pokemmo_hunts'),
         chores: localStorage.getItem('checked_daily_chores'),
-        badges: localStorage.getItem('completed_story_badges')
+        badges: localStorage.getItem('completed_story_badges'),
+        gtl_watchlist: localStorage.getItem('pokemmo_gtl_watchlist'),
+        gtl_trends: localStorage.getItem('pokemmo_gtl_trends'),
+        gtl_searches: localStorage.getItem('pokemmo_gtl_searches')
     };
 }
 
@@ -2782,7 +2793,7 @@ async function downloadCloudData(userId) {
             const cloudPayload = result.data;
             let changesMade = false;
 
-            const keys = ['prices', 'gyms', 'acquired_nodes', 'ledger', 'garden', 'hunts', 'chores', 'badges'];
+            const keys = ['prices', 'gyms', 'acquired_nodes', 'ledger', 'garden', 'hunts', 'chores', 'badges', 'gtl_watchlist', 'gtl_trends', 'gtl_searches'];
             const localKeyMap = {
                 prices: 'pokemmo_prices',
                 gyms: 'pokemmo_gyms',
@@ -2791,7 +2802,10 @@ async function downloadCloudData(userId) {
                 garden: 'pokemmo_garden',
                 hunts: 'pokemmo_hunts',
                 chores: 'checked_daily_chores',
-                badges: 'completed_story_badges'
+                badges: 'completed_story_badges',
+                gtl_watchlist: 'pokemmo_gtl_watchlist',
+                gtl_trends: 'pokemmo_gtl_trends',
+                gtl_searches: 'pokemmo_gtl_searches'
             };
 
             window.isDownloadingCloudState = true;
@@ -2841,6 +2855,15 @@ function loadFromStorageAndReInit() {
         const cachedStory = localStorage.getItem('completed_story_badges');
         if (cachedStory) completedStoryBadges = JSON.parse(cachedStory);
 
+        const cachedWatchlist = localStorage.getItem('pokemmo_gtl_watchlist');
+        if (cachedWatchlist) gtlWatchlist = JSON.parse(cachedWatchlist);
+
+        const cachedTrends = localStorage.getItem('pokemmo_gtl_trends');
+        if (cachedTrends) gtlTrends = JSON.parse(cachedTrends);
+
+        const cachedSearches = localStorage.getItem('pokemmo_gtl_searches');
+        if (cachedSearches) gtlSearches = JSON.parse(cachedSearches);
+
         calculateAndRenderBreeding();
         calculateCatchRate();
         runSimStep();
@@ -2852,6 +2875,12 @@ function loadFromStorageAndReInit() {
         renderShinyHuntsList();
         if (typeof updateStats === 'function') updateStats();
         if (typeof updateGymStats === 'function') updateGymStats();
+        if (typeof renderGtlWatchlist === 'function') {
+            renderGtlWatchlist();
+            renderGtlTrendFilters();
+            renderGtlTrends();
+            renderGtlSearches();
+        }
     } catch (e) {
         console.error('Failed to parse downloaded cloud state:', e);
     }
@@ -2957,3 +2986,224 @@ function runTypeMatchupCalculations() {
     resultsDiv.innerHTML = html;
 }
 
+
+// ==========================================
+// 17. GTL TOOLS (FLIP, WATCHLIST, TRENDS, SEARCH)
+// ==========================================
+
+// --- Flipping Calculator ---
+function calcGtlFlip() {
+    const buyPrice = parseInt(document.getElementById('gtl-flip-buy').value) || 0;
+    const sellPrice = parseInt(document.getElementById('gtl-flip-sell').value) || 0;
+    const qty = parseInt(document.getElementById('gtl-flip-qty').value) || 1;
+
+    let listingFee = Math.floor(sellPrice * 0.05);
+    if (sellPrice > 0) {
+        if (listingFee < 1000) listingFee = 1000;
+        if (listingFee > 25000) listingFee = 25000;
+    } else {
+        listingFee = 0;
+    }
+    
+    const totalTax = listingFee * qty;
+    const totalCapital = (buyPrice * qty) + totalTax;
+    const totalRevenue = sellPrice * qty;
+    const netProfit = totalRevenue - totalCapital;
+
+    document.getElementById('gtl-flip-tax').innerText = totalTax.toLocaleString() + ' ¥';
+    document.getElementById('gtl-flip-capital').innerText = totalCapital.toLocaleString() + ' ¥';
+    
+    const profitEl = document.getElementById('gtl-flip-profit');
+    profitEl.innerText = netProfit.toLocaleString() + ' ¥';
+    profitEl.style.color = netProfit >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+}
+
+// --- Market Watchlist ---
+let gtlWatchlist = JSON.parse(localStorage.getItem('pokemmo_gtl_watchlist') || '[]');
+
+function saveGtlWatchlist() {
+    localStorage.setItem('pokemmo_gtl_watchlist', JSON.stringify(gtlWatchlist));
+    if (typeof scheduleCloudSync === 'function') scheduleCloudSync();
+}
+
+function addGtlWatchlistItem() {
+    const name = document.getElementById('gtl-watch-name').value.trim();
+    const buy = parseInt(document.getElementById('gtl-watch-buy').value) || 0;
+    const sell = parseInt(document.getElementById('gtl-watch-sell').value) || 0;
+    
+    if (!name) return alert('Enter an item name.');
+    
+    gtlWatchlist.push({ name, buy, sell });
+    saveGtlWatchlist();
+    
+    document.getElementById('gtl-watch-name').value = '';
+    document.getElementById('gtl-watch-buy').value = '';
+    document.getElementById('gtl-watch-sell').value = '';
+    renderGtlWatchlist();
+}
+
+function deleteGtlWatchlistItem(idx) {
+    gtlWatchlist.splice(idx, 1);
+    saveGtlWatchlist();
+    renderGtlWatchlist();
+}
+
+function renderGtlWatchlist() {
+    const tbody = document.getElementById('gtl-watchlist-body');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    
+    gtlWatchlist.forEach((item, idx) => {
+        let listingFee = Math.floor(item.sell * 0.05);
+        if (item.sell > 0) {
+            if (listingFee < 1000) listingFee = 1000;
+            if (listingFee > 25000) listingFee = 25000;
+        } else {
+            listingFee = 0;
+        }
+        const profit = item.sell - item.buy - listingFee;
+        const color = profit >= 0 ? 'var(--accent-green)' : 'var(--accent-red)';
+        
+        tbody.innerHTML += `
+            <tr>
+                <td>${item.name}</td>
+                <td>${item.buy.toLocaleString()}</td>
+                <td>${item.sell.toLocaleString()}</td>
+                <td style="color:${color}; font-weight:600;">${profit.toLocaleString()}</td>
+                <td><button class="btn btn-danger" style="padding:0.2rem 0.5rem; font-size:0.6rem;" onclick="deleteGtlWatchlistItem(${idx})">X</button></td>
+            </tr>
+        `;
+    });
+}
+
+// --- Price Trends ---
+let gtlTrends = JSON.parse(localStorage.getItem('pokemmo_gtl_trends') || '{}');
+
+function saveGtlTrends() {
+    localStorage.setItem('pokemmo_gtl_trends', JSON.stringify(gtlTrends));
+    if (typeof scheduleCloudSync === 'function') scheduleCloudSync();
+}
+
+function addGtlTrendLog() {
+    const name = document.getElementById('gtl-trend-name').value.trim();
+    const price = parseInt(document.getElementById('gtl-trend-price').value);
+    
+    if (!name || isNaN(price)) return alert('Enter a valid name and price.');
+    
+    if (!gtlTrends[name]) gtlTrends[name] = [];
+    const dateStr = new Date().toLocaleDateString();
+    
+    // Check if logged today already, update it
+    const lastLog = gtlTrends[name][gtlTrends[name].length - 1];
+    if (lastLog && lastLog.date === dateStr) {
+        lastLog.price = price;
+    } else {
+        gtlTrends[name].push({ date: dateStr, price: price });
+    }
+    
+    // Keep last 14 logs
+    if (gtlTrends[name].length > 14) gtlTrends[name].shift();
+    
+    saveGtlTrends();
+    
+    document.getElementById('gtl-trend-price').value = '';
+    renderGtlTrendFilters();
+    document.getElementById('gtl-trend-filter').value = name;
+    renderGtlTrends();
+}
+
+function renderGtlTrendFilters() {
+    const select = document.getElementById('gtl-trend-filter');
+    if (!select) return;
+    const currentVal = select.value;
+    select.innerHTML = '<option value="">Select Item to View Trend...</option>';
+    
+    Object.keys(gtlTrends).sort().forEach(name => {
+        select.innerHTML += `<option value="${name}">${name}</option>`;
+    });
+    if (gtlTrends[currentVal]) select.value = currentVal;
+}
+
+function renderGtlTrends() {
+    const container = document.getElementById('gtl-trend-chart-container');
+    const name = document.getElementById('gtl-trend-filter').value;
+    if (!container) return;
+    
+    if (!name || !gtlTrends[name] || gtlTrends[name].length === 0) {
+        container.innerHTML = '<span style="color:var(--text-muted); font-size:0.85rem;">Select an item to view its 14-day history.</span>';
+        return;
+    }
+    
+    const data = gtlTrends[name];
+    let maxPrice = Math.max(...data.map(d => d.price));
+    if (maxPrice === 0) maxPrice = 1;
+    
+    let html = '<div style="display:flex; flex-direction:column; gap:0.4rem; font-size:0.75rem;">';
+    data.forEach(d => {
+        const pct = Math.max(5, (d.price / maxPrice) * 100);
+        html += `
+            <div style="display:flex; align-items:center; gap:0.5rem;">
+                <div style="width:75px; color:var(--text-muted); text-align:right;">${d.date}</div>
+                <div style="flex:1; background:rgba(255,255,255,0.05); height:16px; border-radius:4px; overflow:hidden; position:relative;">
+                    <div style="width:${pct}%; background:var(--primary); height:100%; border-radius:4px;"></div>
+                    <span style="position:absolute; left:6px; top:1px; color:#fff; font-weight:bold; text-shadow:1px 1px 2px #000;">${d.price.toLocaleString()} ¥</span>
+                </div>
+            </div>
+        `;
+    });
+    html += '</div>';
+    
+    // Add delete item option
+    html += `<button class="btn btn-danger" style="margin-top:1rem; width:100%;" onclick="if(confirm('Delete history for ${name}?')) { delete gtlTrends['${name}']; saveGtlTrends(); renderGtlTrendFilters(); renderGtlTrends(); }">Delete ${name} History</button>`;
+    
+    container.innerHTML = html;
+}
+
+// --- Search Notebook ---
+let gtlSearches = JSON.parse(localStorage.getItem('pokemmo_gtl_searches') || '[]');
+
+function saveGtlSearches() {
+    localStorage.setItem('pokemmo_gtl_searches', JSON.stringify(gtlSearches));
+    if (typeof scheduleCloudSync === 'function') scheduleCloudSync();
+}
+
+function addGtlSearch() {
+    const title = document.getElementById('gtl-search-title').value.trim();
+    const params = document.getElementById('gtl-search-params').value.trim();
+    
+    if (!title || !params) return alert('Enter both title and parameters.');
+    
+    gtlSearches.push({ title, params });
+    saveGtlSearches();
+    
+    document.getElementById('gtl-search-title').value = '';
+    document.getElementById('gtl-search-params').value = '';
+    renderGtlSearches();
+}
+
+function deleteGtlSearch(idx) {
+    gtlSearches.splice(idx, 1);
+    saveGtlSearches();
+    renderGtlSearches();
+}
+
+function renderGtlSearches() {
+    const list = document.getElementById('gtl-search-list');
+    if (!list) return;
+    list.innerHTML = '';
+    
+    if (gtlSearches.length === 0) {
+        list.innerHTML = '<span style="color:var(--text-muted); font-size:0.85rem;">No saved searches yet.</span>';
+        return;
+    }
+    
+    gtlSearches.forEach((s, idx) => {
+        list.innerHTML += `
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:0.75rem; border-radius:6px; position:relative;">
+                <h3 style="font-size:0.85rem; color:var(--primary); margin-bottom:0.4rem; font-family:'Press Start 2P', monospace;">${s.title}</h3>
+                <div style="font-size:0.8rem; color:#fff; white-space:pre-wrap; line-height:1.4;">${s.params}</div>
+                <button class="btn btn-danger" style="position:absolute; top:0.5rem; right:0.5rem; padding:0.2rem 0.5rem; font-size:0.6rem;" onclick="deleteGtlSearch(${idx})">X</button>
+            </div>
+        `;
+    });
+}
