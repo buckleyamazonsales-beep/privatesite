@@ -989,7 +989,7 @@
             </div>
 
             <!-- Configuration Form (URL & Key) -->
-            <div id="auth-config-section" style="display: block; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 1rem; margin-bottom: 1rem;">
+            <div id="auth-config-section" style="display: none; border-bottom: 1px dashed rgba(255,255,255,0.05); padding-bottom: 1rem; margin-bottom: 1rem;">
                 <h4 style="font-size: 0.75rem; color: #fff; margin-bottom: 0.5rem; font-family:'Press Start 2P', monospace;">Supabase Link</h4>
                 <div class="form-group" style="margin-bottom: 0.6rem;">
                     <label style="font-size: 0.7rem;">Supabase URL</label>
@@ -1005,7 +1005,7 @@
             </div>
 
             <!-- Login / Signup Form -->
-            <div id="auth-login-section" style="display: none;">
+            <div id="auth-login-section" style="display: block;">
                 <div class="form-group" style="margin-bottom: 0.6rem;">
                     <label style="font-size: 0.7rem;">Email Address</label>
                     <input type="email" id="auth-email" placeholder="trainer@example.com" style="padding: 0.4rem 0.6rem; font-size: 0.75rem;">
@@ -1021,6 +1021,9 @@
                     <button class="btn btn-secondary" onclick="handleSignup()" style="padding: 0.5rem; font-size: 0.65rem; font-family:'Press Start 2P', monospace;">
                         Sign Up
                     </button>
+                </div>
+                <div style="text-align: center; margin-top: 1rem;">
+                    <span onclick="toggleConfigSection()" style="font-size: 0.65rem; color: var(--text-muted); cursor: pointer; text-decoration: underline;">Advanced Settings</span>
                 </div>
             </div>
 

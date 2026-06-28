@@ -2758,13 +2758,16 @@ let supabaseClient = null;
 let syncTimeout = null;
 
 function initSupabase() {
-    const url = localStorage.getItem('supabase_url');
-    const key = localStorage.getItem('supabase_key');
+    const defaultUrl = 'https://rekyrellvohjrrqsvbfj.supabase.co';
+    const defaultKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJla3lyZWxsdm9oanJycXN2YmZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI1OTc2ODcsImV4cCI6MjA5ODE3MzY4N30.PwmemLGyZow55QPaEKzsQCPx9_aj5bd8wWJw_RRQ8Hg';
+
+    const url = localStorage.getItem('supabase_url') || defaultUrl;
+    const key = localStorage.getItem('supabase_key') || defaultKey;
     
     const dbUrlInput = document.getElementById('db-url-input');
     const dbKeyInput = document.getElementById('db-key-input');
-    if (dbUrlInput && url) dbUrlInput.value = url;
-    if (dbKeyInput && key) dbKeyInput.value = key;
+    if (dbUrlInput) dbUrlInput.value = localStorage.getItem('supabase_url') || '';
+    if (dbKeyInput) dbKeyInput.value = localStorage.getItem('supabase_key') || '';
 
     if (!url || !key) {
         document.getElementById('auth-config-section').style.display = 'block';
@@ -2782,7 +2785,7 @@ function initSupabase() {
             }
         });
         
-        document.getElementById('auth-config-section').style.display = 'block';
+        document.getElementById('auth-config-section').style.display = 'none';
         checkAuthState();
     } catch (e) {
         console.error('Supabase init failed:', e);
@@ -2835,6 +2838,15 @@ function toggleAuthModal() {
         if (key) document.getElementById('db-key-input').value = key;
     } else {
         modal.style.display = 'none';
+    }
+}
+
+function toggleConfigSection() {
+    const configSection = document.getElementById('auth-config-section');
+    if (configSection.style.display === 'none') {
+        configSection.style.display = 'block';
+    } else {
+        configSection.style.display = 'none';
     }
 }
 
