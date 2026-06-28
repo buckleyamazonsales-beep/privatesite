@@ -7,17 +7,19 @@ const { Pool } = require('pg');
 const PORT = process.env.PORT || 3000;
 
 // Setup PostgreSQL pool if connection string exists
-const isProduction = !!process.env.PORT;
-const DB_URL = process.env.DATABASE_URL || (isProduction ? 'postgresql://postgres:GTHyiFxpoOwigjsXtMrcPcBXxALKratr@postgres.railway.internal:5432/railway' : null);
+const DB_URL = process.env.DATABASE_URL || 'postgresql://postgres:GTHyiFxpoOwigjsXtMrcPcBXxALKratr@postgres.railway.internal:5432/railway';
 
 let pool = null;
 if (DB_URL) {
-    pool = new Pool({
-        connectionString: DB_URL,
-        ssl: {
-            rejectUnauthorized: false
-        }
-    });
+    // Railway internal connections (*.railway.internal) do NOT support SSL.
+    // Only enable SSL for external/public database URLs.
+    const isInternal = DB_URL.includes('.railway.internal');
+    const poolConfig = { connectionString: DB_URL };
+    if (!isInternal) {
+        poolConfig.ssl = { rejectUnauthorized: false };
+    }
+
+    pool = new Pool(poolConfig);
 
     // Initialize DB tables
     initDb();
@@ -44,7 +46,7 @@ async function initDb() {
         console.log('Postgres tables initialized successfully.');
         client.release();
     } catch (err) {
-        console.error('Failed to initialize database tables:', err);
+        console.error('Failed to initialize database tables:', err.message);
     }
 }
 
@@ -178,7 +180,7 @@ const server = http.createServer(async (req, res) => {
             return sendJson(res, 404, { success: false, error: 'API endpoint not found' });
         } catch (e) {
             console.error('API Error:', e);
-            let errMsg = 'Internal server error';
+            let errMsg = e.message || 'Internal server error';
             if (e.code === '23505') errMsg = 'Email address already registered';
             return sendJson(res, 500, { success: false, error: errMsg });
         }
