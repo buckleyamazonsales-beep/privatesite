@@ -675,3 +675,13 @@ input:focus, select:focus, textarea:focus {
 .speed-val-badge { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 0.95rem; color: #fff; background: rgba(255,255,255,0.05); padding: 0.15rem 0.5rem; border-radius: 4px; }
 .speed-tier-meta { font-size: 0.75rem; color: var(--text-muted); }
 .speed-tier-name { font-weight: 600; font-size: 0.9rem; }
+
+/* YouTube Guide Button Styling */
+.yt-guide-btn:hover {
+    color: #fff !important;
+    background: #ff0000 !important;
+    border-color: #ff0000 !important;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+    transform: scale(1.05);
+}
+

@@ -2683,10 +2683,18 @@ function renderStoryTab() {
         
         let html = '<div style="display:flex; flex-direction:column; gap:0.85rem;">';
         data.storyline.forEach(item => {
+            const videoQuery = `PokeMMO ${activeStoryRegion.toUpperCase()} Story ${item.step}`;
+            const videoUrl = item.video || `https://www.youtube.com/results?search_query=${encodeURIComponent(videoQuery)}`;
+            
             html += `
-                <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); padding:0.85rem; border-radius:8px;">
-                    <strong style="color:var(--primary); font-size:0.85rem; display:block; margin-bottom:0.3rem;">${item.step}</strong>
-                    <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.45; margin:0;">${item.desc}</p>
+                <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); padding:0.85rem; border-radius:8px; display:flex; justify-content:space-between; align-items:flex-start; gap:1rem;">
+                    <div style="flex:1;">
+                        <strong style="color:var(--primary); font-size:0.85rem; display:block; margin-bottom:0.3rem;">${item.step}</strong>
+                        <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.45; margin:0;">${item.desc}</p>
+                    </div>
+                    <a href="${videoUrl}" target="_blank" class="yt-guide-btn" style="font-family:'Press Start 2P', monospace; font-size:0.45rem; padding:0.4rem 0.65rem; border-radius:4px; text-decoration:none; display:flex; align-items:center; gap:0.3rem; white-space:nowrap; margin-top:0.15rem; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); color:var(--text-muted); transition: all 0.2s ease;">
+                        📺 Video
+                    </a>
                 </div>
             `;
         });
