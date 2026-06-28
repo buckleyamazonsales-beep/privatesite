@@ -2683,7 +2683,8 @@ function renderStoryTab() {
         
         let html = '<div style="display:flex; flex-direction:column; gap:0.85rem;">';
         data.storyline.forEach(item => {
-            const videoQuery = `PokeMMO ${activeStoryRegion.toUpperCase()} Story ${item.step}`;
+            const regionName = activeStoryRegion.charAt(0).toUpperCase() + activeStoryRegion.slice(1);
+            const videoQuery = `PokeMMO ${regionName} Walkthrough ${item.step}`;
             const videoUrl = item.video || `https://www.youtube.com/results?search_query=${encodeURIComponent(videoQuery)}`;
             
             html += `
