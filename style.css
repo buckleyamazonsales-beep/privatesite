@@ -716,4 +716,73 @@ input:focus, select:focus, textarea:focus {
     to { transform: translateY(0); opacity: 1; }
 }
 
-
+/* Premium Toggle Switch */
+.toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 0.75rem;
+    margin-bottom: 0.85rem;
+    background: linear-gradient(135deg, rgba(255,222,0,0.03), rgba(59,76,202,0.03));
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.toggle-row:hover {
+    border-color: rgba(255,222,0,0.15);
+}
+.toggle-row.active {
+    border-color: rgba(255,222,0,0.2);
+    box-shadow: 0 0 12px rgba(255,222,0,0.05);
+}
+.toggle-label {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.72rem; color: var(--text-muted);
+    cursor: pointer; user-select: none;
+}
+.toggle-label .toggle-icon {
+    font-size: 0.85rem;
+    transition: transform 0.3s ease;
+}
+.toggle-row.active .toggle-icon {
+    transform: scale(1.15);
+}
+.toggle-label .toggle-text {
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+.toggle-row.active .toggle-text {
+    color: var(--primary);
+}
+.toggle-switch {
+    position: relative;
+    width: 40px; height: 22px;
+    cursor: pointer; flex-shrink: 0;
+}
+.toggle-switch input { display: none; }
+.toggle-track {
+    position: absolute; inset: 0;
+    background: rgba(255,255,255,0.08);
+    border-radius: 11px;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.toggle-switch input:checked + .toggle-track {
+    background: linear-gradient(135deg, var(--primary), #f5c518);
+    border-color: rgba(255,222,0,0.3);
+    box-shadow: 0 0 10px rgba(255,222,0,0.2), inset 0 1px 1px rgba(255,255,255,0.15);
+}
+.toggle-knob {
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 16px; height: 16px;
+    background: #fff;
+    border-radius: 50%;
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.toggle-switch input:checked + .toggle-track .toggle-knob {
+    left: 21px;
+    background: #1a1a2e;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.1);
+}

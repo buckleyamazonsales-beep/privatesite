@@ -998,9 +998,15 @@
                     <label style="font-size: 0.7rem;">Password</label>
                     <input type="password" id="auth-password" placeholder="••••••••" style="padding: 0.4rem 0.6rem; font-size: 0.75rem;">
                 </div>
-                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.85rem; padding: 0.4rem 0.5rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 6px;">
-                    <input type="checkbox" id="auth-remember-me" checked style="cursor: pointer; accent-color: var(--primary);">
-                    <label for="auth-remember-me" style="font-size: 0.7rem; color: var(--text-muted); cursor: pointer; margin-bottom: 0;">Remember Me</label>
+                <div class="toggle-row active" id="remember-me-row">
+                    <label class="toggle-label" for="auth-remember-me">
+                        <span class="toggle-icon">🔒</span>
+                        <span class="toggle-text">Remember Me</span>
+                    </label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="auth-remember-me" checked onchange="document.getElementById('remember-me-row').classList.toggle('active', this.checked); document.querySelector('#remember-me-row .toggle-icon').textContent = this.checked ? '🔒' : '🔓';">
+                        <div class="toggle-track"><div class="toggle-knob"></div></div>
+                    </label>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;">
                     <button class="btn btn-primary" onclick="handleLogin()" style="padding: 0.5rem; font-size: 0.65rem; font-family:'Press Start 2P', monospace; color:#000;">
