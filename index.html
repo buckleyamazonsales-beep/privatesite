@@ -30,16 +30,38 @@
             </div>
             
             <nav class="nav-tabs">
-                <button class="tab-btn active" onclick="switchTab('breeding')" id="nav-btn-breeding">Breeding Calc</button>
-                <button class="tab-btn" onclick="switchTab('gyms')" id="nav-btn-gyms">Gym Tracker</button>
-                <button class="tab-btn" onclick="switchTab('gtl')" id="nav-btn-gtl">GTL Ledger</button>
-                <button class="tab-btn" onclick="switchTab('berry')" id="nav-btn-berry">Berry Garden</button>
-                <button class="tab-btn" onclick="switchTab('thief')" id="nav-btn-thief">Thief/Pickup</button>
-                <button class="tab-btn" onclick="switchTab('shiny')" id="nav-btn-shiny">Shiny Tracker</button>
-                <button class="tab-btn" onclick="switchTab('pvp')" id="nav-btn-pvp">PvP Speed</button>
-                <button class="tab-btn" onclick="switchTab('ev')" id="nav-btn-ev">EV Hordes</button>
-                <button class="tab-btn" onclick="switchTab('catch')" id="nav-btn-catch">Catch Calc</button>
-                <button class="tab-btn" onclick="switchTab('money')" id="nav-btn-money">Daily Planner</button>
+                <!-- Breeding Group -->
+                <div class="nav-dropdown">
+                    <button class="tab-btn dropdown-toggle active" id="nav-btn-group-breeding">Breeding ▾</button>
+                    <div class="dropdown-menu">
+                        <button onclick="switchTab('breeding')" id="nav-btn-breeding" class="active">Breeding Calc</button>
+                        <button onclick="switchTab('catch')" id="nav-btn-catch">Catch Calc</button>
+                    </div>
+                </div>
+
+                <!-- Farming Group -->
+                <div class="nav-dropdown">
+                    <button class="tab-btn dropdown-toggle" id="nav-btn-group-farming">Farming ▾</button>
+                    <div class="dropdown-menu">
+                        <button onclick="switchTab('money')" id="nav-btn-money">Daily Planner</button>
+                        <button onclick="switchTab('gyms')" id="nav-btn-gyms">Gym Tracker</button>
+                        <button onclick="switchTab('gtl')" id="nav-btn-gtl">GTL Ledger</button>
+                        <button onclick="switchTab('berry')" id="nav-btn-berry">Berry Garden</button>
+                        <button onclick="switchTab('thief')" id="nav-btn-thief">Thief/Pickup</button>
+                    </div>
+                </div>
+
+                <!-- Battle Group -->
+                <div class="nav-dropdown">
+                    <button class="tab-btn dropdown-toggle" id="nav-btn-group-battle">Battle ▾</button>
+                    <div class="dropdown-menu">
+                        <button onclick="switchTab('pvp')" id="nav-btn-pvp">PvP Speed</button>
+                        <button onclick="switchTab('ev')" id="nav-btn-ev">EV Hordes</button>
+                    </div>
+                </div>
+
+                <!-- Single Tabs -->
+                <button class="tab-btn" onclick="switchTab('shiny')" id="nav-btn-shiny">Shiny Hunt</button>
                 <button class="tab-btn" onclick="switchTab('story')" id="nav-btn-story">Story Guides</button>
             </nav>
         </div>

@@ -1811,12 +1811,30 @@ function renderEvGuide() {
 function switchTab(tabName) {
     activeTab = tabName;
     
-    // Switch Active Button Class
-    const tabs = document.querySelectorAll('.tab-btn');
+    // Switch Active Button Class across all tabs & sub-tabs
+    const tabs = document.querySelectorAll('.tab-btn, .dropdown-menu button');
     tabs.forEach(tab => {
         if (tab.id === `nav-btn-${tabName}`) tab.classList.add('active');
         else tab.classList.remove('active');
     });
+
+    // Handle styling on parent dropdown headers if a child is active
+    const breedingGroup = document.getElementById('nav-btn-group-breeding');
+    const farmingGroup = document.getElementById('nav-btn-group-farming');
+    const battleGroup = document.getElementById('nav-btn-group-battle');
+
+    if (breedingGroup) {
+        if (['breeding', 'catch'].includes(tabName)) breedingGroup.classList.add('active');
+        else breedingGroup.classList.remove('active');
+    }
+    if (farmingGroup) {
+        if (['money', 'gyms', 'gtl', 'berry', 'thief'].includes(tabName)) farmingGroup.classList.add('active');
+        else farmingGroup.classList.remove('active');
+    }
+    if (battleGroup) {
+        if (['pvp', 'ev'].includes(tabName)) battleGroup.classList.add('active');
+        else battleGroup.classList.remove('active');
+    }
 
     // Switch Active Content Div
     const contents = document.querySelectorAll('.tab-content');
