@@ -2305,7 +2305,22 @@ const REGIONAL_STORY_DB = {
                 { name: 'Alakazam', role: 'Special Sweeper', moves: 'Psychic, Shadow Ball, Focus Blast, Recover', loc: 'Catch Abra at Route 24/25' },
                 { name: 'Krookodile', role: 'Moxie Sweeper (Imported)', moves: 'Earthquake, Crunch, Rock Slide, Brick Break', loc: 'GTL purchase (extremely cheap)' }
             ]
-        }
+        },
+        storyline: [
+            { step: '1. Starter & Oak\'s Parcel', desc: 'Acquire your starter Pokémon at Pallet Town. Head north to Viridian City, collect Oak\'s Parcel from the Poké Mart, and deliver it back to Oak to obtain your Pokédex and 5 Poké Balls.' },
+            { step: '2. Viridian Forest & Brock', desc: 'Travel north through Route 2 and enter Viridian Forest. Grind levels on bugs if needed, then reach Pewter City. Defeat Gym Leader Brock (Rock type) using Water/Grass moves. (Obedience cap increases to Level 20).' },
+            { step: '3. Mt. Moon & Fossil Selection', desc: 'Buy the Level 5 Magikarp at the Route 4 Pokémon Center for 500¥ (essential for Gyarados physical sweeper!). Navigate through Mt. Moon, clear out Team Rocket grunts, and choose either the Dome or Helix Fossil.' },
+            { step: '4. Nugget Bridge & Misty', desc: 'Arrive in Cerulean City. Head north, defeat your Rival, and clear Nugget Bridge. Save Bill at Route 25 to receive the S.S. Ticket. Return to Cerulean and defeat Misty (Water type) using Grass/Electric moves. (Obedience cap: Level 26).' },
+            { step: '5. S.S. Anne & Lt. Surge', desc: 'Walk south through the Underground Path to Vermilion City. Board the S.S. Anne, battle trainers for EXP, and assist the seasick Captain to get HM01 Cut. Teach it to clear the bush to Lt. Surge\'s Gym. Defeat Surge (Electric type) using Ground moves. (Obedience cap: Level 32).' },
+            { step: '6. Rock Tunnel & Pokémon Tower', desc: 'Go east to Route 9, enter Rock Tunnel (HM05 Flash is optional but helpful; you can navigate in the dark). Reach Lavender Town and scale the Pokémon Tower until you get blocked by the ghost. Travel west to Celadon City.' },
+            { step: '7. Rocket Hideout & Erika', desc: 'In Celadon City, clear Erika\'s Gym (Grass type) using Fire/Flying moves (Obedience cap: Level 37). Visit the Game Corner, press the poster switch, and clear the Rocket Hideout under the building. Defeat Giovanni to get the Silph Scope.' },
+            { step: '8. Ghost Marowak & Poké Flute', desc: 'Return to Lavender Town with the Silph Scope. Ascend Pokémon Tower, soothe the ghost of Marowak, and defeat Team Rocket at the top. Speak to Mr. Fuji to get the Poké Flute. Wake up the sleeping Snorlax on Route 12 or 16.' },
+            { step: '9. Silph Co. & Sabrina', desc: 'Gain entry to Saffron City. Enter the Silph Co. building, navigate the teleporter pads, defeat your Rival, and clear Giovanni to get the Master Ball. Defeat Sabrina (Psychic type) using Bug/Ghost/Dark moves. (Obedience cap: Level 47).' },
+            { step: '10. Safari Zone & Koga', desc: 'Travel south to Fuchsia City. Enter the Safari Zone, locate the Warden\'s Gold Teeth and HM03 Surf. Give the teeth to the Warden to get HM04 Strength. Defeat Koga (Poison type) using Psychic/Ground moves. (Obedience cap: Level 46).' },
+            { step: '11. Cinnabar Mansion & Blaine', desc: 'Surf south from Pallet Town or Fuchsia City to Cinnabar Island. Search the Pokémon Mansion to find the Secret Key. Unlock Cinnabar Gym and defeat Blaine (Fire type) using Water/Ground/Rock moves. (Obedience cap: Level 50).' },
+            { step: '12. Viridian Gym & Giovanni', desc: 'Go back to Viridian City. The locked gym is now open! Defeat Gym Leader Giovanni (Ground type) using Water/Grass/Ice moves. (Obedience cap: Level 55).' },
+            { step: '13. Victory Road & Elite Four', desc: 'Head west to Route 22, traverse Victory Road using HM04 Strength. Arrive at the Indigo Plateau. Defeat the Elite Four (Lorelei, Bruno, Agatha, Lance) and your Rival (Champion) to clear the region! (Obedience cap: Level 62 / Post-game Level 100).' }
+        ]
     },
     hoenn: {
         name: 'Hoenn (Ruby/Sapphire/Emerald)',
@@ -2339,7 +2354,21 @@ const REGIONAL_STORY_DB = {
                 { name: 'Gardevoir', role: 'Special Sweeper', moves: 'Psychic, Dazzling Gleam, Thunderbolt, Calm Mind', loc: 'Catch Ralts at Route 102' },
                 { name: 'Breloom', role: 'Physical Spore Attacker', moves: 'Seed Bomb, Mach Punch, Spore, Rock Tomb', loc: 'Catch Shroomish in Petalburg Woods' }
             ]
-        }
+        },
+        storyline: [
+            { step: '1. Littleroot to Petalburg', desc: 'Save Professor Birch on Route 101 to get your starter. Deliver Birch\'s bag, beat May/Brendan, and get your Pokédex. Head west to Petalburg City and talk to your father, Norman.' },
+            { step: '2. Petalburg Woods & Roxanne', desc: 'Walk through Petalburg Woods, defeat the Aqua grunt, and reach Rustboro City. Clear Rustboro Gym Leader Roxanne (Rock type) using Water/Grass moves. (Obedience cap: Level 20. HM01 Cut is now usable).' },
+            { step: '3. Dewford Gym & Brawly', desc: 'Recover Peeko the Wingull and the Devon Parts in Rusturf Tunnel. Sail with Mr. Briney to Dewford Town. Defeat Brawly (Fighting type) using Flying/Psychic moves. (Obedience cap: Level 24. HM05 Flash is usable).' },
+            { step: '4. Slateport Musem & Wattson', desc: 'Deliver Devon Parts in Slateport City Museum while fighting off Team Aqua. Walk north to Mauville City. Defeat Gym Leader Wattson (Electric type) using Ground moves. (Obedience cap: Level 28. HM06 Rock Smash is usable).' },
+            { step: '5. Mt. Chimney & Flannery', desc: 'Go north, navigate Route 112, and take the Cable Car up Mt. Chimney. Defeat Team Aqua/Magma Boss Archie/Maxie. Go down Jagged Pass to Lavaridge Town and defeat Flannery (Fire type). (Obedience cap: Level 33. HM04 Strength is usable).' },
+            { step: '6. Petalburg Gym & Norman', desc: 'Return to Petalburg City and challenge Norman (Normal type) using Fighting moves. (Obedience cap: Level 35). Collect HM03 Surf from Wally\'s house. You can now traverse water!' },
+            { step: '7. Weather Institute & Winona', desc: 'Surf east from Mauville, clear the Weather Institute to get Castform, and beat your Rival. Arrive in Fortree City. Get the Devon Scope from Steven on Route 120, reveal the invisible Kecleon, and defeat Winona (Flying type). (Obedience cap: Level 38. HM02 Fly is usable).' },
+            { step: '8. Mt. Pyre & Hideouts', desc: 'Travel east to Lilycove City. Go to Mt. Pyre, fight off Team Aqua/Magma, and get the Magma Emblem. Clear the Magma Hideout in Jagged Pass and the Aqua Hideout in Lilycove Cove.' },
+            { step: '9. Mossdeep Gym & Tate & Liza', desc: 'Surf east to Mossdeep City. Defeat Tate & Liza in a double battle (Psychic type) using Ghost/Dark/Bug moves. (Obedience cap: Level 44. HM08 Dive is usable). Speak to Steven to receive HM08 Dive.' },
+            { step: '10. Seafloor Cavern & Cave of Origin', desc: 'Dive on Route 128 to locate the Seafloor Cavern. Clear the cavern, defeat Archie/Maxie, and watch Groudon/Kyogre escape. Surf to Sootopolis City. Go to the Cave of Origin, calm/defeat the Legendary Pokémon, and unlock Sootopolis Gym.' },
+            { step: '11. Wallace & Waterfall', desc: 'Defeat Gym Leader Wallace/Juan (Water type) in Sootopolis Gym. (Obedience cap: Level 47. HM07 Waterfall is usable). You can now scale waterfalls to reach Ever Grande City.' },
+            { step: '12. Ever Grande & Elite Four', desc: 'Scale the waterfall at Ever Grande City, clear Victory Road, and enter the Pokémon League. Defeat the Elite Four (Sidney, Phoebe, Glacia, Drake) and Steven/Wallace (Champion) to clear the region! (Obedience cap: Level 58 / Post-game Level 100).' }
+        ]
     },
     sinnoh: {
         name: 'Sinnoh (Platinum)',
@@ -2373,7 +2402,21 @@ const REGIONAL_STORY_DB = {
                 { name: 'Staraptor', role: 'Physical Sweeper', moves: 'Brave Bird, Close Combat, Return, U-turn', loc: 'Catch Starly at Route 201' },
                 { name: 'Garchomp', role: 'Dragon Sweeper', moves: 'Earthquake, Outrage, Rock Slide, Swords Dance', loc: 'Catch Gible in Wayward Cave' }
             ]
-        }
+        },
+        storyline: [
+            { step: '1. Twinleaf to Oreburgh', desc: 'Start in Twinleaf Town. Choose starter at Lake Verity. Get your Pokédex in Jubilife City. Travel east through Oreburgh Gate to Oreburgh City. Defeat Roark (Coal Badge, cap level 27).' },
+            { step: '2. Valley Windworks & Eterna Forest', desc: 'Go north to Jubilife and then to Floaroma Town. Clean Team Galactic out of Valley Windworks. Traverse Eterna Forest and arrive in Eterna City.' },
+            { step: '3. Eterna Gym & Bicycle', desc: 'Defeat Eterna Gym Leader Gardenia (Forest Badge, cap level 29). Clear Eterna Galactic Building, rescue the Cycle Shop owner, and claim your Bicycle. Teach HM01 Cut.' },
+            { step: '4. Hearthome Gym & Fantina', desc: 'Ride down Cycling Road, travel through Mt. Coronet to Hearthome City. Defeat Gym Leader Fantina (Relic Badge, cap level 34) using Ghost/Dark moves.' },
+            { step: '5. Solaceon Town & Veilstone Gym', desc: 'Head east through Solaceon Town to Veilstone City. Challenge and defeat Gym Leader Maylene (Cobble Badge, cap level 37) using Flying/Psychic moves.' },
+            { step: '6. Pastoria Gym & Crasher Wake', desc: 'Head south along the coast to Pastoria City. Defeat Crasher Wake (Fen Badge, cap level 43). Chase the Galactic Grunt to Valor Lakefront.' },
+            { step: '7. Celestic Town & Strength', desc: 'Go north from Solaceon Town to Celestic Town. Defeat the Galactic Grunt in the ruins and retrieve HM04 Strength from Cynthia\'s grandmother.' },
+            { step: '8. Canalave Gym & Byron', desc: 'Travel west to Canalave City. Defeat Gym Leader Byron (Mine Badge, cap level 46) using Fire/Fighting/Ground moves. Visit Iron Island if you want a Riolu Egg.' },
+            { step: '9. Commander Battles & Snowpoint Gym', desc: 'Visit Lakes Valor, Verity, and Acuity to fight off Team Galactic Commanders Saturn, Mars, and Jupiter. Navigate Route 216/217 to Snowpoint City and defeat Candice (Icicle Badge, cap level 52).' },
+            { step: '10. Galactic HQ & Spear Pillar', desc: 'Clear Galactic HQ in Veilstone City (defeat Cyrus). Scale Mt. Coronet to the Spear Pillar. Defeat Team Galactic commanders and stop Cyrus in the Distortion World/Spear Pillar.' },
+            { step: '11. Sunyshore Gym & Volkner', desc: 'Reach Sunyshore City. Defeat Gym Leader Volkner (Beacon Badge, cap level 60) using Ground type moves.' },
+            { step: '12. Victory Road & League', desc: 'Surf north to Victory Road. Clear the cave and challenge the Sinnoh Elite Four (Aaron, Bertha, Flint, Lucian) and Champion Cynthia (cap level 62 / Post-game Level 100).' }
+        ]
     },
     unova: {
         name: 'Unova (Black/White)',
@@ -2407,7 +2450,18 @@ const REGIONAL_STORY_DB = {
                 { name: 'Krookodile', role: 'Moxie Sweeper', moves: 'Earthquake, Crunch, Rock Slide, Brick Break', loc: 'Catch Sandile in Desert Resort' },
                 { name: 'Sigilyph', role: 'Special Sweeper', moves: 'Air Slash, Psychic, Ice Beam, Roost', loc: 'Catch in Desert Resort' }
             ]
-        }
+        },
+        storyline: [
+            { step: '1. Nuvema to Striaton', desc: 'Choose your starter in Nuvema Town. Walk to Accumula Town, watch Ghetsis\' Team Plasma speech. Reach Striaton City. Defeat Cilan/Chili/Cress (Trio Badge, cap level 20).' },
+            { step: '2. Dreamyard & Lenora', desc: 'Obtain HM01 Cut. Go east to the Dreamyard, battle Team Plasma, and get a free elemental monkey. Go west to Nacrene City and defeat Lenora in the Museum (Basic Badge, cap level 24).' },
+            { step: '3. Pinwheel Forest & Burgh', desc: 'Chase Team Plasma through Pinwheel Forest. Walk across Skyarrow Bridge to Castelia City. Defeat Gym Leader Burgh (Insect Badge, cap level 27).' },
+            { step: '4. Desert Resort & Elesa', desc: 'Walk north to Desert Resort (buy a Sandile here for Moxie Krookodile!). Reach Nimbasa City and defeat Elesa (Bolt Badge, cap level 31).' },
+            { step: '5. Cold Storage & Clay', desc: 'Cross the Driftveil Drawbridge. In Driftveil City, defeat Team Plasma at the Cold Storage, then defeat Clay (Quake Badge, cap level 35).' },
+            { step: '6. Chargestone Cave & Skyla', desc: 'Clear Chargestone Cave. Reach Mistralton City and scale Celestial Tower to ring the bell. Defeat Skyla (Jet Badge, cap level 38).' },
+            { step: '7. Twist Mountain & Brycen', desc: 'Go through Twist Mountain to Icirrus City. Defeat Brycen (Freeze Badge, cap level 42). Clear the Dragonspiral Tower.' },
+            { step: '8. Relic Castle & Opelucid', desc: 'Navigate the sand in Relic Castle, speak to Alder. Travel to Opelucid City and defeat Iris/Drayden (Legend Badge, cap level 45).' },
+            { step: '9. Victory Road & N\'s Castle', desc: 'Navigate Victory Road. Defeat the Elite Four (Shauntal, Grimsley, Caitlin, Marshal). Defeat N and Ghetsis in N\'s Castle to clear the main story! (Obedience cap: Level 56 / Post-game Level 100).' }
+        ]
     },
     johto: {
         name: 'Johto (HeartGold/SoulSilver)',
@@ -2442,7 +2496,18 @@ const REGIONAL_STORY_DB = {
                 { name: 'Ampharos', role: 'Special Attacker', moves: 'Thunderbolt, Power Gem, Signal Beam, Cotton Guard', loc: 'Catch Mareep at Route 32' },
                 { name: 'Heracross', role: 'Physical Attacker', moves: 'Close Combat, Megahorn, Rock Tomb, Swords Dance', loc: 'Headbutt trees in Azalea Town' }
             ]
-        }
+        },
+        storyline: [
+            { step: '1. New Bark to Violet City', desc: 'Select starter in New Bark Town. Visit Mr. Pokémon to get the Mystery Egg, meet your Rival, and return the egg to Professor Elm. Reach Violet City, clear Sprout Tower, and defeat Falkner (Zephyr Badge, cap level 24).' },
+            { step: '2. Union Cave & Slowpoke Well', desc: 'Travel south through Union Cave to Azalea Town. Defeat Team Rocket grunts in the Slowpoke Well. Defeat Bugsy (Hive Badge, cap level 29).' },
+            { step: '3. Ilex Forest & Whitney', desc: 'Teach HM01 Cut. Navigate Ilex Forest (catch Farfetch\'d). Reach Goldenrod City. Defeat Whitney (Plain Badge, cap level 32). (Buy a female Geodude or Machop to clear her Miltank easily!).' },
+            { step: '4. Burned Tower & Morty', desc: 'Go north to Ecruteak City. Wake up the legendary beasts in the Burned Tower. Defeat Morty (Fog Badge, cap level 37).' },
+            { step: '5. Cianwood Island & Chuck', desc: 'Go to Olivine City, see the sick Ampharos in the lighthouse. Surf west to Cianwood City. Get the Secret Medicine, and defeat Chuck (Storm Badge, cap level 39).' },
+            { step: '6. Lighthouse Medicine & Jasmine', desc: 'Return to Olivine City. Give the medicine to the lighthouse Ampharos. Defeat Gym Leader Jasmine (Mineral Badge, cap level 41).' },
+            { step: '7. Lake of Rage & Pryce', desc: 'Go north through Mahogany Town to the Lake of Rage. Catch/defeat the Red Gyarados. Clear the Rocket Hideout in Mahogany Town with Lance. Defeat Pryce (Glacier Badge, cap level 46).' },
+            { step: '8. Radio Tower & Clair', desc: 'Clean out Team Rocket from the Goldenrod Radio Tower. Walk through Ice Path to Blackthorn City. Defeat Clair (Rising Badge, cap level 48). Solve the Dragon\'s Den quiz to get the Rising Badge.' },
+            { step: '9. Victory Road & Indigo Plateau', desc: 'Return to New Bark Town, surf east to Kanto. Traverse Victory Road to the Indigo Plateau. Defeat the Johto Elite Four and Champion Lance (cap level 60 / Post-game Level 100).' }
+        ]
     }
 };
 
@@ -2605,6 +2670,28 @@ function renderStoryTab() {
         });
         teamHtml += `</div>`;
         teamCard.innerHTML = teamHtml;
+    }
+
+    // 5. Render Step-by-Step Story Walkthrough Guide
+    const walkthroughContainer = document.getElementById('story-walkthrough-container');
+    const walkthroughTitle = document.getElementById('story-walkthrough-title');
+    if (walkthroughContainer && data.storyline) {
+        if (walkthroughTitle) {
+            walkthroughTitle.innerText = `${data.name} - Step-by-Step Story Walkthrough`;
+        }
+        walkthroughContainer.innerHTML = '';
+        
+        let html = '<div style="display:flex; flex-direction:column; gap:0.85rem;">';
+        data.storyline.forEach(item => {
+            html += `
+                <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); padding:0.85rem; border-radius:8px;">
+                    <strong style="color:var(--primary); font-size:0.85rem; display:block; margin-bottom:0.3rem;">${item.step}</strong>
+                    <p style="font-size:0.8rem; color:var(--text-muted); line-height:1.45; margin:0;">${item.desc}</p>
+                </div>
+            `;
+        });
+        html += '</div>';
+        walkthroughContainer.innerHTML = html;
     }
 }
 
