@@ -1,4 +1,4 @@
-﻿// PokÃ©MMO All-in-One Companion Tool Logic
+// PokéMMO All-in-One Companion Tool Logic
 
 // ==========================================
 // 1. STATE & LOCAL STORAGE
@@ -685,7 +685,7 @@ const PICKUP_TABLES = {
         "91_100": [
             { item: 'Leftovers', rarity: 'Very Rare', chance: '1%', val: 'Valuable', note: 'Top-tier pickup item. High GTL value.' },
             { item: 'PP Up', rarity: 'Rare', chance: '3%', val: 'Valuable', note: 'Increases max move PP.' },
-            { item: 'Rare Candy', rarity: 'Rare', chance: '4%', val: 'Valuable', note: 'Levels up PokÃ©mon.' },
+            { item: 'Rare Candy', rarity: 'Rare', chance: '4%', val: 'Valuable', note: 'Levels up Pokémon.' },
             { item: 'King\'s Rock', rarity: 'Rare', chance: '5%', val: 'Held Item', note: 'Enables flinching / evolves Slowpoke.' },
             { item: 'Everstone', rarity: 'Uncommon', chance: '10%', val: 'Breeding', note: 'Locks nature.' },
             { item: 'Ultra Ball', rarity: 'Common', chance: '15%', val: 'Consumable', note: 'High catch multiplier.' },
@@ -695,7 +695,7 @@ const PICKUP_TABLES = {
         ],
         "81_90": [
             { item: 'PP Up', rarity: 'Very Rare', chance: '2%', val: 'Valuable', note: 'High value drop.' },
-            { item: 'Rare Candy', rarity: 'Rare', chance: '4%', val: 'Valuable', note: 'Levels up PokÃ©mon.' },
+            { item: 'Rare Candy', rarity: 'Rare', chance: '4%', val: 'Valuable', note: 'Levels up Pokémon.' },
             { item: 'Full Restore', rarity: 'Uncommon', chance: '10%', val: 'Consumable', note: 'Full recovery.' },
             { item: 'Hyper Potion', rarity: 'Common', chance: '34%', val: 'Consumable', note: 'Health recovery.' },
             { item: 'Full Heal', rarity: 'Common', chance: '50%', val: 'Consumable', note: 'Status heal.' }
@@ -709,7 +709,7 @@ const PICKUP_TABLES = {
         ]
     },
     hoenn: {
-        // Hoenn is identical to Kanto in PokÃ©MMO
+        // Hoenn is identical to Kanto in PokéMMO
     },
     sinnoh: {
         "91_100": [
@@ -717,7 +717,7 @@ const PICKUP_TABLES = {
             { item: 'Dusk Stone', rarity: 'Very Rare', chance: '2%', val: 'Evolution', note: 'Used to evolve Murkrow, Misdreavus.' },
             { item: 'Dawn Stone', rarity: 'Very Rare', chance: '2%', val: 'Evolution', note: 'Used to evolve Kirlia (M), Snorunt (F).' },
             { item: 'PP Up', rarity: 'Rare', chance: '4%', val: 'Valuable', note: 'Increases max move PP.' },
-            { item: 'Rare Candy', rarity: 'Rare', chance: '5%', val: 'Valuable', note: 'Levels up PokÃ©mon.' },
+            { item: 'Rare Candy', rarity: 'Rare', chance: '5%', val: 'Valuable', note: 'Levels up Pokémon.' },
             { item: 'Everstone', rarity: 'Uncommon', chance: '10%', val: 'Breeding', note: 'Locks nature.' },
             { item: 'Ultra Ball', rarity: 'Common', chance: '15%', val: 'Consumable', note: 'Catch ball.' },
             { item: 'Full Restore', rarity: 'Common', chance: '20%', val: 'Consumable', note: 'Full recovery.' },
@@ -725,7 +725,7 @@ const PICKUP_TABLES = {
         ],
         "81_90": [
             { item: 'Dusk Stone', rarity: 'Very Rare', chance: '2%', val: 'Evolution', note: 'Evolves specific Ghost/Dark types.' },
-            { item: 'Rare Candy', rarity: 'Rare', chance: '5%', val: 'Valuable', note: 'Levels up PokÃ©mon.' },
+            { item: 'Rare Candy', rarity: 'Rare', chance: '5%', val: 'Valuable', note: 'Levels up Pokémon.' },
             { item: 'Hyper Potion', rarity: 'Common', chance: '43%', val: 'Consumable', note: 'Health recovery.' },
             { item: 'Full Heal', rarity: 'Common', chance: '50%', val: 'Consumable', note: 'Status heal.' }
         ],
@@ -741,7 +741,7 @@ const PICKUP_TABLES = {
             { item: 'Prism Scale', rarity: 'Very Rare', chance: '2%', val: 'Evolution', note: 'Used to evolve Feebas into Milotic.' },
             { item: 'PP Max', rarity: 'Very Rare', chance: '1%', val: 'Valuable', note: 'Maxes out move PP. High GTL value.' },
             { item: 'King\'s Rock', rarity: 'Rare', chance: '5%', val: 'Held Item', note: 'Enables flinching.' },
-            { item: 'Rare Candy', rarity: 'Rare', chance: '7%', val: 'Valuable', note: 'Levels up PokÃ©mon.' },
+            { item: 'Rare Candy', rarity: 'Rare', chance: '7%', val: 'Valuable', note: 'Levels up Pokémon.' },
             { item: 'PP Up', rarity: 'Rare', chance: '5%', val: 'Valuable', note: 'Increases max move PP.' },
             { item: 'Everstone', rarity: 'Uncommon', chance: '10%', val: 'Breeding', note: 'Locks nature.' },
             { item: 'Ultra Ball', rarity: 'Common', chance: '15%', val: 'Consumable', note: 'Catch ball.' },
@@ -882,7 +882,7 @@ function getShinyHuntProbability(encounters) {
 }
 
 function createNewShinyHunt() {
-    const pkmn = document.getElementById('shiny-hunt-pokemon').value || 'Unknown PokÃ©mon';
+    const pkmn = document.getElementById('shiny-hunt-pokemon').value || 'Unknown Pokémon';
     const method = document.getElementById('shiny-hunt-method').value;
     const initial = parseInt(document.getElementById('shiny-hunt-initial').value) || 0;
 
@@ -960,7 +960,7 @@ function renderShinyHunts() {
     if (shinyHunts.length === 0) {
         grid.innerHTML = `
             <div style="padding: 3rem; text-align: center; color: var(--text-muted); width: 100%;">
-                No active hunts. Set up a target PokÃ©mon above to begin tracking!
+                No active hunts. Set up a target Pokémon above to begin tracking!
             </div>
         `;
         return;
@@ -1808,7 +1808,7 @@ function lookupBreedingPokemon(query) {
     } else if (match.groups.includes('Undiscovered')) {
         partnersHtml = `
             <div style="margin-top: 0.5rem; font-size: 0.75rem; color: var(--accent-red);">
-                <strong>Compatible Partners:</strong> None (Baby PokÃ©mon cannot breed).
+                <strong>Compatible Partners:</strong> None (Baby Pokémon cannot breed).
             </div>
         `;
     } else {
@@ -1996,7 +1996,7 @@ const FARMING_METHODS_DATA = [
         title: 'Thief Farming (Heart Scales / Everstones)',
         region: 'Hoenn / Sinnoh / Kanto',
         yield: '140,000 - 180,000 Â¥ / hr',
-        desc: 'Use a Banette or Covet/Thief PokÃ©mon with Frisk ability. Thief Luvdiscs (Route 128) for Heart Scales, or Roggenrola/Geodudes for Everstones.'
+        desc: 'Use a Banette or Covet/Thief Pokémon with Frisk ability. Thief Luvdiscs (Route 128) for Heart Scales, or Roggenrola/Geodudes for Everstones.'
     },
     {
         title: 'Pay Day / Pickup Farming',
@@ -2140,17 +2140,17 @@ const REGIONAL_STORY_DB = {
             ]
         },
         storyline: [
-            { step: '1. Starter & Oak\'s Parcel', desc: 'Acquire your starter PokÃ©mon at Pallet Town. Head north to Viridian City, collect Oak\'s Parcel from the PokÃ© Mart, and deliver it back to Oak to obtain your PokÃ©dex and 5 PokÃ© Balls.' },
+            { step: '1. Starter & Oak\'s Parcel', desc: 'Acquire your starter Pokémon at Pallet Town. Head north to Viridian City, collect Oak\'s Parcel from the PokÃ© Mart, and deliver it back to Oak to obtain your PokÃ©dex and 5 PokÃ© Balls.' },
             { step: '2. Viridian Forest & Brock', desc: 'Travel north through Route 2 and enter Viridian Forest. Grind levels on bugs if needed, then reach Pewter City. Defeat Gym Leader Brock (Rock type) using Water/Grass moves. (Obedience cap increases to Level 20).' },
-            { step: '3. Mt. Moon & Fossil Selection', desc: 'Buy the Level 5 Magikarp at the Route 4 PokÃ©mon Center for 500Â¥ (essential for Gyarados physical sweeper!). Navigate through Mt. Moon, clear out Team Rocket grunts, and choose either the Dome or Helix Fossil.' },
+            { step: '3. Mt. Moon & Fossil Selection', desc: 'Buy the Level 5 Magikarp at the Route 4 Pokémon Center for 500Â¥ (essential for Gyarados physical sweeper!). Navigate through Mt. Moon, clear out Team Rocket grunts, and choose either the Dome or Helix Fossil.' },
             { step: '4. Nugget Bridge & Misty', desc: 'Arrive in Cerulean City. Head north, defeat your Rival, and clear Nugget Bridge. Save Bill at Route 25 to receive the S.S. Ticket. Return to Cerulean and defeat Misty (Water type) using Grass/Electric moves. (Obedience cap: Level 26).' },
             { step: '5. S.S. Anne & Lt. Surge', desc: 'Walk south through the Underground Path to Vermilion City. Board the S.S. Anne, battle trainers for EXP, and assist the seasick Captain to get HM01 Cut. Teach it to clear the bush to Lt. Surge\'s Gym. Defeat Surge (Electric type) using Ground moves. (Obedience cap: Level 32).' },
-            { step: '6. Rock Tunnel & PokÃ©mon Tower', desc: 'Go east to Route 9, enter Rock Tunnel (HM05 Flash is optional but helpful; you can navigate in the dark). Reach Lavender Town and scale the PokÃ©mon Tower until you get blocked by the ghost. Travel west to Celadon City.' },
+            { step: '6. Rock Tunnel & Pokémon Tower', desc: 'Go east to Route 9, enter Rock Tunnel (HM05 Flash is optional but helpful; you can navigate in the dark). Reach Lavender Town and scale the Pokémon Tower until you get blocked by the ghost. Travel west to Celadon City.' },
             { step: '7. Rocket Hideout & Erika', desc: 'In Celadon City, clear Erika\'s Gym (Grass type) using Fire/Flying moves (Obedience cap: Level 37). Visit the Game Corner, press the poster switch, and clear the Rocket Hideout under the building. Defeat Giovanni to get the Silph Scope.' },
-            { step: '8. Ghost Marowak & PokÃ© Flute', desc: 'Return to Lavender Town with the Silph Scope. Ascend PokÃ©mon Tower, soothe the ghost of Marowak, and defeat Team Rocket at the top. Speak to Mr. Fuji to get the PokÃ© Flute. Wake up the sleeping Snorlax on Route 12 or 16.' },
+            { step: '8. Ghost Marowak & PokÃ© Flute', desc: 'Return to Lavender Town with the Silph Scope. Ascend Pokémon Tower, soothe the ghost of Marowak, and defeat Team Rocket at the top. Speak to Mr. Fuji to get the PokÃ© Flute. Wake up the sleeping Snorlax on Route 12 or 16.' },
             { step: '9. Silph Co. & Sabrina', desc: 'Gain entry to Saffron City. Enter the Silph Co. building, navigate the teleporter pads, defeat your Rival, and clear Giovanni to get the Master Ball. Defeat Sabrina (Psychic type) using Bug/Ghost/Dark moves. (Obedience cap: Level 47).' },
             { step: '10. Safari Zone & Koga', desc: 'Travel south to Fuchsia City. Enter the Safari Zone, locate the Warden\'s Gold Teeth and HM03 Surf. Give the teeth to the Warden to get HM04 Strength. Defeat Koga (Poison type) using Psychic/Ground moves. (Obedience cap: Level 46).' },
-            { step: '11. Cinnabar Mansion & Blaine', desc: 'Surf south from Pallet Town or Fuchsia City to Cinnabar Island. Search the PokÃ©mon Mansion to find the Secret Key. Unlock Cinnabar Gym and defeat Blaine (Fire type) using Water/Ground/Rock moves. (Obedience cap: Level 50).' },
+            { step: '11. Cinnabar Mansion & Blaine', desc: 'Surf south from Pallet Town or Fuchsia City to Cinnabar Island. Search the Pokémon Mansion to find the Secret Key. Unlock Cinnabar Gym and defeat Blaine (Fire type) using Water/Ground/Rock moves. (Obedience cap: Level 50).' },
             { step: '12. Viridian Gym & Giovanni', desc: 'Go back to Viridian City. The locked gym is now open! Defeat Gym Leader Giovanni (Ground type) using Water/Grass/Ice moves. (Obedience cap: Level 55).' },
             { step: '13. Victory Road & Elite Four', desc: 'Head west to Route 22, traverse Victory Road using HM04 Strength. Arrive at the Indigo Plateau. Defeat the Elite Four (Lorelei, Bruno, Agatha, Lance) and your Rival (Champion) to clear the region! (Obedience cap: Level 62 / Post-game Level 100).' }
         ]
@@ -2198,9 +2198,9 @@ const REGIONAL_STORY_DB = {
             { step: '7. Weather Institute & Winona', desc: 'Surf east from Mauville, clear the Weather Institute to get Castform, and beat your Rival. Arrive in Fortree City. Get the Devon Scope from Steven on Route 120, reveal the invisible Kecleon, and defeat Winona (Flying type). (Obedience cap: Level 38. HM02 Fly is usable).' },
             { step: '8. Mt. Pyre & Hideouts', desc: 'Travel east to Lilycove City. Go to Mt. Pyre, fight off Team Aqua/Magma, and get the Magma Emblem. Clear the Magma Hideout in Jagged Pass and the Aqua Hideout in Lilycove Cove.' },
             { step: '9. Mossdeep Gym & Tate & Liza', desc: 'Surf east to Mossdeep City. Defeat Tate & Liza in a double battle (Psychic type) using Ghost/Dark/Bug moves. (Obedience cap: Level 44. HM08 Dive is usable). Speak to Steven to receive HM08 Dive.' },
-            { step: '10. Seafloor Cavern & Cave of Origin', desc: 'Dive on Route 128 to locate the Seafloor Cavern. Clear the cavern, defeat Archie/Maxie, and watch Groudon/Kyogre escape. Surf to Sootopolis City. Go to the Cave of Origin, calm/defeat the Legendary PokÃ©mon, and unlock Sootopolis Gym.' },
+            { step: '10. Seafloor Cavern & Cave of Origin', desc: 'Dive on Route 128 to locate the Seafloor Cavern. Clear the cavern, defeat Archie/Maxie, and watch Groudon/Kyogre escape. Surf to Sootopolis City. Go to the Cave of Origin, calm/defeat the Legendary Pokémon, and unlock Sootopolis Gym.' },
             { step: '11. Wallace & Waterfall', desc: 'Defeat Gym Leader Wallace/Juan (Water type) in Sootopolis Gym. (Obedience cap: Level 47. HM07 Waterfall is usable). You can now scale waterfalls to reach Ever Grande City.' },
-            { step: '12. Ever Grande & Elite Four', desc: 'Scale the waterfall at Ever Grande City, clear Victory Road, and enter the PokÃ©mon League. Defeat the Elite Four (Sidney, Phoebe, Glacia, Drake) and Steven/Wallace (Champion) to clear the region! (Obedience cap: Level 58 / Post-game Level 100).' }
+            { step: '12. Ever Grande & Elite Four', desc: 'Scale the waterfall at Ever Grande City, clear Victory Road, and enter the Pokémon League. Defeat the Elite Four (Sidney, Phoebe, Glacia, Drake) and Steven/Wallace (Champion) to clear the region! (Obedience cap: Level 58 / Post-game Level 100).' }
         ]
     },
     sinnoh: {
@@ -2331,7 +2331,7 @@ const REGIONAL_STORY_DB = {
             ]
         },
         storyline: [
-            { step: '1. New Bark to Violet City', desc: 'Select starter in New Bark Town. Visit Mr. PokÃ©mon to get the Mystery Egg, meet your Rival, and return the egg to Professor Elm. Reach Violet City, clear Sprout Tower, and defeat Falkner (Zephyr Badge, cap level 24).' },
+            { step: '1. New Bark to Violet City', desc: 'Select starter in New Bark Town. Visit Mr. Pokémon to get the Mystery Egg, meet your Rival, and return the egg to Professor Elm. Reach Violet City, clear Sprout Tower, and defeat Falkner (Zephyr Badge, cap level 24).' },
             { step: '2. Union Cave & Slowpoke Well', desc: 'Travel south through Union Cave to Azalea Town. Defeat Team Rocket grunts in the Slowpoke Well. Defeat Bugsy (Hive Badge, cap level 29).' },
             { step: '3. Ilex Forest & Whitney', desc: 'Teach HM01 Cut. Navigate Ilex Forest (catch Farfetch\'d). Reach Goldenrod City. Defeat Whitney (Plain Badge, cap level 32). (Buy a female Geodude or Machop to clear her Miltank easily!).' },
             { step: '4. Burned Tower & Morty', desc: 'Go north to Ecruteak City. Wake up the legendary beasts in the Burned Tower. Defeat Morty (Fog Badge, cap level 37).' },
@@ -2433,11 +2433,11 @@ function renderStoryTab() {
         cannotDoUl.innerHTML = '';
 
         const liLevel = document.createElement('li');
-        liLevel.innerHTML = `PokÃ©mon up to <strong>Level ${maxObedienceLevel}</strong> will obey you in battle.`;
+        liLevel.innerHTML = `Pokémon up to <strong>Level ${maxObedienceLevel}</strong> will obey you in battle.`;
         canDoUl.appendChild(liLevel);
 
         const liLevelWarn = document.createElement('li');
-        liLevelWarn.innerHTML = `PokÃ©mon above <strong>Level ${maxObedienceLevel}</strong> will disobey or hurt themselves.`;
+        liLevelWarn.innerHTML = `Pokémon above <strong>Level ${maxObedienceLevel}</strong> will disobey or hurt themselves.`;
         cannotDoUl.appendChild(liLevelWarn);
 
         const usableHms = [];
@@ -2602,7 +2602,7 @@ function showLoggedInUI(email) {
     if (loginSection) loginSection.style.display = 'none';
     if (statusSection) statusSection.style.display = 'block';
     if (emailDisplay) emailDisplay.innerText = email;
-    updateSyncButtonUI(true, 'â˜ï¸ Connected');
+    updateSyncButtonUI(true, '☁️ Connected');
 }
 
 function showLoggedOutUI() {
